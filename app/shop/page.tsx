@@ -22,9 +22,7 @@ export default function ShopPage() {
   const PER_PAGE = 12;
 
   const toggleCat = (slug: string) =>
-    setSelectedCats((prev) =>
-      prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]
-    );
+    setSelectedCats((p) => p.includes(slug) ? p.filter((s) => s !== slug) : [...p, slug]);
 
   const filtered = useMemo(() => {
     let list = [...products];
@@ -39,61 +37,97 @@ export default function ShopPage() {
   }, [selectedCats, priceMax, inStockOnly, sort]);
 
   const paginated = filtered.slice(0, page * PER_PAGE);
-  const hasMore = paginated.length < filtered.length;
+
+  const selectStyle = {
+    background: "var(--surface)",
+    border: "1px solid var(--line-2)",
+    color: "var(--text)",
+    fontFamily: "var(--font-space-mono)",
+    fontSize: ".78rem",
+  };
 
   const FilterPanel = () => (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h3 className="font-bold text-sm text-[#0f0f0f] uppercase tracking-widest mb-3">Category</h3>
-        <div className="space-y-2">
+        <h3
+          className="text-[.72rem] tracking-[.14em] uppercase mb-4"
+          style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
+        >
+          Category
+        </h3>
+        <div className="space-y-3">
           {categories.map((cat) => (
-            <label key={cat.slug} className="flex items-center gap-2.5 cursor-pointer group">
-              <input
-                type="checkbox"
-                checked={selectedCats.includes(cat.slug)}
-                onChange={() => toggleCat(cat.slug)}
-                className="w-4 h-4 accent-[#e8320a] rounded"
-              />
-              <span className="text-sm text-gray-600 group-hover:text-[#0f0f0f] transition-colors">{cat.name}</span>
-              <span className="ml-auto text-xs text-gray-400">
-                ({products.filter((p) => p.categorySlug === cat.slug).length})
+            <label key={cat.slug} className="flex items-center gap-3 cursor-pointer group">
+              <div
+                className="w-4 h-4 rounded-[4px] grid place-items-center flex-shrink-0 transition-all"
+                style={{
+                  border: selectedCats.includes(cat.slug) ? "1px solid var(--accent)" : "1px solid var(--line-2)",
+                  background: selectedCats.includes(cat.slug) ? "var(--accent)" : "transparent",
+                }}
+                onClick={() => toggleCat(cat.slug)}
+              >
+                {selectedCats.includes(cat.slug) && (
+                  <svg className="w-2.5 h-2.5" viewBox="0 0 10 10" fill="none">
+                    <path d="M1.5 5l2.5 2.5L8.5 2" stroke="#000" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                )}
+              </div>
+              <span
+                className="text-sm transition-colors"
+                style={{ color: selectedCats.includes(cat.slug) ? "var(--text)" : "var(--muted)" }}
+                onClick={() => toggleCat(cat.slug)}
+              >
+                {cat.name}
+              </span>
+              <span className="ml-auto text-xs" style={{ color: "var(--muted-2)", fontFamily: "var(--font-space-mono)" }}>
+                {products.filter((p) => p.categorySlug === cat.slug).length}
               </span>
             </label>
           ))}
         </div>
       </div>
+
       <div>
-        <h3 className="font-bold text-sm text-[#0f0f0f] uppercase tracking-widest mb-3">
-          Max Price: <span className="text-[#e8320a]">£{priceMax}</span>
+        <h3
+          className="text-[.72rem] tracking-[.14em] uppercase mb-3"
+          style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
+        >
+          Max Price: <span style={{ color: "var(--accent)" }}>£{priceMax}</span>
         </h3>
         <input
-          type="range"
-          min={10}
-          max={200}
-          step={5}
-          value={priceMax}
+          type="range" min={10} max={200} step={5} value={priceMax}
           onChange={(e) => setPriceMax(Number(e.target.value))}
-          className="w-full accent-[#e8320a]"
+          className="w-full"
+          style={{ accentColor: "var(--accent)" }}
         />
-        <div className="flex justify-between text-xs text-gray-400 mt-1">
+        <div className="flex justify-between text-xs mt-1" style={{ color: "var(--muted-2)", fontFamily: "var(--font-space-mono)" }}>
           <span>£10</span><span>£200</span>
         </div>
       </div>
-      <div>
-        <label className="flex items-center gap-2.5 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={inStockOnly}
-            onChange={(e) => setInStockOnly(e.target.checked)}
-            className="w-4 h-4 accent-[#e8320a] rounded"
-          />
-          <span className="text-sm font-semibold text-[#0f0f0f]">In Stock Only</span>
-        </label>
-      </div>
+
+      <label className="flex items-center gap-3 cursor-pointer">
+        <div
+          className="w-4 h-4 rounded-[4px] grid place-items-center flex-shrink-0 transition-all"
+          style={{
+            border: inStockOnly ? "1px solid var(--accent)" : "1px solid var(--line-2)",
+            background: inStockOnly ? "var(--accent)" : "transparent",
+          }}
+          onClick={() => setInStockOnly(!inStockOnly)}
+        >
+          {inStockOnly && (
+            <svg className="w-2.5 h-2.5" viewBox="0 0 10 10" fill="none">
+              <path d="M1.5 5l2.5 2.5L8.5 2" stroke="#000" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          )}
+        </div>
+        <span className="text-sm font-medium" onClick={() => setInStockOnly(!inStockOnly)}>In Stock Only</span>
+      </label>
+
       {(selectedCats.length > 0 || inStockOnly || priceMax < 200) && (
         <button
           onClick={() => { setSelectedCats([]); setInStockOnly(false); setPriceMax(200); }}
-          className="flex items-center gap-1.5 text-sm text-[#e8320a] hover:text-[#c42a08] font-semibold transition-colors"
+          className="flex items-center gap-1.5 text-sm transition-colors cursor-pointer"
+          style={{ color: "var(--accent)" }}
         >
           <X className="w-3.5 h-3.5" /> Clear Filters
         </button>
@@ -102,21 +136,34 @@ export default function ShopPage() {
   );
 
   return (
-    <div className="bg-white min-h-screen">
-      {/* Page header */}
-      <div className="bg-[#0a0a0a] pt-10 pb-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#e8320a] mb-2">All Products</p>
-          <h1 className="text-4xl sm:text-5xl font-black text-white">The Shop</h1>
-          <p className="text-gray-400 mt-2">{filtered.length} products found</p>
+    <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
+      {/* Header */}
+      <div className="pt-14 pb-16" style={{ borderBottom: "1px solid var(--line)" }}>
+        <div className="max-w-[1280px] mx-auto px-8">
+          <div
+            className="flex items-center gap-2.5 mb-3 text-[.72rem] tracking-[.14em] uppercase"
+            style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
+          >
+            <span className="w-7 h-[1px]" style={{ background: "var(--accent)" }} />
+            All Products
+          </div>
+          <h1
+            className="uppercase leading-[.96] tracking-[.01em]"
+            style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(2.5rem,6vw,5rem)" }}
+          >
+            The Shop
+          </h1>
+          <p className="mt-2 text-sm" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
+            {filtered.length} products
+          </p>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-10">
-        <div className="flex gap-8">
-          {/* Sidebar — desktop */}
-          <aside className="hidden lg:block w-56 flex-shrink-0">
-            <div className="sticky top-24">
+      <div className="max-w-[1280px] mx-auto px-8 py-12">
+        <div className="flex gap-10">
+          {/* Sidebar */}
+          <aside className="hidden lg:block w-52 flex-shrink-0">
+            <div className="sticky top-28">
               <FilterPanel />
             </div>
           </aside>
@@ -126,30 +173,23 @@ export default function ShopPage() {
             <div className="flex items-center justify-between mb-6 gap-3">
               <button
                 onClick={() => setFiltersOpen(true)}
-                className="lg:hidden flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm font-semibold hover:border-[#e8320a] transition-colors"
+                className="lg:hidden flex items-center gap-2 px-4 py-2 rounded-[11px] text-sm font-semibold transition-all cursor-pointer"
+                style={{ border: "1px solid var(--line-2)", color: "var(--text)", background: "var(--surface)" }}
               >
                 <SlidersHorizontal className="w-4 h-4" /> Filters
-                {(selectedCats.length > 0 || inStockOnly) && (
-                  <span className="bg-[#e8320a] text-white text-xs px-1.5 py-0.5 rounded-full">
-                    {selectedCats.length + (inStockOnly ? 1 : 0)}
-                  </span>
-                )}
               </button>
               <div className="flex items-center gap-2 ml-auto">
-                <span className="text-sm text-gray-400 hidden sm:inline">Sort:</span>
                 <select
                   value={sort}
                   onChange={(e) => setSort(e.target.value)}
-                  className="border border-gray-200 rounded-lg px-3 py-2 text-sm font-medium bg-white focus:outline-none focus:ring-2 focus:ring-[#e8320a] cursor-pointer"
+                  className="rounded-[11px] px-3 py-2.5 text-[.78rem] outline-none cursor-pointer"
+                  style={selectStyle}
                 >
-                  {SORT_OPTIONS.map((o) => (
-                    <option key={o.value} value={o.value}>{o.label}</option>
-                  ))}
+                  {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
               </div>
             </div>
 
-            {/* Active filter chips */}
             {selectedCats.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-5">
                 {selectedCats.map((slug) => {
@@ -158,7 +198,8 @@ export default function ShopPage() {
                     <button
                       key={slug}
                       onClick={() => toggleCat(slug)}
-                      className="flex items-center gap-1.5 px-3 py-1 bg-[#e8320a]/10 text-[#e8320a] text-xs font-semibold rounded-full hover:bg-[#e8320a]/20 transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold cursor-pointer transition-all"
+                      style={{ background: "rgba(216,255,53,.1)", color: "var(--accent)", border: "1px solid rgba(216,255,53,.2)", fontFamily: "var(--font-space-mono)" }}
                     >
                       {cat?.name} <X className="w-3 h-3" />
                     </button>
@@ -168,25 +209,21 @@ export default function ShopPage() {
             )}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
-              {paginated.map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
+              {paginated.map((p) => <ProductCard key={p.id} product={p} />)}
             </div>
 
             {filtered.length === 0 && (
               <div className="text-center py-24">
-                <p className="text-gray-400 text-lg font-medium">No products match your filters.</p>
-                <button onClick={() => { setSelectedCats([]); setInStockOnly(false); setPriceMax(200); }} className="mt-4 text-sm text-[#e8320a] font-semibold hover:underline">
-                  Clear all filters
-                </button>
+                <p className="text-lg font-medium" style={{ color: "var(--muted)" }}>No products match your filters.</p>
               </div>
             )}
 
-            {hasMore && (
+            {paginated.length < filtered.length && (
               <div className="text-center mt-10">
                 <button
                   onClick={() => setPage((p) => p + 1)}
-                  className="px-8 py-3 border-2 border-[#e8320a] text-[#e8320a] font-bold rounded-lg hover:bg-[#e8320a] hover:text-white transition-colors"
+                  className="px-8 py-3.5 rounded-[13px] font-semibold transition-all cursor-pointer hover:-translate-y-0.5"
+                  style={{ border: "1px solid var(--line-2)", color: "var(--text)", background: "var(--surface)" }}
                 >
                   Load More ({filtered.length - paginated.length} remaining)
                 </button>
@@ -199,14 +236,21 @@ export default function ShopPage() {
       {/* Mobile filter drawer */}
       {filtersOpen && (
         <>
-          <div className="fixed inset-0 z-50 bg-black/60" onClick={() => setFiltersOpen(false)} />
-          <div className="fixed bottom-0 left-0 right-0 z-[60] bg-white rounded-t-2xl p-6 max-h-[80vh] overflow-y-auto">
+          <div className="fixed inset-0 z-50" style={{ background: "rgba(8,9,11,.8)" }} onClick={() => setFiltersOpen(false)} />
+          <div
+            className="fixed bottom-0 left-0 right-0 z-[60] rounded-t-[20px] p-6 max-h-[80vh] overflow-y-auto"
+            style={{ background: "var(--surface)", border: "1px solid var(--line-2)" }}
+          >
             <div className="flex items-center justify-between mb-5">
-              <h3 className="font-black text-lg">Filters</h3>
-              <button onClick={() => setFiltersOpen(false)}><X className="w-5 h-5" /></button>
+              <h3 style={{ fontFamily: "var(--font-anton)", fontSize: "1.4rem" }}>FILTERS</h3>
+              <button onClick={() => setFiltersOpen(false)} style={{ color: "var(--muted)" }}><X className="w-5 h-5" /></button>
             </div>
             <FilterPanel />
-            <button onClick={() => setFiltersOpen(false)} className="w-full mt-6 py-3 bg-[#e8320a] text-white font-bold rounded-lg">
+            <button
+              onClick={() => setFiltersOpen(false)}
+              className="w-full mt-6 py-3.5 rounded-[13px] font-semibold cursor-pointer"
+              style={{ background: "var(--accent)", color: "#000" }}
+            >
               Apply Filters
             </button>
           </div>

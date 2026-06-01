@@ -1,17 +1,39 @@
 import Link from "next/link";
-import Button from "@/components/ui/Button";
 
 export default function NotFound() {
   return (
-    <div className="min-h-[70vh] flex items-center justify-center bg-gray-50 px-4">
-      <div className="text-center">
-        <p className="text-8xl font-black text-[#e8320a] mb-2">404</p>
-        <h1 className="text-2xl font-black text-[#0f0f0f] mb-2">Page not found</h1>
-        <p className="text-gray-400 mb-6">The page you&apos;re looking for doesn&apos;t exist.</p>
-        <Link href="/">
-          <Button>Go Home</Button>
-        </Link>
+    <div
+      className="min-h-[70vh] flex flex-col items-center justify-center px-4 text-center"
+      style={{ background: "var(--bg)" }}
+    >
+      <div
+        className="text-[7rem] leading-none mb-2"
+        style={{
+          fontFamily: "var(--font-anton)",
+          background: "linear-gradient(170deg,#fff 0%,#e7eaef 18%,#9aa0ab 46%,#fff 60%,#aeb4be 78%,#5b606b 100%)",
+          WebkitBackgroundClip: "text",
+          backgroundClip: "text",
+          color: "transparent",
+        }}
+      >
+        404
       </div>
+      <h1
+        className="text-[2rem] uppercase tracking-[.01em] mb-2"
+        style={{ fontFamily: "var(--font-anton)" }}
+      >
+        Page Not Found
+      </h1>
+      <p className="mb-8 text-sm" style={{ color: "var(--muted)" }}>
+        The page you&apos;re looking for doesn&apos;t exist.
+      </p>
+      <Link
+        href="/"
+        className="inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold transition-all hover:-translate-y-0.5"
+        style={{ background: "var(--accent)", color: "#000" }}
+      >
+        Go Home
+      </Link>
     </div>
   );
 }

@@ -2,14 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  ShoppingCart,
-  Search,
-  Menu,
-  X,
-  ChevronDown,
-  Zap,
-} from "lucide-react";
+import { Search, ShoppingCart, Menu, X, ChevronDown } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import categories from "@/data/categories";
 import { cn } from "@/lib/utils";
@@ -20,20 +13,18 @@ export default function Header() {
   const [catOpen, setCatOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { openCart, itemCount } = useCartStore();
   const count = useCartStore((s) => s.itemCount());
+  const openCart = useCartStore((s) => s.openCart);
   const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    const fn = () => setScrolled(window.scrollY > 30);
+    window.addEventListener("scroll", fn);
+    return () => window.removeEventListener("scroll", fn);
   }, []);
 
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
+  useEffect(() => { setMobileOpen(false); }, [pathname]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +36,6 @@ export default function Header() {
   };
 
   const navLinks = [
-    { href: "/", label: "Home" },
     { href: "/shop", label: "Shop" },
     { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" },
@@ -55,66 +45,58 @@ export default function Header() {
     <>
       <header
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-400",
           scrolled
-            ? "bg-[#0a0a0a]/95 backdrop-blur-md shadow-xl shadow-black/20"
-            : "bg-[#0a0a0a]"
+            ? "border-b bg-[rgba(8,9,11,0.72)] backdrop-blur-[18px]"
+            : "border-b border-transparent"
         )}
+        style={{ borderColor: scrolled ? "var(--line)" : "transparent" }}
       >
-        {/* Top bar */}
-        <div className="border-b border-white/5 hidden md:block">
-          <div className="max-w-7xl mx-auto px-4 py-1.5 flex justify-between items-center">
-            <p className="text-xs text-gray-400">
-              Free shipping on orders over £75 · Use code{" "}
-              <span className="text-[#e8320a] font-semibold">AKCARE10</span> for
-              10% off
-            </p>
-            <div className="flex gap-4 text-xs text-gray-400">
-              <Link href="/policies/shipping-returns" className="hover:text-white transition-colors">
-                Shipping
-              </Link>
-              <Link href="/policies/returns" className="hover:text-white transition-colors">
-                Returns
-              </Link>
-              <Link href="/contact" className="hover:text-white transition-colors">
-                Contact
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Main nav */}
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 bg-[#e8320a] rounded-lg flex items-center justify-center shadow-lg shadow-[#e8320a]/30">
-                <Zap className="w-4 h-4 text-white fill-white" />
+        <div className="max-w-[1280px] mx-auto px-8">
+          <nav className="flex items-center justify-between h-[78px]">
+            {/* Brand */}
+            <Link href="/" className="flex items-center gap-3">
+              <div
+                className="w-[38px] h-[38px] rounded-[9px] grid place-items-center text-[.95rem] tracking-[.02em]"
+                style={{
+                  background: "linear-gradient(145deg,#23272f,#0c0e12)",
+                  border: "1px solid var(--line-2)",
+                  boxShadow: "inset 0 1px 0 rgba(255,255,255,.12), 0 6px 18px rgba(0,0,0,.5)",
+                  fontFamily: "var(--font-anton)",
+                }}
+              >
+                A<span style={{ color: "var(--accent)" }}>.</span>K
               </div>
-              <div>
-                <span className="font-black text-white text-lg leading-none tracking-tight">
-                  A.K.
-                </span>
-                <span className="font-light text-gray-400 text-lg leading-none ml-1">
+              <div style={{ fontFamily: "var(--font-anton)" }}>
+                <div className="text-[1.18rem] tracking-[.08em] leading-none text-[var(--text)]">
                   AUTO CARE
-                </span>
+                </div>
+                <div
+                  className="text-[.52rem] tracking-[.42em] mt-[3px]"
+                  style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
+                >
+                  PRECISION DETAIL CO.
+                </div>
               </div>
             </Link>
 
-            {/* Desktop Nav */}
-            <nav className="hidden md:flex items-center gap-1">
-              {navLinks.map((link) => (
+            {/* Desktop nav */}
+            <div className="hidden md:flex items-center gap-[34px]">
+              {navLinks.map((l) => (
                 <Link
-                  key={link.href}
-                  href={link.href}
-                  className={cn(
-                    "px-4 py-2 text-sm font-medium rounded-lg transition-colors",
-                    pathname === link.href
-                      ? "text-white bg-white/10"
-                      : "text-gray-300 hover:text-white hover:bg-white/5"
-                  )}
+                  key={l.href}
+                  href={l.href}
+                  className="text-[.92rem] font-medium transition-colors relative group"
+                  style={{ color: pathname === l.href ? "var(--text)" : "var(--muted)" }}
                 >
-                  {link.label}
+                  {l.label}
+                  <span
+                    className="absolute left-0 -bottom-1.5 h-[2px] transition-all duration-300 group-hover:w-full"
+                    style={{
+                      background: "var(--accent)",
+                      width: pathname === l.href ? "100%" : "0",
+                    }}
+                  />
                 </Link>
               ))}
 
@@ -123,25 +105,35 @@ export default function Header() {
                 <button
                   onMouseEnter={() => setCatOpen(true)}
                   onMouseLeave={() => setCatOpen(false)}
-                  className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+                  className="flex items-center gap-1 text-[.92rem] font-medium transition-colors"
+                  style={{ color: "var(--muted)" }}
                 >
-                  Categories <ChevronDown className={cn("w-3.5 h-3.5 transition-transform", catOpen && "rotate-180")} />
+                  Categories
+                  <ChevronDown className={cn("w-3.5 h-3.5 transition-transform", catOpen && "rotate-180")} />
                 </button>
                 {catOpen && (
                   <div
                     onMouseEnter={() => setCatOpen(true)}
                     onMouseLeave={() => setCatOpen(false)}
-                    className="absolute top-full left-0 mt-1 w-64 bg-[#111] border border-white/10 rounded-xl shadow-2xl overflow-hidden"
+                    className="absolute top-full left-0 mt-2 w-64 rounded-[14px] overflow-hidden z-50"
+                    style={{
+                      background: "var(--surface)",
+                      border: "1px solid var(--line-2)",
+                      boxShadow: "0 20px 60px rgba(0,0,0,.6)",
+                    }}
                   >
                     {categories.map((cat) => (
                       <Link
                         key={cat.slug}
                         href={`/categories/${cat.slug}`}
-                        className="flex items-center gap-3 px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                        className="flex items-center gap-3 px-4 py-3 text-[.88rem] transition-colors hover:bg-white/5"
+                        style={{ color: "var(--muted)" }}
+                        onMouseEnter={(e) => (e.currentTarget.style.color = "var(--text)")}
+                        onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted)")}
                       >
                         <span
-                          className="w-2 h-2 rounded-full flex-shrink-0"
-                          style={{ backgroundColor: cat.accent }}
+                          className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                          style={{ background: "var(--accent)" }}
                         />
                         {cat.name}
                       </Link>
@@ -149,90 +141,75 @@ export default function Header() {
                   </div>
                 )}
               </div>
-            </nav>
+            </div>
 
-            {/* Right actions */}
-            <div className="flex items-center gap-1">
-              {/* Search */}
+            {/* Tools */}
+            <div className="flex items-center gap-[18px]">
               <button
                 onClick={() => setSearchOpen(true)}
-                className="w-9 h-9 flex items-center justify-center text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                className="w-[42px] h-[42px] rounded-[11px] grid place-items-center transition-all cursor-pointer hidden sm:grid"
+                style={{ border: "1px solid var(--line)", background: "rgba(255,255,255,.02)", color: "var(--text)" }}
                 aria-label="Search"
               >
-                <Search className="w-4.5 h-4.5" />
+                <Search className="w-[18px] h-[18px]" />
               </button>
 
-              {/* Cart */}
               <button
                 onClick={openCart}
-                className="relative w-9 h-9 flex items-center justify-center text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                aria-label={`Cart (${count} items)`}
+                className="w-[42px] h-[42px] rounded-[11px] grid place-items-center transition-all cursor-pointer relative"
+                style={{ border: "1px solid var(--line)", background: "rgba(255,255,255,.02)", color: "var(--text)" }}
+                aria-label="Cart"
               >
-                <ShoppingCart className="w-4.5 h-4.5" />
+                <ShoppingCart className="w-[18px] h-[18px]" />
                 {count > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-4.5 h-4.5 bg-[#e8320a] text-white text-[10px] font-bold rounded-full flex items-center justify-center leading-none">
+                  <span
+                    className="absolute -top-[7px] -right-[7px] min-w-[19px] h-[19px] rounded-full grid place-items-center px-[5px] text-[.62rem] font-bold"
+                    style={{ background: "var(--accent)", color: "#000", fontFamily: "var(--font-space-mono)" }}
+                  >
                     {count > 9 ? "9+" : count}
                   </span>
                 )}
               </button>
 
-              {/* Mobile menu */}
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="md:hidden w-9 h-9 flex items-center justify-center text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                className="md:hidden w-[42px] h-[42px] rounded-[11px] grid place-items-center transition-all cursor-pointer"
+                style={{ border: "1px solid var(--line)", background: "rgba(255,255,255,.02)", color: "var(--text)" }}
                 aria-label="Menu"
               >
-                {mobileOpen ? <X className="w-4.5 h-4.5" /> : <Menu className="w-4.5 h-4.5" />}
+                {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
-          </div>
+          </nav>
         </div>
-
-        {/* Mobile Nav */}
-        {mobileOpen && (
-          <div className="md:hidden border-t border-white/10 bg-[#0a0a0a]">
-            <nav className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={cn(
-                    "px-4 py-3 text-sm font-medium rounded-lg transition-colors",
-                    pathname === link.href
-                      ? "text-white bg-white/10"
-                      : "text-gray-300 hover:text-white hover:bg-white/5"
-                  )}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <div className="border-t border-white/10 pt-3 mt-2">
-                <p className="px-4 text-xs text-gray-500 uppercase tracking-widest mb-2">
-                  Categories
-                </p>
-                {categories.map((cat) => (
-                  <Link
-                    key={cat.slug}
-                    href={`/categories/${cat.slug}`}
-                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
-                  >
-                    <span
-                      className="w-2 h-2 rounded-full"
-                      style={{ backgroundColor: cat.accent }}
-                    />
-                    {cat.name}
-                  </Link>
-                ))}
-              </div>
-            </nav>
-          </div>
-        )}
       </header>
+
+      {/* Mobile menu */}
+      <div
+        className={cn(
+          "fixed inset-0 z-[99] flex flex-col justify-center gap-2 px-8 transition-transform duration-500",
+          mobileOpen ? "translate-y-0" : "-translate-y-full"
+        )}
+        style={{ background: "rgba(8,9,11,.97)", backdropFilter: "blur(20px)" }}
+      >
+        {[...navLinks, { href: "/shop", label: "Categories" }].map((l) => (
+          <Link
+            key={l.label}
+            href={l.href}
+            className="py-3 border-b text-[2.4rem] uppercase"
+            style={{ fontFamily: "var(--font-anton)", borderColor: "var(--line)" }}
+            onClick={() => setMobileOpen(false)}
+          >
+            {l.label}
+          </Link>
+        ))}
+      </div>
 
       {/* Search overlay */}
       {searchOpen && (
         <div
-          className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm flex items-start justify-center pt-24 px-4"
+          className="fixed inset-0 z-[60] flex items-start justify-center pt-24 px-4"
+          style={{ background: "rgba(8,9,11,.85)", backdropFilter: "blur(12px)" }}
           onClick={() => setSearchOpen(false)}
         >
           <form
@@ -241,19 +218,26 @@ export default function Header() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative">
-              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: "var(--muted)" }} />
               <input
                 autoFocus
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products, categories…"
-                className="w-full bg-white rounded-2xl pl-14 pr-14 py-5 text-lg text-[#0f0f0f] placeholder-gray-400 outline-none shadow-2xl"
+                placeholder="Search products…"
+                className="w-full rounded-[16px] pl-14 pr-14 py-5 text-lg outline-none"
+                style={{
+                  background: "var(--surface)",
+                  border: "1px solid var(--line-2)",
+                  color: "var(--text)",
+                  fontFamily: "var(--font-hanken)",
+                }}
               />
               <button
                 type="button"
                 onClick={() => setSearchOpen(false)}
-                className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-5 top-1/2 -translate-y-1/2"
+                style={{ color: "var(--muted)" }}
               >
                 <X className="w-5 h-5" />
               </button>

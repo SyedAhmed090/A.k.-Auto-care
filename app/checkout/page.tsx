@@ -8,7 +8,6 @@ import { z } from "zod";
 import { Lock, ChevronDown, ChevronUp } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
-import Button from "@/components/ui/Button";
 
 const schema = z.object({
   email: z.string().email("Enter a valid email"),
@@ -18,20 +17,15 @@ const schema = z.object({
   city: z.string().min(2, "Required"),
   postcode: z.string().min(3, "Enter postcode"),
   country: z.string().min(2, "Required"),
-  cardName: z.string().min(2, "Name on card required"),
+  cardName: z.string().min(2, "Required"),
   cardNumber: z.string().regex(/^\d{4} \d{4} \d{4} \d{4}$/, "Enter valid card number"),
-  expiry: z.string().regex(/^\d{2}\/\d{2}$/, "MM/YY format"),
-  cvv: z.string().regex(/^\d{3,4}$/, "3 or 4 digits"),
+  expiry: z.string().regex(/^\d{2}\/\d{2}$/, "MM/YY"),
+  cvv: z.string().regex(/^\d{3,4}$/, "3–4 digits"),
 });
 type FormData = z.infer<typeof schema>;
 
-function formatCardNumber(value: string) {
-  return value.replace(/\D/g, "").replace(/(.{4})/g, "$1 ").trim().slice(0, 19);
-}
-function formatExpiry(value: string) {
-  const v = value.replace(/\D/g, "");
-  return v.length >= 2 ? v.slice(0, 2) + "/" + v.slice(2, 4) : v;
-}
+function fmtCard(v: string) { return v.replace(/\D/g, "").replace(/(.{4})/g, "$1 ").trim().slice(0, 19); }
+function fmtExp(v: string) { const n = v.replace(/\D/g, ""); return n.length >= 2 ? n.slice(0, 2) + "/" + n.slice(2, 4) : n; }
 
 export default function CheckoutPage() {
   const { items, subtotal, promoDiscount, clearCart } = useCartStore();
@@ -43,11 +37,9 @@ export default function CheckoutPage() {
   const shipping = sub >= 75 ? 0 : 4.99;
   const total = sub - discount + shipping;
 
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({
-    resolver: zodResolver(schema),
-  });
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(schema) });
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async () => {
     setLoading(true);
     await new Promise((r) => setTimeout(r, 1800));
     const orderId = "AK-" + Math.random().toString(36).slice(2, 8).toUpperCase();
@@ -57,124 +49,129 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
+      <div className="min-h-[60vh] flex items-center justify-center" style={{ background: "var(--bg)" }}>
         <div className="text-center">
-          <p className="text-gray-400 mb-4">Your cart is empty.</p>
-          <Link href="/shop"><Button>Shop Now</Button></Link>
+          <p className="mb-4" style={{ color: "var(--muted)" }}>Your cart is empty.</p>
+          <Link href="/shop" className="inline-flex items-center gap-2 px-6 py-3 rounded-[13px] font-semibold" style={{ background: "var(--accent)", color: "#000" }}>Shop Now</Link>
         </div>
       </div>
     );
   }
 
+  const inputStyle = (err?: string) => ({
+    width: "100%",
+    background: "var(--surface)",
+    border: `1px solid ${err ? "#ef4444" : "var(--line-2)"}`,
+    color: "var(--text)",
+    fontFamily: "var(--font-hanken)",
+    borderRadius: "11px",
+    padding: "12px 16px",
+    fontSize: ".9rem",
+    outline: "none",
+  });
+
   const Field = ({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) => (
     <div>
-      <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1.5">{label}</label>
+      <label className="block text-[.72rem] tracking-[.14em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+        {label}
+      </label>
       {children}
-      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
+      {error && <p className="text-xs mt-1" style={{ color: "#ef4444" }}>{error}</p>}
     </div>
   );
 
-  const inputCls = (err?: string) =>
-    `w-full border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 transition-colors ${
-      err ? "border-red-300 focus:ring-red-200" : "border-gray-200 focus:ring-[#e8320a]/30 focus:border-[#e8320a]"
-    }`;
+  const SectionCard = ({ title, children }: { title: string; children: React.ReactNode }) => (
+    <div className="rounded-[20px] p-6 space-y-5" style={{ background: "var(--surface)", border: "1px solid var(--line)" }}>
+      <h2 className="uppercase" style={{ fontFamily: "var(--font-anton)", fontSize: "1.3rem" }}>{title}</h2>
+      {children}
+    </div>
+  );
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="max-w-5xl mx-auto px-4 py-12">
-        <Link href="/cart" className="text-sm text-gray-400 hover:text-[#0f0f0f] transition-colors mb-6 inline-flex items-center gap-1.5">
+    <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
+      <div className="max-w-[1100px] mx-auto px-8 py-14">
+        <Link href="/cart" className="text-sm mb-8 inline-flex items-center gap-1.5 transition-colors hover:text-[var(--accent)]" style={{ color: "var(--muted)" }}>
           ← Back to Cart
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* Form */}
-          <form onSubmit={handleSubmit(onSubmit)} className="lg:col-span-3 space-y-6">
-            {/* Contact */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm">
-              <h2 className="font-black text-lg text-[#0f0f0f] mb-4">Contact</h2>
+          <form onSubmit={handleSubmit(onSubmit)} className="lg:col-span-3 space-y-5">
+            <SectionCard title="Contact">
               <Field label="Email" error={errors.email?.message}>
-                <input {...register("email")} type="email" placeholder="you@example.com" className={inputCls(errors.email?.message)} />
+                <input {...register("email")} type="email" placeholder="you@example.com" style={inputStyle(errors.email?.message)} />
               </Field>
-            </div>
+            </SectionCard>
 
-            {/* Shipping */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm">
-              <h2 className="font-black text-lg text-[#0f0f0f] mb-4">Shipping Address</h2>
+            <SectionCard title="Shipping Address">
               <div className="grid grid-cols-2 gap-4">
                 <Field label="First Name" error={errors.firstName?.message}>
-                  <input {...register("firstName")} placeholder="John" className={inputCls(errors.firstName?.message)} />
+                  <input {...register("firstName")} placeholder="John" style={inputStyle(errors.firstName?.message)} />
                 </Field>
                 <Field label="Last Name" error={errors.lastName?.message}>
-                  <input {...register("lastName")} placeholder="Smith" className={inputCls(errors.lastName?.message)} />
+                  <input {...register("lastName")} placeholder="Smith" style={inputStyle(errors.lastName?.message)} />
                 </Field>
                 <div className="col-span-2">
                   <Field label="Address" error={errors.address?.message}>
-                    <input {...register("address")} placeholder="123 Main Street" className={inputCls(errors.address?.message)} />
+                    <input {...register("address")} placeholder="123 Main Street" style={inputStyle(errors.address?.message)} />
                   </Field>
                 </div>
                 <Field label="City" error={errors.city?.message}>
-                  <input {...register("city")} placeholder="Birmingham" className={inputCls(errors.city?.message)} />
+                  <input {...register("city")} placeholder="Birmingham" style={inputStyle(errors.city?.message)} />
                 </Field>
                 <Field label="Postcode" error={errors.postcode?.message}>
-                  <input {...register("postcode")} placeholder="B1 1AA" className={inputCls(errors.postcode?.message)} />
+                  <input {...register("postcode")} placeholder="B1 1AA" style={inputStyle(errors.postcode?.message)} />
                 </Field>
                 <div className="col-span-2">
                   <Field label="Country" error={errors.country?.message}>
-                    <select {...register("country")} className={inputCls(errors.country?.message)}>
+                    <select {...register("country")} style={{ ...inputStyle(errors.country?.message), cursor: "pointer" }}>
                       <option value="">Select country…</option>
                       <option value="GB">United Kingdom</option>
                       <option value="US">United States</option>
                       <option value="CA">Canada</option>
                       <option value="AU">Australia</option>
-                      <option value="DE">Germany</option>
                     </select>
                   </Field>
                 </div>
               </div>
-            </div>
+            </SectionCard>
 
-            {/* Payment */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-black text-lg text-[#0f0f0f]">Payment</h2>
-                <div className="flex items-center gap-1.5 text-xs text-gray-400">
+            <SectionCard title="Payment">
+              <div className="flex items-center justify-between -mt-1">
+                <div />
+                <div className="flex items-center gap-1.5 text-[.72rem]" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
                   <Lock className="w-3.5 h-3.5" /> Secured by Stripe
                 </div>
               </div>
-              <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-2.5 text-xs text-amber-700 font-medium mb-4">
-                Test mode — use card 4242 4242 4242 4242, any future date, any CVV
+              <div
+                className="rounded-[11px] px-4 py-3 text-xs font-medium"
+                style={{ background: "rgba(216,255,53,.07)", border: "1px solid rgba(216,255,53,.2)", color: "var(--accent)", fontFamily: "var(--font-space-mono)" }}
+              >
+                Test mode — use 4242 4242 4242 4242, any future date, any CVV
               </div>
               <div className="space-y-4">
                 <Field label="Name on Card" error={errors.cardName?.message}>
-                  <input {...register("cardName")} placeholder="John Smith" className={inputCls(errors.cardName?.message)} />
+                  <input {...register("cardName")} placeholder="John Smith" style={inputStyle(errors.cardName?.message)} />
                 </Field>
                 <Field label="Card Number" error={errors.cardNumber?.message}>
-                  <input
-                    {...register("cardNumber")}
-                    placeholder="4242 4242 4242 4242"
-                    maxLength={19}
-                    className={inputCls(errors.cardNumber?.message)}
-                    onChange={(e) => setValue("cardNumber", formatCardNumber(e.target.value))}
-                  />
+                  <input {...register("cardNumber")} placeholder="4242 4242 4242 4242" maxLength={19} style={inputStyle(errors.cardNumber?.message)} onChange={(e) => setValue("cardNumber", fmtCard(e.target.value))} />
                 </Field>
                 <div className="grid grid-cols-2 gap-4">
                   <Field label="Expiry" error={errors.expiry?.message}>
-                    <input
-                      {...register("expiry")}
-                      placeholder="MM/YY"
-                      maxLength={5}
-                      className={inputCls(errors.expiry?.message)}
-                      onChange={(e) => setValue("expiry", formatExpiry(e.target.value))}
-                    />
+                    <input {...register("expiry")} placeholder="MM/YY" maxLength={5} style={inputStyle(errors.expiry?.message)} onChange={(e) => setValue("expiry", fmtExp(e.target.value))} />
                   </Field>
                   <Field label="CVV" error={errors.cvv?.message}>
-                    <input {...register("cvv")} placeholder="123" maxLength={4} className={inputCls(errors.cvv?.message)} />
+                    <input {...register("cvv")} placeholder="123" maxLength={4} style={inputStyle(errors.cvv?.message)} />
                   </Field>
                 </div>
               </div>
-            </div>
+            </SectionCard>
 
-            <Button type="submit" size="lg" className="w-full" disabled={loading}>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-4 rounded-[13px] font-semibold flex items-center justify-center gap-2.5 transition-all cursor-pointer disabled:opacity-50 hover:-translate-y-0.5"
+              style={{ background: "var(--accent)", color: "#000" }}
+            >
               {loading ? (
                 <span className="flex items-center gap-2">
                   <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
@@ -184,58 +181,71 @@ export default function CheckoutPage() {
                   Processing…
                 </span>
               ) : (
-                <>
-                  <Lock className="w-4 h-4" /> Pay {formatPrice(total)}
-                </>
+                <><Lock className="w-4 h-4" /> Pay {formatPrice(total)}</>
               )}
-            </Button>
+            </button>
           </form>
 
-          {/* Order Summary sidebar */}
+          {/* Summary */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl p-6 shadow-sm sticky top-24">
+            <div className="rounded-[20px] p-6 sticky top-28" style={{ background: "var(--surface)", border: "1px solid var(--line)" }}>
               <button
                 onClick={() => setSummaryOpen(!summaryOpen)}
                 className="flex items-center justify-between w-full lg:cursor-default"
               >
-                <h3 className="font-black text-[#0f0f0f]">Order Summary</h3>
-                <span className="lg:hidden">{summaryOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}</span>
+                <h3 className="uppercase" style={{ fontFamily: "var(--font-anton)", fontSize: "1.3rem" }}>Order Summary</h3>
+                <span className="lg:hidden" style={{ color: "var(--muted)" }}>
+                  {summaryOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                </span>
               </button>
 
-              <div className={`mt-4 space-y-3 ${summaryOpen || "hidden lg:block"}`}>
+              <div className={`mt-5 space-y-3 ${summaryOpen || "hidden lg:block"}`}>
                 {items.map((item) => (
                   <div key={`${item.product.id}-${item.variant.sku}`} className="flex gap-3">
-                    <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
-                      <Image src={item.product.images[0]} alt={item.product.name} fill className="object-cover" />
-                      <span className="absolute -top-1 -right-1 w-4.5 h-4.5 bg-gray-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                    <div className="relative w-12 h-12 rounded-[8px] overflow-hidden flex-shrink-0" style={{ background: "var(--surface-2)" }}>
+                      <Image src={item.product.images[0]} alt={item.product.name} fill className="object-cover opacity-70" />
+                      <span
+                        className="absolute -top-1 -right-1 w-[18px] h-[18px] rounded-full text-[.6rem] font-bold grid place-items-center"
+                        style={{ background: "var(--muted)", color: "var(--bg)", fontFamily: "var(--font-space-mono)" }}
+                      >
                         {item.quantity}
                       </span>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-[#0f0f0f] line-clamp-1">{item.product.name}</p>
-                      <p className="text-xs text-gray-400">{item.variant.label}</p>
+                      <p className="text-xs font-semibold line-clamp-1">{item.product.name}</p>
+                      <p className="text-xs" style={{ color: "var(--muted)" }}>{item.variant.label}</p>
                     </div>
-                    <span className="text-xs font-bold text-[#0f0f0f] whitespace-nowrap">
+                    <span className="text-xs font-bold whitespace-nowrap" style={{ fontFamily: "var(--font-space-mono)" }}>
                       {formatPrice(item.variant.price * item.quantity)}
                     </span>
                   </div>
                 ))}
 
-                <div className="border-t border-gray-100 pt-3 space-y-2 text-sm">
-                  <div className="flex justify-between text-gray-500">
-                    <span>Subtotal</span><span>{formatPrice(sub)}</span>
-                  </div>
-                  {promoDiscount > 0 && (
-                    <div className="flex justify-between text-emerald-600">
-                      <span>Discount</span><span>-{formatPrice(discount)}</span>
+                <div className="pt-3 space-y-2 text-sm" style={{ borderTop: "1px solid var(--line)" }}>
+                  {[
+                    { l: "Subtotal", v: formatPrice(sub) },
+                    ...(promoDiscount > 0 ? [{ l: "Discount", v: `-${formatPrice(discount)}`, accent: true }] : []),
+                    { l: "Shipping", v: shipping === 0 ? "FREE" : formatPrice(shipping) },
+                  ].map((row) => (
+                    <div key={row.l} className="flex justify-between">
+                      <span style={{ color: "var(--muted)" }}>{row.l}</span>
+                      <span style={{ color: (row as any).accent ? "var(--accent)" : "var(--text)" }}>{row.v}</span>
                     </div>
-                  )}
-                  <div className="flex justify-between text-gray-500">
-                    <span>Shipping</span>
-                    <span>{shipping === 0 ? "FREE" : formatPrice(shipping)}</span>
-                  </div>
-                  <div className="flex justify-between font-black text-[#0f0f0f] text-base pt-2 border-t border-gray-100">
-                    <span>Total</span><span>{formatPrice(total)}</span>
+                  ))}
+                  <div className="flex justify-between pt-2" style={{ borderTop: "1px solid var(--line)" }}>
+                    <span className="font-semibold">Total</span>
+                    <span
+                      className="text-[1.4rem]"
+                      style={{
+                        fontFamily: "var(--font-anton)",
+                        background: "linear-gradient(170deg,#fff 0%,#e7eaef 18%,#9aa0ab 46%,#fff 60%,#aeb4be 78%,#5b606b 100%)",
+                        WebkitBackgroundClip: "text",
+                        backgroundClip: "text",
+                        color: "transparent",
+                      }}
+                    >
+                      {formatPrice(total)}
+                    </span>
                   </div>
                 </div>
               </div>

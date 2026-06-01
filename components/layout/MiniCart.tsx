@@ -1,50 +1,49 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { X, ShoppingBag, ArrowRight, Trash2 } from "lucide-react";
+import { X, ShoppingCart, ArrowRight, Trash2 } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
 import QuantityStepper from "@/components/ui/QuantityStepper";
-import Button from "@/components/ui/Button";
 
 export default function MiniCart() {
-  const { isOpen, closeCart, items, removeItem, updateQty, subtotal, promoDiscount } =
-    useCartStore();
+  const { isOpen, closeCart, items, removeItem, updateQty, subtotal, promoDiscount } = useCartStore();
   const sub = subtotal();
   const discount = sub * promoDiscount;
   const total = sub - discount;
 
   return (
     <>
-      {/* Backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-[70] bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-[70]"
+          style={{ background: "rgba(8,9,11,.7)", backdropFilter: "blur(6px)" }}
           onClick={closeCart}
         />
       )}
 
-      {/* Drawer */}
       <div
-        className={`fixed top-0 right-0 h-full w-full max-w-sm z-[80] bg-white shadow-2xl flex flex-col transition-transform duration-300 ease-in-out ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed top-0 right-0 h-full w-full max-w-sm z-[80] flex flex-col transition-transform duration-300 ease-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+        style={{ background: "var(--surface)", borderLeft: "1px solid var(--line-2)" }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-          <div className="flex items-center gap-2">
-            <ShoppingBag className="w-5 h-5 text-[#e8320a]" />
-            <h2 className="font-black text-[#0f0f0f] text-lg">Your Cart</h2>
+        <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: "1px solid var(--line)" }}>
+          <div className="flex items-center gap-2.5">
+            <ShoppingCart className="w-4.5 h-4.5" style={{ color: "var(--accent)" }} />
+            <h2 className="text-[1.1rem]" style={{ fontFamily: "var(--font-anton)" }}>YOUR CART</h2>
             {items.length > 0 && (
-              <span className="text-xs bg-[#e8320a] text-white px-2 py-0.5 rounded-full font-bold">
+              <span
+                className="text-[.6rem] font-bold px-2 py-0.5 rounded-full"
+                style={{ background: "var(--accent)", color: "#000", fontFamily: "var(--font-space-mono)" }}
+              >
                 {items.reduce((a, i) => a + i.quantity, 0)}
               </span>
             )}
           </div>
           <button
             onClick={closeCart}
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors"
-            aria-label="Close cart"
+            className="w-8 h-8 grid place-items-center rounded-lg transition-colors hover:bg-white/5 cursor-pointer"
+            style={{ color: "var(--muted)" }}
           >
             <X className="w-4.5 h-4.5" />
           </button>
@@ -54,54 +53,49 @@ export default function MiniCart() {
         <div className="flex-1 overflow-y-auto px-5 py-4">
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full gap-4 text-center">
-              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center">
-                <ShoppingBag className="w-8 h-8 text-gray-400" />
+              <div className="w-16 h-16 rounded-2xl grid place-items-center" style={{ background: "var(--surface-2)" }}>
+                <ShoppingCart className="w-7 h-7" style={{ color: "var(--muted)" }} />
               </div>
               <div>
-                <p className="font-bold text-[#0f0f0f]">Your cart is empty</p>
-                <p className="text-sm text-gray-400 mt-1">Add some products to get started</p>
+                <p className="font-semibold">Cart is empty</p>
+                <p className="text-sm mt-1" style={{ color: "var(--muted)" }}>Add some products to get started</p>
               </div>
-              <Button onClick={closeCart} size="sm">
-                Continue Shopping
-              </Button>
+              <button
+                onClick={closeCart}
+                className="px-5 py-2.5 rounded-[11px] text-sm font-semibold transition-all cursor-pointer"
+                style={{ background: "var(--accent)", color: "#000" }}
+              >
+                Browse Products
+              </button>
             </div>
           ) : (
             <div className="flex flex-col gap-4">
               {items.map((item) => (
-                <div
-                  key={`${item.product.id}-${item.variant.sku}`}
-                  className="flex gap-3"
-                >
-                  <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
-                    <Image
-                      src={item.product.images[0]}
-                      alt={item.product.name}
-                      fill
-                      className="object-cover"
-                    />
+                <div key={`${item.product.id}-${item.variant.sku}`} className="flex gap-3">
+                  <div
+                    className="relative w-[60px] h-[60px] rounded-[10px] overflow-hidden flex-shrink-0"
+                    style={{ background: "var(--surface-2)" }}
+                  >
+                    <Image src={item.product.images[0]} alt={item.product.name} fill className="object-cover" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-[#0f0f0f] leading-tight line-clamp-2">
-                      {item.product.name}
-                    </p>
-                    <p className="text-xs text-gray-400 mt-0.5">{item.variant.label}</p>
+                    <p className="text-sm font-semibold line-clamp-1">{item.product.name}</p>
+                    <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>{item.variant.label}</p>
                     <div className="flex items-center justify-between mt-2">
                       <QuantityStepper
                         value={item.quantity}
-                        onChange={(v) =>
-                          updateQty(item.product.id, item.variant.sku, v)
-                        }
+                        onChange={(v) => updateQty(item.product.id, item.variant.sku, v)}
                       />
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-black text-[#0f0f0f]">
+                        <span className="text-sm font-bold" style={{ fontFamily: "var(--font-anton)" }}>
                           {formatPrice(item.variant.price * item.quantity)}
                         </span>
                         <button
-                          onClick={() =>
-                            removeItem(item.product.id, item.variant.sku)
-                          }
-                          className="text-gray-300 hover:text-red-500 transition-colors"
-                          aria-label="Remove item"
+                          onClick={() => removeItem(item.product.id, item.variant.sku)}
+                          className="transition-colors cursor-pointer"
+                          style={{ color: "var(--muted-2)" }}
+                          onMouseEnter={(e) => (e.currentTarget.style.color = "#ef4444")}
+                          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted-2)")}
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -116,36 +110,34 @@ export default function MiniCart() {
 
         {/* Footer */}
         {items.length > 0 && (
-          <div className="border-t border-gray-100 px-5 py-4 bg-gray-50">
+          <div className="px-5 py-4" style={{ borderTop: "1px solid var(--line)", background: "var(--bg-2)" }}>
             {promoDiscount > 0 && (
-              <div className="flex justify-between text-sm mb-1">
-                <span className="text-emerald-600 font-medium">Discount</span>
-                <span className="text-emerald-600 font-bold">-{formatPrice(discount)}</span>
+              <div className="flex justify-between text-sm mb-1" style={{ color: "var(--accent)" }}>
+                <span>Discount</span>
+                <span className="font-bold">-{formatPrice(discount)}</span>
               </div>
             )}
-            <div className="flex justify-between items-center mb-3">
-              <span className="text-sm text-gray-500">Subtotal</span>
-              <span className="font-black text-xl text-[#0f0f0f]">{formatPrice(total)}</span>
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-sm" style={{ color: "var(--muted)" }}>Total</span>
+              <span className="text-[1.4rem]" style={{ fontFamily: "var(--font-anton)" }}>
+                {formatPrice(total)}
+              </span>
             </div>
-            <p className="text-xs text-gray-400 mb-3">
-              Shipping calculated at checkout
-            </p>
             <div className="flex flex-col gap-2">
-              <Button
-                className="w-full"
-                onClick={() => {
-                  closeCart();
-                  window.location.href = "/checkout";
-                }}
+              <button
+                onClick={() => { closeCart(); window.location.href = "/checkout"; }}
+                className="w-full py-3.5 rounded-[11px] font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer"
+                style={{ background: "var(--accent)", color: "#000" }}
               >
                 Checkout <ArrowRight className="w-4 h-4" />
-              </Button>
+              </button>
               <Link
                 href="/cart"
                 onClick={closeCart}
-                className="text-center text-sm font-semibold text-gray-500 hover:text-[#0f0f0f] transition-colors py-1"
+                className="text-center text-sm py-1 transition-colors"
+                style={{ color: "var(--muted)" }}
               >
-                View Full Cart
+                View full cart
               </Link>
             </div>
           </div>
