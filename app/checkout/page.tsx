@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
@@ -17,15 +17,37 @@ const schema = z.object({
   city: z.string().min(2, "Required"),
   postcode: z.string().min(3, "Enter postcode"),
   country: z.string().min(2, "Required"),
-  cardName: z.string().min(2, "Required"),
-  cardNumber: z.string().regex(/^\d{4} \d{4} \d{4} \d{4}$/, "Enter valid card number"),
-  expiry: z.string().regex(/^\d{2}\/\d{2}$/, "MM/YY"),
-  cvv: z.string().regex(/^\d{3,4}$/, "3–4 digits"),
 });
 type FormData = z.infer<typeof schema>;
 
-function fmtCard(v: string) { return v.replace(/\D/g, "").replace(/(.{4})/g, "$1 ").trim().slice(0, 19); }
-function fmtExp(v: string) { const n = v.replace(/\D/g, ""); return n.length >= 2 ? n.slice(0, 2) + "/" + n.slice(2, 4) : n; }
+const inputStyle = (err?: string) => ({
+  width: "100%",
+  background: "var(--surface)",
+  border: `1px solid ${err ? "#ef4444" : "var(--line-2)"}`,
+  color: "var(--text)",
+  fontFamily: "var(--font-hanken)",
+  borderRadius: "11px",
+  padding: "12px 16px",
+  fontSize: ".9rem",
+  outline: "none",
+});
+
+const Field = ({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) => (
+  <div>
+    <label className="block text-[.72rem] tracking-[.14em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+      {label}
+    </label>
+    {children}
+    {error && <p className="text-xs mt-1" style={{ color: "#ef4444" }}>{error}</p>}
+  </div>
+);
+
+const SectionCard = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <div className="w-full rounded-[20px] p-6 space-y-5" style={{ background: "var(--surface)", border: "1px solid var(--line)" }}>
+    <h2 className="uppercase text-left" style={{ fontFamily: "var(--font-anton)", fontSize: "1.3rem" }}>{title}</h2>
+    {children}
+  </div>
+);
 
 export default function CheckoutPage() {
   const { items, subtotal, promoDiscount, clearCart } = useCartStore();
@@ -37,7 +59,7 @@ export default function CheckoutPage() {
   const shipping = sub >= 75 ? 0 : 4.99;
   const total = sub - discount + shipping;
 
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(schema) });
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(schema) });
 
   const onSubmit = async () => {
     setLoading(true);
@@ -57,35 +79,6 @@ export default function CheckoutPage() {
       </div>
     );
   }
-
-  const inputStyle = (err?: string) => ({
-    width: "100%",
-    background: "var(--surface)",
-    border: `1px solid ${err ? "#ef4444" : "var(--line-2)"}`,
-    color: "var(--text)",
-    fontFamily: "var(--font-hanken)",
-    borderRadius: "11px",
-    padding: "12px 16px",
-    fontSize: ".9rem",
-    outline: "none",
-  });
-
-  const Field = ({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) => (
-    <div>
-      <label className="block text-[.72rem] tracking-[.14em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
-        {label}
-      </label>
-      {children}
-      {error && <p className="text-xs mt-1" style={{ color: "#ef4444" }}>{error}</p>}
-    </div>
-  );
-
-  const SectionCard = ({ title, children }: { title: string; children: React.ReactNode }) => (
-    <div className="w-full rounded-[20px] p-6 space-y-5" style={{ background: "var(--surface)", border: "1px solid var(--line)" }}>
-      <h2 className="uppercase text-left" style={{ fontFamily: "var(--font-anton)", fontSize: "1.3rem" }}>{title}</h2>
-      {children}
-    </div>
-  );
 
   return (
     <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
@@ -146,25 +139,26 @@ export default function CheckoutPage() {
                 </div>
               </div>
               <div
-                className="rounded-[11px] px-4 py-3 text-xs font-medium"
-                style={{ background: "rgba(216,255,53,.07)", border: "1px solid rgba(216,255,53,.2)", color: "var(--accent)", fontFamily: "var(--font-space-mono)" }}
+                className="rounded-[12px] p-5 flex items-center gap-4"
+                style={{ border: "1px solid var(--line-2)", background: "rgba(255,255,255,.03)" }}
               >
-                Test mode — use 4242 4242 4242 4242, any future date, any CVV
-              </div>
-              <div className="space-y-4">
-                <Field label="Name on Card" error={errors.cardName?.message}>
-                  <input {...register("cardName")} placeholder="John Smith" style={inputStyle(errors.cardName?.message)} />
-                </Field>
-                <Field label="Card Number" error={errors.cardNumber?.message}>
-                  <input {...register("cardNumber")} placeholder="4242 4242 4242 4242" maxLength={19} style={inputStyle(errors.cardNumber?.message)} onChange={(e) => setValue("cardNumber", fmtCard(e.target.value))} />
-                </Field>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Field label="Expiry" error={errors.expiry?.message}>
-                    <input {...register("expiry")} placeholder="MM/YY" maxLength={5} style={inputStyle(errors.expiry?.message)} onChange={(e) => setValue("expiry", fmtExp(e.target.value))} />
-                  </Field>
-                  <Field label="CVV" error={errors.cvv?.message}>
-                    <input {...register("cvv")} placeholder="123" maxLength={4} style={inputStyle(errors.cvv?.message)} />
-                  </Field>
+                <div
+                  className="w-10 h-10 rounded-full grid place-items-center flex-shrink-0"
+                  style={{ background: "rgba(216,255,53,.1)", border: "1px solid rgba(216,255,53,.2)" }}
+                >
+                  <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none" style={{ color: "var(--accent)" }}>
+                    <rect x="2" y="5" width="16" height="11" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+                    <path d="M2 9h16" stroke="currentColor" strokeWidth="1.5"/>
+                    <path d="M6 13h3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-[.88rem] font-semibold" style={{ color: "var(--text)", fontFamily: "var(--font-hanken)" }}>
+                    Secure payment coming soon
+                  </p>
+                  <p className="text-[.78rem] mt-0.5" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
+                    Stripe integration in progress — card details are never stored here
+                  </p>
                 </div>
               </div>
             </SectionCard>

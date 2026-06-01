@@ -20,7 +20,8 @@ interface CartStore {
   removeItem: (productId: string, variantSku: string) => void;
   updateQty: (productId: string, variantSku: string, qty: number) => void;
   clearCart: () => void;
-  applyPromo: (code: string) => boolean;
+  applyPromo: (code: string) => number;
+  removePromo: () => void;
   itemCount: () => number;
   subtotal: () => number;
 }
@@ -89,10 +90,12 @@ export const useCartStore = create<CartStore>()(
         const discount = PROMO_CODES[code.toUpperCase()];
         if (discount) {
           set({ promoCode: code.toUpperCase(), promoDiscount: discount });
-          return true;
+          return discount;
         }
-        return false;
+        return 0;
       },
+
+      removePromo: () => set({ promoCode: "", promoDiscount: 0 }),
 
       itemCount: () => get().items.reduce((acc, i) => acc + i.quantity, 0),
 

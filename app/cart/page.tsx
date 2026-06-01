@@ -8,7 +8,7 @@ import { formatPrice } from "@/lib/utils";
 import QuantityStepper from "@/components/ui/QuantityStepper";
 
 export default function CartPage() {
-  const { items, removeItem, updateQty, subtotal, promoCode, promoDiscount, applyPromo, clearCart } = useCartStore();
+  const { items, removeItem, updateQty, subtotal, promoCode, promoDiscount, applyPromo, removePromo, clearCart } = useCartStore();
   const [promoInput, setPromoInput] = useState("");
   const [promoMsg, setPromoMsg] = useState<{ ok: boolean; text: string } | null>(null);
 
@@ -19,8 +19,8 @@ export default function CartPage() {
 
   const handlePromo = () => {
     if (!promoInput.trim()) return;
-    const ok = applyPromo(promoInput);
-    setPromoMsg(ok ? { ok: true, text: `Code applied! ${(promoDiscount * 100).toFixed(0)}% off` } : { ok: false, text: "Invalid code." });
+    const result = applyPromo(promoInput);
+    setPromoMsg(result ? { ok: true, text: `Code applied! ${(result * 100).toFixed(0)}% off` } : { ok: false, text: "Invalid code." });
   };
 
   if (items.length === 0) {
@@ -170,42 +170,54 @@ export default function CartPage() {
                 </div>
               </div>
 
-              {!promoDiscount && (
-                <div className="mb-5">
-                  <p
-                    className="flex items-center gap-1.5 text-[.72rem] tracking-[.14em] uppercase mb-2"
-                    style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
-                  >
-                    <Tag className="w-3.5 h-3.5 flex-shrink-0" /> Promo Code
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={promoInput}
-                      onChange={(e) => setPromoInput(e.target.value)}
-                      placeholder="Enter code…"
-                      className="flex-1 min-w-0 px-3 py-2.5 rounded-[11px] text-sm outline-none"
-                      style={{ background: "var(--surface)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }}
-                      onKeyDown={(e) => e.key === "Enter" && handlePromo()}
-                    />
+              <div className="mb-5">
+                <p
+                  className="flex items-center gap-1.5 text-[.72rem] tracking-[.14em] uppercase mb-2"
+                  style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
+                >
+                  <Tag className="w-3.5 h-3.5 flex-shrink-0" /> Promo Code
+                </p>
+                {promoDiscount > 0 ? (
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-[.82rem]" style={{ fontFamily: "var(--font-space-mono)", color: "var(--accent)" }}>
+                      {promoCode} applied
+                    </span>
                     <button
-                      onClick={handlePromo}
-                      className="flex-shrink-0 px-4 py-2.5 rounded-[11px] text-sm font-bold cursor-pointer transition-all"
-                      style={{ background: "var(--surface-2)", color: "var(--text)", border: "1px solid var(--line-2)" }}
+                      onClick={() => { removePromo(); setPromoMsg(null); setPromoInput(""); }}
+                      className="text-[.75rem] transition-colors cursor-pointer"
+                      style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}
                     >
-                      Apply
+                      Remove
                     </button>
                   </div>
-                  {promoMsg && (
-                    <p className="text-xs mt-1.5" style={{ color: promoMsg.ok ? "var(--accent)" : "#ef4444" }}>
-                      {promoMsg.text}
-                    </p>
-                  )}
-                  <p className="text-[.65rem] mt-1" style={{ color: "var(--muted-2)", fontFamily: "var(--font-space-mono)" }}>
-                    Try: AKCARE10, DETAIL20, LAUNCH15
-                  </p>
-                </div>
-              )}
+                ) : (
+                  <>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={promoInput}
+                        onChange={(e) => setPromoInput(e.target.value)}
+                        placeholder="Enter code…"
+                        className="flex-1 min-w-0 px-3 py-2.5 rounded-[11px] text-sm outline-none"
+                        style={{ background: "var(--surface)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }}
+                        onKeyDown={(e) => e.key === "Enter" && handlePromo()}
+                      />
+                      <button
+                        onClick={handlePromo}
+                        className="flex-shrink-0 px-4 py-2.5 rounded-[11px] text-sm font-bold cursor-pointer transition-all"
+                        style={{ background: "var(--surface-2)", color: "var(--text)", border: "1px solid var(--line-2)" }}
+                      >
+                        Apply
+                      </button>
+                    </div>
+                    {promoMsg && (
+                      <p className="text-xs mt-1.5" style={{ color: promoMsg.ok ? "var(--accent)" : "#ef4444" }}>
+                        {promoMsg.text}
+                      </p>
+                    )}
+                  </>
+                )}
+              </div>
 
               <Link
                 href="/checkout"

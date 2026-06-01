@@ -1,12 +1,14 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { X, ShoppingCart, ArrowRight, Trash2 } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
 import QuantityStepper from "@/components/ui/QuantityStepper";
 
 export default function MiniCart() {
+  const router = useRouter();
   const { isOpen, closeCart, items, removeItem, updateQty, subtotal, promoDiscount } = useCartStore();
   const sub = subtotal();
   const discount = sub * promoDiscount;
@@ -125,7 +127,7 @@ export default function MiniCart() {
             </div>
             <div className="flex flex-col gap-2">
               <button
-                onClick={() => { closeCart(); window.location.href = "/checkout"; }}
+                onClick={() => { closeCart(); router.push("/checkout"); }}
                 className="w-full py-3.5 rounded-[11px] font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer"
                 style={{ background: "var(--accent)", color: "#000" }}
               >

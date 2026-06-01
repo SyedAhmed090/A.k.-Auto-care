@@ -60,22 +60,29 @@ export default function ShopPage() {
         </div>
       </div>
 
-      <label className="flex items-center gap-3 cursor-pointer">
-        <div
-          className="w-4 h-4 rounded-[4px] grid place-items-center flex-shrink-0 transition-all"
-          style={{
-            border: inStockOnly ? "1px solid var(--accent)" : "1px solid var(--line-2)",
-            background: inStockOnly ? "var(--accent)" : "transparent",
-          }}
-          onClick={() => setInStockOnly(!inStockOnly)}
-        >
-          {inStockOnly && (
-            <svg className="w-2.5 h-2.5" viewBox="0 0 10 10" fill="none">
-              <path d="M1.5 5l2.5 2.5L8.5 2" stroke="#000" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-          )}
+      <label className="flex items-center gap-3 cursor-pointer select-none">
+        <div className="relative w-4 h-4 flex-shrink-0">
+          <input
+            type="checkbox"
+            checked={inStockOnly}
+            onChange={(e) => setInStockOnly(e.target.checked)}
+            className="sr-only"
+          />
+          <div
+            className="w-4 h-4 rounded-[4px] grid place-items-center transition-all"
+            style={{
+              border: inStockOnly ? "1px solid var(--accent)" : "1px solid var(--line-2)",
+              background: inStockOnly ? "var(--accent)" : "transparent",
+            }}
+          >
+            {inStockOnly && (
+              <svg className="w-2.5 h-2.5" viewBox="0 0 10 10" fill="none">
+                <path d="M1.5 5l2.5 2.5L8.5 2" stroke="#000" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            )}
+          </div>
         </div>
-        <span className="text-sm font-medium" onClick={() => setInStockOnly(!inStockOnly)}>In Stock Only</span>
+        <span className="text-sm font-medium" style={{ color: "var(--text)" }}>In Stock Only</span>
       </label>
 
       {(inStockOnly || priceMax < 200) && (

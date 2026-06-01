@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { notFound, useParams } from "next/navigation";
+import { notFound, useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { Plus, Minus, Zap, CheckCircle } from "lucide-react";
@@ -22,6 +22,7 @@ export default function ProductPage() {
   const [tab, setTab] = useState<Tab>("Description");
   const [added, setAdded] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
+  const router = useRouter();
 
   if (!product) notFound();
   const related = getRelatedProducts(product);
@@ -210,7 +211,7 @@ export default function ProductPage() {
                 {added ? <><CheckCircle className="w-[18px] h-[18px]" /> Added!</> : "Add to Cart"}
               </button>
               <button
-                onClick={() => { addItem(product, variant, qty); window.location.href = "/checkout"; }}
+                onClick={() => { addItem(product, variant, qty); router.push("/checkout"); }}
                 disabled={!product.inStock}
                 className="btn-ghost flex-1 min-w-[140px] py-4 rounded-[13px] font-semibold flex items-center justify-center gap-2.5 transition-all cursor-pointer disabled:opacity-40 hover:-translate-y-0.5"
               >

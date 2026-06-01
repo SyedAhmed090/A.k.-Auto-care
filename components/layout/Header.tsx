@@ -11,10 +11,13 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [mounted, setMounted] = useState(false);
   const count = useCartStore((s) => s.itemCount());
   const openCart = useCartStore((s) => s.openCart);
   const pathname = usePathname();
   const router = useRouter();
+
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 30);
@@ -118,7 +121,7 @@ export default function Header() {
                 aria-label="Cart"
               >
                 <ShoppingCart className="w-[18px] h-[18px]" />
-                {count > 0 && (
+                {mounted && count > 0 && (
                   <span
                     className="absolute -top-[7px] -right-[7px] min-w-[19px] h-[19px] rounded-full grid place-items-center px-[5px] text-[.62rem] font-bold"
                     style={{ background: "var(--accent)", color: "#000", fontFamily: "var(--font-space-mono)" }}
