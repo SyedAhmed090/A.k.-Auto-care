@@ -87,7 +87,7 @@ export default function MiniCart() {
                         onChange={(v) => updateQty(item.product.id, item.variant.sku, v)}
                       />
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-bold leading-none" style={{ fontFamily: "var(--font-anton)" }}>
+                        <span className="text-sm font-bold leading-none" style={{ fontFamily: "var(--font-hanken)", fontWeight: 700, color: "var(--text)" }}>
                           {formatPrice(item.variant.price * item.quantity)}
                         </span>
                         <button
@@ -119,7 +119,7 @@ export default function MiniCart() {
             )}
             <div className="flex items-center justify-between mb-4">
               <span className="text-sm" style={{ color: "var(--muted)" }}>Total</span>
-              <span className="text-[1.4rem] leading-none" style={{ fontFamily: "var(--font-anton)" }}>
+              <span className="text-[1.4rem] leading-none" style={{ fontFamily: "var(--font-hanken)", fontWeight: 700, color: "var(--text)" }}>
                 {formatPrice(total)}
               </span>
             </div>

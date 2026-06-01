@@ -14,6 +14,10 @@
     --accent: #d8ff35;
     --accent-press: #c2e823;
     --r: 18px;
+    --r-sm: 8px;
+    --r-md: 12px;
+    --r-lg: 16px;
+    --r-xl: 24px;
     --ease: cubic-bezier(.22,1,.36,1);
   }
 

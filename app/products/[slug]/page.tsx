@@ -113,11 +113,9 @@ export default function ProductPage() {
             <div
               className="text-[2.4rem] mb-5"
               style={{
-                fontFamily: "var(--font-anton)",
-                background: "linear-gradient(170deg,#fff 0%,#e7eaef 18%,#9aa0ab 46%,#fff 60%,#aeb4be 78%,#5b606b 100%)",
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                color: "transparent",
+                fontFamily: "var(--font-hanken)",
+                fontWeight: 700,
+                color: "var(--text)",
                 display: "inline-block",
               }}
             >
@@ -128,15 +126,15 @@ export default function ProductPage() {
             <div
               className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-6"
               style={{
-                background: product.inStock ? "rgba(216,255,53,.1)" : "rgba(239,68,68,.1)",
-                color: product.inStock ? "var(--accent)" : "#ef4444",
-                border: `1px solid ${product.inStock ? "rgba(216,255,53,.2)" : "rgba(239,68,68,.2)"}`,
+                background: product.inStock ? "rgba(74,222,128,.1)" : "rgba(239,68,68,.1)",
+                color: product.inStock ? "#4ade80" : "#ef4444",
+                border: `1px solid ${product.inStock ? "rgba(74,222,128,.2)" : "rgba(239,68,68,.2)"}`,
                 fontFamily: "var(--font-space-mono)",
               }}
             >
               <span
                 className="w-1.5 h-1.5 rounded-full"
-                style={{ background: product.inStock ? "var(--accent)" : "#ef4444" }}
+                style={{ background: product.inStock ? "#4ade80" : "#ef4444" }}
               />
               {product.inStock ? "In Stock — Ready to Ship" : "Out of Stock"}
             </div>

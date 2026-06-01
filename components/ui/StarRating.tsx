@@ -10,7 +10,7 @@ export default function StarRating({ rating, reviews, size = "sm" }: {
           <Star
             key={s}
             className={`fill-current ${size === "sm" ? "w-3.5 h-3.5" : "w-4 h-4"}`}
-            style={{ color: s <= Math.round(rating) ? "var(--accent)" : "var(--line-2)" }}
+            style={{ color: s <= Math.round(rating) ? "#fbbf24" : "var(--line-2)" }}
           />
         ))}
       </div>

@@ -13,25 +13,7 @@ const MARQUEE_ITEMS = [
 
 export default function HomePage() {
   const featured = getFeaturedProducts();
-  const glowRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLElement>(null);
-
-  // Cursor glow effect
-  useEffect(() => {
-    const hero = heroRef.current;
-    const glow = glowRef.current;
-    if (!hero || !glow) return;
-    const fn = (e: MouseEvent) => {
-      const r = hero.getBoundingClientRect();
-      glow.style.left = e.clientX - r.left + "px";
-      glow.style.top = e.clientY - r.top + "px";
-      glow.style.opacity = "1";
-    };
-    const hide = () => { glow.style.opacity = "0"; };
-    hero.addEventListener("mousemove", fn);
-    hero.addEventListener("mouseleave", hide);
-    return () => { hero.removeEventListener("mousemove", fn); hero.removeEventListener("mouseleave", hide); };
-  }, []);
 
   // Scroll reveal
   useEffect(() => {
@@ -53,7 +35,7 @@ export default function HomePage() {
       <section
         id="hero"
         ref={heroRef}
-        className="relative min-h-screen flex flex-col justify-between overflow-hidden pt-[120px] sm:pt-[140px] lg:pt-[160px]"
+        className="relative min-h-[85vh] flex flex-col justify-between overflow-hidden pt-[120px] sm:pt-[140px] lg:pt-[160px]"
       >
         {/* Accent glow */}
         <div
@@ -66,26 +48,13 @@ export default function HomePage() {
         />
         {/* Grid */}
         <div
-          className="absolute inset-0 opacity-50 pointer-events-none"
+          className="absolute inset-0 opacity-[0.12] pointer-events-none"
           style={{
             backgroundImage: "linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px)",
             backgroundSize: "64px 64px",
             maskImage: "radial-gradient(ellipse 90% 70% at 50% 30%,#000 30%,transparent 75%)",
           }}
         />
-        {/* Cursor glow */}
-        <div
-          ref={glowRef}
-          className="absolute pointer-events-none rounded-full opacity-0 transition-opacity duration-300"
-          style={{
-            width: "380px", height: "380px",
-            background: "radial-gradient(circle,rgba(216,255,53,.13),transparent 70%)",
-            transform: "translate(-50%,-50%)",
-            mixBlendMode: "screen",
-            zIndex: 1,
-          }}
-        />
-
         {/* Hero content */}
         <div className="relative z-[2] max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div
@@ -200,10 +169,7 @@ export default function HomePage() {
                 className="text-[clamp(1.6rem,3vw,2.6rem)] tracking-[.04em] uppercase"
                 style={{
                   fontFamily: "var(--font-anton)",
-                  background: "linear-gradient(170deg,#fff 0%,#e7eaef 18%,#9aa0ab 46%,#fff 60%,#aeb4be 78%,#5b606b 100%)",
-                  WebkitBackgroundClip: "text",
-                  backgroundClip: "text",
-                  color: "transparent",
+                  color: "var(--text)",
                 }}
               >
                 MIRROR-GRADE GLOSS
@@ -251,15 +217,9 @@ export default function HomePage() {
                 <div
                   className="text-[2.2rem] tracking-[.02em]"
                   style={{
-                    fontFamily: "var(--font-anton)",
-                    ...(s.accent
-                      ? { color: "var(--accent)" }
-                      : {
-                          background: "linear-gradient(170deg,#fff 0%,#e7eaef 18%,#9aa0ab 46%,#fff 60%,#aeb4be 78%,#5b606b 100%)",
-                          WebkitBackgroundClip: "text",
-                          backgroundClip: "text",
-                          color: "transparent",
-                        }),
+                    fontFamily: "var(--font-hanken)",
+                    fontWeight: 700,
+                    color: s.accent ? "var(--accent)" : "var(--text)",
                   }}
                 >
                   {s.n}
@@ -275,19 +235,19 @@ export default function HomePage() {
 
       {/* ── MARQUEE ── */}
       <div
-        className="overflow-hidden"
-        style={{ borderBottom: "1px solid var(--line)", background: "var(--accent)" }}
+        className="overflow-hidden opacity-60"
+        style={{ borderBottom: "1px solid var(--line)" }}
       >
-        <div className="flex items-center gap-[34px] py-[14px] whitespace-nowrap marquee-track">
+        <div className="flex items-center gap-[34px] py-[14px] whitespace-nowrap marquee-track" style={{ animationDuration: "60s" }}>
           {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
             <span key={i} className="flex items-center gap-[34px]">
               <span
-                className="text-[.85rem] font-bold tracking-[.18em] uppercase"
-                style={{ fontFamily: "var(--font-space-mono)", color: "#0a0b0d" }}
+                className="text-[.72rem] tracking-[.18em] uppercase"
+                style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
               >
                 {item}
               </span>
-              <span className="text-[.9rem] opacity-50" style={{ color: "#0a0b0d" }}>✦</span>
+              <span className="text-[.9rem] opacity-50" style={{ color: "var(--muted)" }}>✦</span>
             </span>
           ))}
         </div>
@@ -357,10 +317,7 @@ export default function HomePage() {
                   className="text-[1.3rem]"
                   style={{
                     fontFamily: "var(--font-anton)",
-                    background: "linear-gradient(170deg,#fff 0%,#e7eaef 18%,#9aa0ab 46%,#fff 60%,#aeb4be 78%,#5b606b 100%)",
-                    WebkitBackgroundClip: "text",
-                    backgroundClip: "text",
-                    color: "transparent",
+                    color: "var(--text)",
                   }}
                 >
                   9H
@@ -398,11 +355,9 @@ export default function HomePage() {
               <div
                 className="text-[2.4rem] my-4"
                 style={{
-                  fontFamily: "var(--font-anton)",
-                  background: "linear-gradient(170deg,#fff 0%,#e7eaef 18%,#9aa0ab 46%,#fff 60%,#aeb4be 78%,#5b606b 100%)",
-                  WebkitBackgroundClip: "text",
-                  backgroundClip: "text",
-                  color: "transparent",
+                  fontFamily: "var(--font-hanken)",
+                  fontWeight: 700,
+                  color: "var(--text)",
                   display: "inline-block",
                 }}
               >
@@ -468,6 +423,176 @@ export default function HomePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {featured.map((p) => (
               <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── BRAND STORY ── */}
+      <section style={{ borderTop: "1px solid var(--line)" }} className="py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="reveal">
+              <div className="flex items-center gap-2.5 mb-6 text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+                <span className="w-7 h-[1px]" style={{ background: "var(--accent)" }} />
+                Our Standard
+              </div>
+              <h2 className="uppercase leading-[.96] tracking-[.01em] mb-6" style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(2rem,4.5vw,3.5rem)" }}>
+                Engineered for<br />people who notice
+              </h2>
+              <p className="text-[.96rem] leading-relaxed mb-4" style={{ color: "var(--muted)" }}>
+                Every formula in the A.K. lineup is developed for one outcome: a finish so clean it reflects the sky. We don&apos;t do approximate. We don&apos;t do &ldquo;good enough.&rdquo; We engineer surface chemistry for detailers who can see the difference between 70% and 100%.
+              </p>
+              <p className="text-[.96rem] leading-relaxed mb-8" style={{ color: "var(--muted)" }}>
+                Built in the UK. Tested on everything from daily drivers to concours-level restorations.
+              </p>
+              <Link
+                href="/about"
+                className="inline-flex items-center gap-2 text-[.88rem] font-semibold transition-colors"
+                style={{ color: "var(--accent)", fontFamily: "var(--font-space-mono)" }}
+              >
+                Our story <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
+            <div className="reveal grid grid-cols-2 gap-4">
+              {[
+                { stat: "2019", label: "Founded" },
+                { stat: "40+", label: "Formulas tested" },
+                { stat: "14", label: "Products in range" },
+                { stat: "100%", label: "UK made" },
+              ].map((item) => (
+                <div
+                  key={item.stat}
+                  className="rounded-[14px] p-6 flex flex-col gap-2"
+                  style={{ border: "1px solid var(--line)", background: "var(--surface)" }}
+                >
+                  <span className="text-[2.4rem] leading-none font-bold" style={{ fontFamily: "var(--font-hanken)", color: "var(--text)" }}>
+                    {item.stat}
+                  </span>
+                  <span className="text-[.72rem] tracking-[.12em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+                    {item.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TESTIMONIALS ── */}
+      <section style={{ borderTop: "1px solid var(--line)", background: "var(--surface)" }} className="py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14 reveal">
+            <div className="flex items-center justify-center gap-2.5 mb-4 text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+              <span className="w-7 h-[1px]" style={{ background: "var(--accent)" }} />
+              Verified Reviews
+              <span className="w-7 h-[1px]" style={{ background: "var(--accent)" }} />
+            </div>
+            <h2 className="uppercase leading-[.96] tracking-[.01em]" style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(2rem,4.5vw,3.5rem)" }}>
+              What detailers say
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {[
+              {
+                name: "James R.",
+                role: "Professional Detailer, London",
+                text: "The ceramic coating is genuinely the best I've used at this price point. Slick application, zero streaking, and the hydrophobic effect is still going strong at 8 months.",
+                rating: 5,
+              },
+              {
+                name: "Marcus T.",
+                role: "Enthusiast, Manchester",
+                text: "I've tried probably 15 different polishes over the years. The A.K. compound cut through my paint defects faster and left a better base for the sealant than anything else I've used.",
+                rating: 5,
+              },
+              {
+                name: "Sophie K.",
+                role: "Detailing Studio Owner, Bristol",
+                text: "We switched our whole studio over to A.K. six months ago. The consistency batch-to-batch is exceptional — exactly what you need when you're doing 30+ cars a month.",
+                rating: 5,
+              },
+            ].map((review) => (
+              <div
+                key={review.name}
+                className="reveal rounded-[16px] p-7 flex flex-col gap-4"
+                style={{ border: "1px solid var(--line-2)", background: "rgba(255,255,255,.025)" }}
+              >
+                <div className="flex gap-0.5">
+                  {Array.from({ length: review.rating }).map((_, i) => (
+                    <svg key={i} className="w-4 h-4" viewBox="0 0 16 16" fill="var(--accent)">
+                      <path d="M8 1l1.85 3.75L14 5.5l-3 2.9.7 4.1L8 10.5l-3.7 1.95L5 8.4 2 5.5l4.15-.75L8 1z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-[.92rem] leading-relaxed flex-1" style={{ color: "var(--muted)" }}>
+                  &ldquo;{review.text}&rdquo;
+                </p>
+                <div>
+                  <div className="text-[.88rem] font-semibold" style={{ color: "var(--text)", fontFamily: "var(--font-hanken)" }}>{review.name}</div>
+                  <div className="text-[.72rem] tracking-[.08em] mt-0.5" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>{review.role}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="text-center mt-10 reveal">
+            <div className="inline-flex items-center gap-3 text-[.78rem]" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+              <span style={{ color: "var(--accent)" }}>★ 4.9 / 5</span>
+              <span style={{ color: "var(--line-2)" }}>|</span>
+              Based on 200+ verified purchases
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── RESULTS ── */}
+      <section style={{ borderTop: "1px solid var(--line)" }} className="py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-end justify-between gap-6 mb-12 flex-wrap reveal">
+            <div>
+              <div className="flex items-center gap-2.5 mb-4 text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+                <span className="w-7 h-[1px]" style={{ background: "var(--accent)" }} />
+                The Difference
+              </div>
+              <h2 className="uppercase leading-[.96] tracking-[.01em]" style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(2rem,4.5vw,3.5rem)" }}>
+                Before &amp; After
+              </h2>
+            </div>
+            <p className="max-w-[340px] text-[.92rem]" style={{ color: "var(--muted)" }}>
+              Real results, real cars. No filters — just chemistry doing its job.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {["Paint Correction", "Ceramic Coat", "Full Detail"].map((label) => (
+              <div
+                key={label}
+                className="reveal rounded-[16px] overflow-hidden relative"
+                style={{ border: "1px solid var(--line)", background: "var(--surface)", aspectRatio: "4/3" }}
+              >
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                  <div
+                    className="w-12 h-12 rounded-full grid place-items-center"
+                    style={{ border: "1px solid var(--line-2)", background: "rgba(255,255,255,.04)" }}
+                  >
+                    <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none" style={{ color: "var(--muted)" }}>
+                      <rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" strokeWidth="1.5" />
+                      <circle cx="7.5" cy="8.5" r="1.5" stroke="currentColor" strokeWidth="1.5" />
+                      <path d="M2 13l4-3 3 2.5 3-4 4 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                  <span className="text-[.72rem] tracking-[.12em] uppercase text-center" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+                    {label}<br />Photos coming soon
+                  </span>
+                </div>
+                <div
+                  className="absolute bottom-0 left-0 right-0 px-5 py-4"
+                  style={{ background: "linear-gradient(to top, rgba(8,9,11,.9), transparent)" }}
+                >
+                  <span className="text-[.78rem] font-semibold" style={{ fontFamily: "var(--font-space-mono)", color: "var(--accent)" }}>
+                    {label}
+                  </span>
+                </div>
+              </div>
             ))}
           </div>
         </div>

@@ -240,11 +240,9 @@ export default function CheckoutPage() {
                     <span
                       className="text-[1.4rem]"
                       style={{
-                        fontFamily: "var(--font-anton)",
-                        background: "linear-gradient(170deg,#fff 0%,#e7eaef 18%,#9aa0ab 46%,#fff 60%,#aeb4be 78%,#5b606b 100%)",
-                        WebkitBackgroundClip: "text",
-                        backgroundClip: "text",
-                        color: "transparent",
+                        fontFamily: "var(--font-hanken)",
+                        fontWeight: 700,
+                        color: "var(--text)",
                       }}
                     >
                       {formatPrice(total)}
