@@ -1,13 +1,12 @@
 import Link from "next/link";
-import categories from "@/data/categories";
 
 export default function Footer() {
   return (
     <footer style={{ borderTop: "1px solid var(--line)" }} className="pt-20 pb-9">
-      <div className="max-w-[1280px] mx-auto px-8">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-16">
           {/* Brand */}
-          <div className="sm:col-span-2 lg:col-span-1">
+          <div className="col-span-1 sm:col-span-2 lg:col-span-1">
             <div
               className="text-[1.8rem] tracking-[.06em] mb-4"
               style={{ fontFamily: "var(--font-anton)" }}
@@ -20,7 +19,7 @@ export default function Footer() {
           </div>
 
           {/* Shop */}
-          <div>
+          <div className="flex flex-col">
             <h5
               className="text-[.72rem] tracking-[.14em] uppercase mb-5"
               style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
@@ -28,13 +27,17 @@ export default function Footer() {
               Shop
             </h5>
             <ul className="flex flex-col gap-3">
-              {categories.slice(0, 5).map((cat) => (
-                <li key={cat.slug}>
+              {[
+                { label: "All Products", href: "/shop" },
+                { label: "New Arrivals", href: "/shop?sort=newest" },
+                { label: "Best Sellers", href: "/shop?sort=featured" },
+              ].map((l) => (
+                <li key={l.label}>
                   <Link
-                    href={`/categories/${cat.slug}`}
+                    href={l.href}
                     className="text-[.92rem] opacity-80 hover:opacity-100 transition-opacity hover:text-[var(--accent)]"
                   >
-                    {cat.name}
+                    {l.label}
                   </Link>
                 </li>
               ))}
@@ -42,7 +45,7 @@ export default function Footer() {
           </div>
 
           {/* Company */}
-          <div>
+          <div className="flex flex-col">
             <h5
               className="text-[.72rem] tracking-[.14em] uppercase mb-5"
               style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
@@ -52,7 +55,7 @@ export default function Footer() {
             <ul className="flex flex-col gap-3">
               {[
                 { label: "About", href: "/about" },
-                { label: "The Process", href: "/about" },
+                { label: "The Process", href: "/about#system" },
                 { label: "Contact", href: "/contact" },
               ].map((l) => (
                 <li key={l.label}>
@@ -65,7 +68,7 @@ export default function Footer() {
           </div>
 
           {/* Support */}
-          <div>
+          <div className="flex flex-col">
             <h5
               className="text-[.72rem] tracking-[.14em] uppercase mb-5"
               style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
@@ -90,11 +93,11 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div
-          className="flex flex-col sm:flex-row items-center justify-between pt-7 gap-3 text-[.72rem] tracking-[.14em] uppercase"
+          className="flex flex-col sm:flex-row items-center justify-between pt-7 gap-3 text-[.72rem] tracking-[.14em] uppercase text-center sm:text-left"
           style={{ borderTop: "1px solid var(--line)", fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
         >
           <span>© {new Date().getFullYear()} A.K. Auto Care — All rights reserved</span>
-          <span>Privacy · Terms · Made with precision</span>
+          <span className="sm:text-right">Privacy · Terms · Made with precision</span>
         </div>
       </div>
     </footer>

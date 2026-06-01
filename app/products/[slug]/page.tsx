@@ -37,7 +37,7 @@ export default function ProductPage() {
 
   return (
     <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
-      <div className="max-w-[1280px] mx-auto px-8 py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Breadcrumb */}
         <div
           className="flex items-center gap-2 text-xs mb-10"
@@ -54,14 +54,14 @@ export default function ProductPage() {
           <span style={{ color: "var(--text)" }} className="truncate max-w-[200px]">{product.name}</span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
           {/* Gallery */}
           <div className="space-y-3">
             <div
               className="relative aspect-square rounded-[20px] overflow-hidden"
               style={{ background: "radial-gradient(70% 70% at 50% 40%,#1a1e26,#0a0c10)", border: "1px solid var(--line)" }}
             >
-              <Image src={product.images[activeImg]} alt={product.name} fill className="object-cover opacity-70" priority />
+              <Image src={product.images[activeImg]} alt={product.name} fill className="object-cover opacity-85" priority />
               {product.badge && (
                 <span
                   className="absolute top-4 left-4 text-[.6rem] font-bold px-2.5 py-1 rounded-full tracking-[.12em] uppercase"
@@ -72,7 +72,7 @@ export default function ProductPage() {
               )}
             </div>
             {product.images.length > 1 && (
-              <div className="flex gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 {product.images.map((img, i) => (
                   <button
                     key={i}
@@ -83,7 +83,7 @@ export default function ProductPage() {
                       background: "var(--surface)",
                     }}
                   >
-                    <Image src={img} alt={`View ${i + 1}`} fill className="object-cover opacity-60" />
+                    <Image src={img} alt={`View ${i + 1}`} fill className="object-cover opacity-75" />
                   </button>
                 ))}
               </div>
@@ -91,7 +91,7 @@ export default function ProductPage() {
           </div>
 
           {/* Info */}
-          <div>
+          <div className="flex flex-col">
             <span
               className="text-[.72rem] tracking-[.14em] uppercase mb-2 block"
               style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}
@@ -150,12 +150,12 @@ export default function ProductPage() {
                 >
                   Size / Option
                 </p>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   {product.variants.map((v, i) => (
                     <button
                       key={v.sku}
                       onClick={() => setSelectedVariant(i)}
-                      className="px-4 py-2.5 rounded-[11px] text-sm font-semibold transition-all cursor-pointer"
+                      className="inline-flex items-center px-4 py-2.5 rounded-[11px] text-sm font-semibold transition-all cursor-pointer"
                       style={{
                         border: selectedVariant === i ? "1px solid var(--accent)" : "1px solid var(--line-2)",
                         background: selectedVariant === i ? "rgba(216,255,53,.08)" : "var(--surface)",
@@ -203,24 +203,20 @@ export default function ProductPage() {
             </div>
 
             {/* CTAs */}
-            <div className="flex gap-3 mb-8 flex-wrap">
+            <div className="flex items-stretch gap-3 mb-8 flex-wrap">
               <button
                 onClick={handleAdd}
                 disabled={!product.inStock}
-                className="flex-1 py-4 rounded-[13px] font-semibold flex items-center justify-center gap-2.5 transition-all cursor-pointer disabled:opacity-40 hover:-translate-y-0.5"
-                style={{ background: "var(--accent)", color: "#0a0b0d" }}
-                onMouseEnter={(e) => { if (product.inStock) (e.currentTarget as HTMLElement).style.background = "var(--accent-press)"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--accent)"; }}
+                className="btn-accent flex-1 min-w-[140px] py-4 rounded-[13px] font-semibold flex items-center justify-center gap-2.5 transition-all cursor-pointer disabled:opacity-40 hover:-translate-y-0.5"
               >
-                {added ? <><CheckCircle className="w-4.5 h-4.5" /> Added!</> : "Add to Cart"}
+                {added ? <><CheckCircle className="w-[18px] h-[18px]" /> Added!</> : "Add to Cart"}
               </button>
               <button
                 onClick={() => { addItem(product, variant, qty); window.location.href = "/checkout"; }}
                 disabled={!product.inStock}
-                className="flex-1 py-4 rounded-[13px] font-semibold flex items-center justify-center gap-2.5 transition-all cursor-pointer disabled:opacity-40 hover:-translate-y-0.5 hover:bg-white/7"
-                style={{ border: "1px solid var(--line-2)", color: "var(--text)", background: "rgba(255,255,255,.02)" }}
+                className="btn-ghost flex-1 min-w-[140px] py-4 rounded-[13px] font-semibold flex items-center justify-center gap-2.5 transition-all cursor-pointer disabled:opacity-40 hover:-translate-y-0.5"
               >
-                <Zap className="w-4.5 h-4.5" /> Buy Now
+                <Zap className="w-[18px] h-[18px]" /> Buy Now
               </button>
             </div>
 
@@ -238,12 +234,12 @@ export default function ProductPage() {
 
         {/* Tabs */}
         <div className="mt-20" style={{ borderTop: "1px solid var(--line)" }}>
-          <div className="flex gap-0" style={{ borderBottom: "1px solid var(--line)" }}>
+          <div className="flex items-end gap-0" style={{ borderBottom: "1px solid var(--line)" }}>
             {TABS.map((t) => (
               <button
                 key={t}
                 onClick={() => setTab(t)}
-                className="px-6 py-4 text-sm font-semibold transition-colors cursor-pointer border-b-2 -mb-px"
+                className="inline-flex items-center px-6 py-4 text-sm font-semibold transition-colors cursor-pointer border-b-2 -mb-px whitespace-nowrap"
                 style={{
                   borderBottomColor: tab === t ? "var(--accent)" : "transparent",
                   color: tab === t ? "var(--accent)" : "var(--muted)",

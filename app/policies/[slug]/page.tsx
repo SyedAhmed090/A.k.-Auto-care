@@ -119,11 +119,11 @@ function renderMarkdown(content: string) {
   while (i < lines.length) {
     const line = lines[i].trim();
     if (line.startsWith("## ")) {
-      elements.push(<h2 key={i} className="text-2xl font-black text-[#0f0f0f] mt-8 mb-3">{line.slice(3)}</h2>);
+      elements.push(<h2 key={i} className="text-2xl font-black mt-8 mb-3" style={{ color: "var(--text)", fontFamily: "var(--font-anton)" }}>{line.slice(3)}</h2>);
     } else if (line.startsWith("### ")) {
-      elements.push(<h3 key={i} className="text-lg font-bold text-[#0f0f0f] mt-5 mb-2">{line.slice(4)}</h3>);
+      elements.push(<h3 key={i} className="text-lg font-bold mt-5 mb-2" style={{ color: "var(--text)" }}>{line.slice(4)}</h3>);
     } else if (line.startsWith("**") && line.endsWith("**")) {
-      elements.push(<p key={i} className="font-bold text-[#0f0f0f] mb-2">{line.slice(2, -2)}</p>);
+      elements.push(<p key={i} className="font-bold mb-2" style={{ color: "var(--text)" }}>{line.slice(2, -2)}</p>);
     } else if (line.startsWith("- ")) {
       const items: string[] = [];
       while (i < lines.length && lines[i].trim().startsWith("- ")) {
@@ -131,7 +131,7 @@ function renderMarkdown(content: string) {
         i++;
       }
       elements.push(
-        <ul key={i} className="list-disc list-inside space-y-1 text-gray-600 text-sm mb-4 ml-4">
+        <ul key={i} className="list-disc list-inside space-y-1 text-sm mb-4 ml-4" style={{ color: "var(--muted)" }}>
           {items.map((it, j) => <li key={j}>{it}</li>)}
         </ul>
       );
@@ -143,15 +143,15 @@ function renderMarkdown(content: string) {
         i++;
       }
       elements.push(
-        <ol key={i} className="list-decimal list-inside space-y-1 text-gray-600 text-sm mb-4 ml-4">
+        <ol key={i} className="list-decimal list-inside space-y-1 text-sm mb-4 ml-4" style={{ color: "var(--muted)" }}>
           {items.map((it, j) => <li key={j}>{it}</li>)}
         </ol>
       );
       continue;
     } else if (line === "---") {
-      elements.push(<hr key={i} className="border-gray-100 my-6" />);
+      elements.push(<hr key={i} className="my-6" style={{ borderColor: "var(--line)" }} />);
     } else if (line) {
-      elements.push(<p key={i} className="text-gray-600 text-sm leading-relaxed mb-3">{line}</p>);
+      elements.push(<p key={i} className="text-sm leading-relaxed mb-3" style={{ color: "var(--muted)" }}>{line}</p>);
     }
     i++;
   }
@@ -164,14 +164,14 @@ export default async function PolicyPage({ params }: { params: Promise<{ slug: s
   if (!policy) notFound();
 
   return (
-    <div className="bg-white min-h-screen">
-      <div className="bg-[#0a0a0a] pt-10 pb-16">
-        <div className="max-w-3xl mx-auto px-4">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#e8320a] mb-2">Legal</p>
-          <h1 className="text-4xl sm:text-5xl font-black text-white">{policy.title}</h1>
+    <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
+      <div className="pt-10 pb-16" style={{ borderBottom: "1px solid var(--line)" }}>
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: "var(--accent)", fontFamily: "var(--font-space-mono)" }}>Legal</p>
+          <h1 className="text-4xl sm:text-5xl font-black" style={{ color: "var(--text)", fontFamily: "var(--font-anton)" }}>{policy.title}</h1>
         </div>
       </div>
-      <div className="max-w-3xl mx-auto px-4 py-12">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {renderMarkdown(policy.content)}
       </div>
     </div>

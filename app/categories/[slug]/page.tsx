@@ -48,7 +48,7 @@ export default function CategoryPage() {
           }}
         />
         <div className="absolute inset-0 flex items-center">
-          <div className="max-w-[1280px] mx-auto px-8">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div
               className="flex items-center gap-2.5 mb-3 text-[.72rem] tracking-[.14em] uppercase"
               style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
@@ -67,14 +67,14 @@ export default function CategoryPage() {
         </div>
       </div>
 
-      <div className="max-w-[1280px] mx-auto px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Toolbar */}
-        <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
+        <div className="flex items-center justify-between mb-8 flex-wrap gap-y-3 gap-x-4">
           <p className="text-sm" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
             {filtered.length} products
           </p>
           <div className="flex items-center gap-4 flex-wrap">
-            <label className="flex items-center gap-2 text-sm cursor-pointer" style={{ color: "var(--muted)" }}>
+            <label className="flex items-center gap-2 text-sm cursor-pointer select-none" style={{ color: "var(--muted)" }}>
               <div
                 className="w-4 h-4 rounded-[4px] grid place-items-center flex-shrink-0 cursor-pointer"
                 style={{
@@ -92,11 +92,11 @@ export default function CategoryPage() {
               <span onClick={() => setInStockOnly(!inStockOnly)}>In Stock</span>
             </label>
             <div className="flex items-center gap-2">
-              <span className="text-xs" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>Max: £{priceMax}</span>
+              <span className="text-xs whitespace-nowrap" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>Max: £{priceMax}</span>
               <input
                 type="range" min={10} max={200} step={5} value={priceMax}
                 onChange={(e) => setPriceMax(Number(e.target.value))}
-                className="w-24"
+                className="w-28"
                 style={{ accentColor: "var(--accent)" }}
               />
             </div>
@@ -116,7 +116,7 @@ export default function CategoryPage() {
             <p className="text-lg" style={{ color: "var(--muted)" }}>No products match your filters.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 items-stretch">
             {filtered.map((p) => <ProductCard key={p.id} product={p} />)}
           </div>
         )}

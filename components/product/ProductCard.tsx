@@ -16,27 +16,21 @@ export default function ProductCard({ product }: { product: Product }) {
   };
 
   return (
-    <Link href={`/products/${product.slug}`} className="group block">
+    <Link href={`/products/${product.slug}`} className="group block h-full">
       <article
-        className="rounded-[var(--r)] overflow-hidden flex flex-col transition-all duration-350"
-        style={{
-          border: "1px solid var(--line)",
-          background: "var(--bg-2)",
-        }}
-        onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--line-2)")}
-        onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--line)")}
+        className="product-card rounded-[var(--r)] overflow-hidden flex flex-col h-full transition-all duration-300"
       >
         {/* Thumbnail */}
         <div
-          className="relative h-[230px] overflow-hidden"
-          style={{ background: "radial-gradient(70% 70% at 50% 40%,#1a1e26,#0a0c10)" }}
+          className="relative w-full overflow-hidden flex-shrink-0"
+          style={{ aspectRatio: "4/3", background: "radial-gradient(70% 70% at 50% 40%,#1a1e26,#0a0c10)" }}
         >
           <Image
             src={product.images[0]}
             alt={product.name}
             fill
-            sizes="(max-width: 768px) 100vw, 25vw"
-            className="object-cover opacity-60 group-hover:opacity-75 transition-all duration-500 group-hover:scale-105"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className="object-cover w-full h-full transition-all duration-500 group-hover:scale-105"
           />
 
           {product.badge && (
@@ -57,13 +51,6 @@ export default function ProductCard({ product }: { product: Product }) {
 
         {/* Info */}
         <div className="p-5 flex flex-col gap-1.5 flex-1">
-          <span
-            className="text-[.62rem] tracking-[.16em] uppercase"
-            style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}
-          >
-            {product.categorySlug.replace(/-/g, " ")}
-          </span>
-
           <span className="font-semibold text-[1.05rem] leading-tight line-clamp-2" style={{ color: "var(--text)" }}>
             {product.name}
           </span>
@@ -90,21 +77,10 @@ export default function ProductCard({ product }: { product: Product }) {
             <button
               onClick={handleAdd}
               disabled={!product.inStock}
-              className="w-[42px] h-[42px] rounded-[11px] grid place-items-center transition-all duration-250 cursor-pointer disabled:opacity-40"
-              style={{ border: "1px solid var(--line-2)", background: "transparent", color: "var(--text)" }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "var(--accent)";
-                e.currentTarget.style.color = "#000";
-                e.currentTarget.style.borderColor = "var(--accent)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "transparent";
-                e.currentTarget.style.color = "var(--text)";
-                e.currentTarget.style.borderColor = "var(--line-2)";
-              }}
+              className="btn-add-to-cart w-[42px] h-[42px] rounded-[11px] grid place-items-center transition-all duration-200 cursor-pointer disabled:opacity-40"
               aria-label={`Add ${product.name} to cart`}
             >
-              <Plus className="w-4.5 h-4.5" />
+              <Plus className="w-[18px] h-[18px]" />
             </button>
           </div>
         </div>

@@ -2,7 +2,6 @@
 import { useState, useMemo } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
 import products from "@/data/products";
-import categories from "@/data/categories";
 import ProductCard from "@/components/product/ProductCard";
 
 const SORT_OPTIONS = [
@@ -13,7 +12,6 @@ const SORT_OPTIONS = [
 ];
 
 export default function ShopPage() {
-  const [selectedCats, setSelectedCats] = useState<string[]>([]);
   const [priceMax, setPriceMax] = useState(200);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [sort, setSort] = useState("featured");
@@ -21,12 +19,8 @@ export default function ShopPage() {
   const [page, setPage] = useState(1);
   const PER_PAGE = 12;
 
-  const toggleCat = (slug: string) =>
-    setSelectedCats((p) => p.includes(slug) ? p.filter((s) => s !== slug) : [...p, slug]);
-
   const filtered = useMemo(() => {
     let list = [...products];
-    if (selectedCats.length) list = list.filter((p) => selectedCats.includes(p.categorySlug));
     list = list.filter((p) => p.price <= priceMax);
     if (inStockOnly) list = list.filter((p) => p.inStock);
     if (sort === "price-asc") list.sort((a, b) => a.price - b.price);
@@ -34,7 +28,7 @@ export default function ShopPage() {
     else if (sort === "newest") list.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
     else list.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
     return list;
-  }, [selectedCats, priceMax, inStockOnly, sort]);
+  }, [priceMax, inStockOnly, sort]);
 
   const paginated = filtered.slice(0, page * PER_PAGE);
 
@@ -48,45 +42,6 @@ export default function ShopPage() {
 
   const FilterPanel = () => (
     <div className="space-y-8">
-      <div>
-        <h3
-          className="text-[.72rem] tracking-[.14em] uppercase mb-4"
-          style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
-        >
-          Category
-        </h3>
-        <div className="space-y-3">
-          {categories.map((cat) => (
-            <label key={cat.slug} className="flex items-center gap-3 cursor-pointer group">
-              <div
-                className="w-4 h-4 rounded-[4px] grid place-items-center flex-shrink-0 transition-all"
-                style={{
-                  border: selectedCats.includes(cat.slug) ? "1px solid var(--accent)" : "1px solid var(--line-2)",
-                  background: selectedCats.includes(cat.slug) ? "var(--accent)" : "transparent",
-                }}
-                onClick={() => toggleCat(cat.slug)}
-              >
-                {selectedCats.includes(cat.slug) && (
-                  <svg className="w-2.5 h-2.5" viewBox="0 0 10 10" fill="none">
-                    <path d="M1.5 5l2.5 2.5L8.5 2" stroke="#000" strokeWidth="1.5" strokeLinecap="round" />
-                  </svg>
-                )}
-              </div>
-              <span
-                className="text-sm transition-colors"
-                style={{ color: selectedCats.includes(cat.slug) ? "var(--text)" : "var(--muted)" }}
-                onClick={() => toggleCat(cat.slug)}
-              >
-                {cat.name}
-              </span>
-              <span className="ml-auto text-xs" style={{ color: "var(--muted-2)", fontFamily: "var(--font-space-mono)" }}>
-                {products.filter((p) => p.categorySlug === cat.slug).length}
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
-
       <div>
         <h3
           className="text-[.72rem] tracking-[.14em] uppercase mb-3"
@@ -123,9 +78,9 @@ export default function ShopPage() {
         <span className="text-sm font-medium" onClick={() => setInStockOnly(!inStockOnly)}>In Stock Only</span>
       </label>
 
-      {(selectedCats.length > 0 || inStockOnly || priceMax < 200) && (
+      {(inStockOnly || priceMax < 200) && (
         <button
-          onClick={() => { setSelectedCats([]); setInStockOnly(false); setPriceMax(200); }}
+          onClick={() => { setInStockOnly(false); setPriceMax(200); }}
           className="flex items-center gap-1.5 text-sm transition-colors cursor-pointer"
           style={{ color: "var(--accent)" }}
         >
@@ -139,7 +94,7 @@ export default function ShopPage() {
     <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
       {/* Header */}
       <div className="pt-14 pb-16" style={{ borderBottom: "1px solid var(--line)" }}>
-        <div className="max-w-[1280px] mx-auto px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div
             className="flex items-center gap-2.5 mb-3 text-[.72rem] tracking-[.14em] uppercase"
             style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
@@ -159,7 +114,7 @@ export default function ShopPage() {
         </div>
       </div>
 
-      <div className="max-w-[1280px] mx-auto px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex gap-10">
           {/* Sidebar */}
           <aside className="hidden lg:block w-52 flex-shrink-0">
@@ -170,10 +125,10 @@ export default function ShopPage() {
 
           <div className="flex-1 min-w-0">
             {/* Toolbar */}
-            <div className="flex items-center justify-between mb-6 gap-3">
+            <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
               <button
                 onClick={() => setFiltersOpen(true)}
-                className="lg:hidden flex items-center gap-2 px-4 py-2 rounded-[11px] text-sm font-semibold transition-all cursor-pointer"
+                className="lg:hidden flex items-center gap-2 px-4 py-2.5 rounded-[11px] text-sm font-semibold transition-all cursor-pointer"
                 style={{ border: "1px solid var(--line-2)", color: "var(--text)", background: "var(--surface)" }}
               >
                 <SlidersHorizontal className="w-4 h-4" /> Filters
@@ -190,25 +145,7 @@ export default function ShopPage() {
               </div>
             </div>
 
-            {selectedCats.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-5">
-                {selectedCats.map((slug) => {
-                  const cat = categories.find((c) => c.slug === slug);
-                  return (
-                    <button
-                      key={slug}
-                      onClick={() => toggleCat(slug)}
-                      className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold cursor-pointer transition-all"
-                      style={{ background: "rgba(216,255,53,.1)", color: "var(--accent)", border: "1px solid rgba(216,255,53,.2)", fontFamily: "var(--font-space-mono)" }}
-                    >
-                      {cat?.name} <X className="w-3 h-3" />
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 items-stretch">
               {paginated.map((p) => <ProductCard key={p.id} product={p} />)}
             </div>
 

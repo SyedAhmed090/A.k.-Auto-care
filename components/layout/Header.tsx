@@ -2,15 +2,13 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Search, ShoppingCart, Menu, X, ChevronDown } from "lucide-react";
+import { Search, ShoppingCart, Menu, X } from "lucide-react";
 import { useCartStore } from "@/store/cart";
-import categories from "@/data/categories";
 import { cn } from "@/lib/utils";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [catOpen, setCatOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const count = useCartStore((s) => s.itemCount());
@@ -45,14 +43,14 @@ export default function Header() {
     <>
       <header
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-400",
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
           scrolled
             ? "border-b bg-[rgba(8,9,11,0.72)] backdrop-blur-[18px]"
             : "border-b border-transparent"
         )}
         style={{ borderColor: scrolled ? "var(--line)" : "transparent" }}
       >
-        <div className="max-w-[1280px] mx-auto px-8">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex items-center justify-between h-[78px]">
             {/* Brand */}
             <Link href="/" className="flex items-center gap-3">
@@ -100,54 +98,13 @@ export default function Header() {
                 </Link>
               ))}
 
-              {/* Categories dropdown */}
-              <div className="relative">
-                <button
-                  onMouseEnter={() => setCatOpen(true)}
-                  onMouseLeave={() => setCatOpen(false)}
-                  className="flex items-center gap-1 text-[.92rem] font-medium transition-colors"
-                  style={{ color: "var(--muted)" }}
-                >
-                  Categories
-                  <ChevronDown className={cn("w-3.5 h-3.5 transition-transform", catOpen && "rotate-180")} />
-                </button>
-                {catOpen && (
-                  <div
-                    onMouseEnter={() => setCatOpen(true)}
-                    onMouseLeave={() => setCatOpen(false)}
-                    className="absolute top-full left-0 mt-2 w-64 rounded-[14px] overflow-hidden z-50"
-                    style={{
-                      background: "var(--surface)",
-                      border: "1px solid var(--line-2)",
-                      boxShadow: "0 20px 60px rgba(0,0,0,.6)",
-                    }}
-                  >
-                    {categories.map((cat) => (
-                      <Link
-                        key={cat.slug}
-                        href={`/categories/${cat.slug}`}
-                        className="flex items-center gap-3 px-4 py-3 text-[.88rem] transition-colors hover:bg-white/5"
-                        style={{ color: "var(--muted)" }}
-                        onMouseEnter={(e) => (e.currentTarget.style.color = "var(--text)")}
-                        onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted)")}
-                      >
-                        <span
-                          className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                          style={{ background: "var(--accent)" }}
-                        />
-                        {cat.name}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
             </div>
 
             {/* Tools */}
             <div className="flex items-center gap-[18px]">
               <button
                 onClick={() => setSearchOpen(true)}
-                className="w-[42px] h-[42px] rounded-[11px] grid place-items-center transition-all cursor-pointer hidden sm:grid"
+                className="w-[42px] h-[42px] rounded-[11px] grid place-items-center transition-all cursor-pointer"
                 style={{ border: "1px solid var(--line)", background: "rgba(255,255,255,.02)", color: "var(--text)" }}
                 aria-label="Search"
               >
@@ -187,22 +144,32 @@ export default function Header() {
       {/* Mobile menu */}
       <div
         className={cn(
-          "fixed inset-0 z-[99] flex flex-col justify-center gap-2 px-8 transition-transform duration-500",
+          "fixed inset-0 z-[99] flex flex-col justify-center items-start gap-2 px-8 transition-transform duration-500",
           mobileOpen ? "translate-y-0" : "-translate-y-full"
         )}
         style={{ background: "rgba(8,9,11,.97)", backdropFilter: "blur(20px)" }}
       >
-        {[...navLinks, { href: "/shop", label: "Categories" }].map((l) => (
+        <button
+          onClick={() => setMobileOpen(false)}
+          className="absolute top-6 right-6 w-[42px] h-[42px] rounded-[11px] grid place-items-center cursor-pointer"
+          style={{ border: "1px solid var(--line)", background: "rgba(255,255,255,.02)", color: "var(--text)" }}
+          aria-label="Close menu"
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        {navLinks.map((l) => (
           <Link
             key={l.label}
             href={l.href}
-            className="py-3 border-b text-[2.4rem] uppercase"
+            className="w-full py-3 border-b text-[2.4rem] uppercase"
             style={{ fontFamily: "var(--font-anton)", borderColor: "var(--line)" }}
             onClick={() => setMobileOpen(false)}
           >
             {l.label}
           </Link>
         ))}
+
       </div>
 
       {/* Search overlay */}

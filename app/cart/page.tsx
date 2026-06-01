@@ -36,7 +36,7 @@ export default function CartPage() {
           className="inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold transition-all hover:-translate-y-0.5"
           style={{ background: "var(--accent)", color: "#000" }}
         >
-          Browse Products <ArrowRight className="w-4.5 h-4.5" />
+          Browse Products <ArrowRight className="w-[18px] h-[18px]" />
         </Link>
       </div>
     );
@@ -44,7 +44,7 @@ export default function CartPage() {
 
   return (
     <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
-      <div className="max-w-[1280px] mx-auto px-8 py-14">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <h1
           className="uppercase tracking-[.01em] mb-10"
           style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(2.5rem,5vw,4rem)" }}
@@ -55,17 +55,17 @@ export default function CartPage() {
           </span>
         </h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           {/* Items */}
           <div className="lg:col-span-2 space-y-3">
             {items.map((item) => (
               <div
                 key={`${item.product.id}-${item.variant.sku}`}
-                className="flex gap-4 rounded-[var(--r)] p-5"
+                className="flex items-center gap-4 rounded-[var(--r)] p-5"
                 style={{ border: "1px solid var(--line)", background: "var(--bg-2)" }}
               >
                 <div
-                  className="relative w-20 h-20 rounded-[10px] overflow-hidden flex-shrink-0"
+                  className="relative w-20 h-20 rounded-[10px] overflow-hidden flex-shrink-0 self-start"
                   style={{ background: "var(--surface)" }}
                 >
                   <Image src={item.product.images[0]} alt={item.product.name} fill className="object-cover opacity-70" />
@@ -80,11 +80,11 @@ export default function CartPage() {
                   <p className="text-xs mt-0.5" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
                     {item.variant.label} · {formatPrice(item.variant.price)} each
                   </p>
-                  <div className="flex items-center justify-between mt-3">
+                  <div className="flex items-center justify-between mt-3 gap-2 flex-wrap">
                     <QuantityStepper value={item.quantity} onChange={(v) => updateQty(item.product.id, item.variant.sku, v)} />
                     <div className="flex items-center gap-3">
                       <span
-                        className="text-[1.3rem]"
+                        className="text-[1.3rem] leading-none"
                         style={{
                           fontFamily: "var(--font-anton)",
                           background: "linear-gradient(170deg,#fff 0%,#e7eaef 18%,#9aa0ab 46%,#fff 60%,#aeb4be 78%,#5b606b 100%)",
@@ -97,7 +97,7 @@ export default function CartPage() {
                       </span>
                       <button
                         onClick={() => removeItem(item.product.id, item.variant.sku)}
-                        className="transition-colors cursor-pointer"
+                        className="flex items-center justify-center w-7 h-7 rounded-md transition-colors cursor-pointer"
                         style={{ color: "var(--muted-2)" }}
                         onMouseEnter={(e) => (e.currentTarget.style.color = "#ef4444")}
                         onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted-2)")}
@@ -111,7 +111,7 @@ export default function CartPage() {
             ))}
             <button
               onClick={clearCart}
-              className="text-xs transition-colors cursor-pointer"
+              className="flex items-center text-xs px-1 py-1 transition-colors cursor-pointer"
               style={{ color: "var(--muted-2)" }}
               onMouseEnter={(e) => (e.currentTarget.style.color = "#ef4444")}
               onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted-2)")}
@@ -121,7 +121,7 @@ export default function CartPage() {
           </div>
 
           {/* Summary */}
-          <div>
+          <div className="lg:col-span-1">
             <div
               className="rounded-[var(--r)] p-6 sticky top-28"
               style={{ border: "1px solid var(--line)", background: "var(--bg-2)" }}
@@ -139,7 +139,7 @@ export default function CartPage() {
                   ...(promoDiscount > 0 ? [{ label: `Discount (${promoCode})`, value: `-${formatPrice(discount)}`, accent: true }] : []),
                   { label: "Shipping", value: shipping === 0 ? "FREE" : formatPrice(shipping), green: shipping === 0 },
                 ].map((row) => (
-                  <div key={row.label} className="flex justify-between">
+                  <div key={row.label} className="flex items-center justify-between">
                     <span style={{ color: "var(--muted)" }}>{row.label}</span>
                     <span
                       className="font-semibold"
@@ -151,16 +151,16 @@ export default function CartPage() {
                 ))}
                 {shipping > 0 && (
                   <p className="text-xs flex items-center gap-1.5" style={{ color: "var(--muted-2)", fontFamily: "var(--font-space-mono)" }}>
-                    <Truck className="w-3.5 h-3.5" /> Add {formatPrice(75 - sub)} for free shipping
+                    <Truck className="w-3.5 h-3.5 flex-shrink-0" /> Add {formatPrice(75 - sub)} for free shipping
                   </p>
                 )}
                 <div
-                  className="flex justify-between pt-3"
+                  className="flex items-center justify-between pt-3"
                   style={{ borderTop: "1px solid var(--line)" }}
                 >
                   <span className="font-semibold">Total</span>
                   <span
-                    className="text-[1.6rem]"
+                    className="text-[1.6rem] leading-none"
                     style={{
                       fontFamily: "var(--font-anton)",
                       background: "linear-gradient(170deg,#fff 0%,#e7eaef 18%,#9aa0ab 46%,#fff 60%,#aeb4be 78%,#5b606b 100%)",
@@ -180,21 +180,21 @@ export default function CartPage() {
                     className="flex items-center gap-1.5 text-[.72rem] tracking-[.14em] uppercase mb-2"
                     style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
                   >
-                    <Tag className="w-3.5 h-3.5" /> Promo Code
+                    <Tag className="w-3.5 h-3.5 flex-shrink-0" /> Promo Code
                   </p>
-                  <div className="flex gap-2">
+                  <div className="flex items-center gap-2">
                     <input
                       type="text"
                       value={promoInput}
                       onChange={(e) => setPromoInput(e.target.value)}
                       placeholder="Enter code…"
-                      className="flex-1 px-3 py-2.5 rounded-[11px] text-sm outline-none"
+                      className="flex-1 min-w-0 px-3 py-2.5 rounded-[11px] text-sm outline-none"
                       style={{ background: "var(--surface)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }}
                       onKeyDown={(e) => e.key === "Enter" && handlePromo()}
                     />
                     <button
                       onClick={handlePromo}
-                      className="px-4 py-2.5 rounded-[11px] text-sm font-bold cursor-pointer transition-all"
+                      className="flex-shrink-0 px-4 py-2.5 rounded-[11px] text-sm font-bold cursor-pointer transition-all"
                       style={{ background: "var(--surface-2)", color: "var(--text)", border: "1px solid var(--line-2)" }}
                     >
                       Apply
@@ -218,7 +218,7 @@ export default function CartPage() {
                 onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--accent-press)"; }}
                 onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--accent)"; }}
               >
-                Checkout <ArrowRight className="w-4.5 h-4.5" />
+                Checkout <ArrowRight className="w-[18px] h-[18px]" />
               </Link>
               <Link
                 href="/shop"

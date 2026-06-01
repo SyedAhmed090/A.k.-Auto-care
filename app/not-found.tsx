@@ -3,9 +3,10 @@ import Link from "next/link";
 export default function NotFound() {
   return (
     <div
-      className="min-h-[70vh] flex flex-col items-center justify-center px-4 text-center"
+      className="min-h-[70vh] flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 text-center"
       style={{ background: "var(--bg)" }}
     >
+      <div className="w-full max-w-md flex flex-col items-center">
       <div
         className="text-[7rem] leading-none mb-2"
         style={{
@@ -34,6 +35,7 @@ export default function NotFound() {
       >
         Go Home
       </Link>
+      </div>
     </div>
   );
 }

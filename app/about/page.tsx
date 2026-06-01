@@ -18,7 +18,7 @@ export default function AboutPage() {
           }}
         />
         <div className="absolute inset-0 flex items-center">
-          <div className="max-w-[1280px] mx-auto px-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
             <div className="flex items-center gap-2.5 mb-3 text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
               <span className="w-7 h-[1px]" style={{ background: "var(--accent)" }} />
               Our Story
@@ -32,7 +32,7 @@ export default function AboutPage() {
 
       {/* Story */}
       <section className="py-24" style={{ borderBottom: "1px solid var(--line)" }}>
-        <div className="max-w-[1280px] mx-auto px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
               <div className="flex items-center gap-2.5 mb-4 text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
@@ -48,12 +48,12 @@ export default function AboutPage() {
                 <p>Today, A.K. Auto Care products are used by independent detailers, car clubs, and passionate owners across the UK and beyond.</p>
               </div>
             </div>
-            <div className="relative">
+            <div className="relative mt-8 lg:mt-0">
               <div className="relative h-[420px] rounded-[20px] overflow-hidden" style={{ border: "1px solid var(--line)" }}>
                 <Image src="https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&q=80" alt="Detailing" fill className="object-cover opacity-60" />
               </div>
               <div
-                className="absolute -bottom-4 -left-4 rounded-[14px] px-5 py-4"
+                className="absolute bottom-4 left-4 sm:-bottom-4 sm:-left-4 rounded-[14px] px-5 py-4"
                 style={{ background: "var(--accent)", color: "#000" }}
               >
                 <div className="text-[2rem]" style={{ fontFamily: "var(--font-anton)" }}>4.9★</div>
@@ -66,7 +66,7 @@ export default function AboutPage() {
 
       {/* Values */}
       <section className="py-24">
-        <div className="max-w-[1280px] mx-auto px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2.5 mb-4 text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
             <span className="w-7 h-[1px]" style={{ background: "var(--accent)" }} />
             Our Principles
@@ -93,19 +93,16 @@ export default function AboutPage() {
 
       {/* CTA */}
       <section className="py-20" style={{ borderTop: "1px solid var(--line)" }}>
-        <div className="max-w-[1280px] mx-auto px-8 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="uppercase leading-[.96] mb-4" style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(2rem,4vw,3.5rem)" }}>
             Ready to experience<br />the difference?
           </h2>
           <p className="mb-8 text-[.97rem]" style={{ color: "var(--muted)" }}>Explore our full range of professional detailing products.</p>
           <Link
             href="/shop"
-            className="inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold transition-all hover:-translate-y-0.5"
-            style={{ background: "var(--accent)", color: "#000" }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--accent-press)"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--accent)"; }}
+            className="btn-accent inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold transition-all hover:-translate-y-0.5"
           >
-            Shop Now <ArrowUpRight className="w-4.5 h-4.5" />
+            Shop Now <ArrowUpRight className="w-[18px] h-[18px]" />
           </Link>
         </div>
       </section>

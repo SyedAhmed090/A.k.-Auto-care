@@ -25,7 +25,7 @@ export default function ContactPage() {
   return (
     <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
       <div className="pt-14 pb-16" style={{ borderBottom: "1px solid var(--line)" }}>
-        <div className="max-w-[1280px] mx-auto px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2.5 mb-3 text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
             <span className="w-7 h-[1px]" style={{ background: "var(--accent)" }} />
             Get in Touch
@@ -36,8 +36,8 @@ export default function ContactPage() {
         </div>
       </div>
 
-      <div className="max-w-[1280px] mx-auto px-8 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-14">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-14 items-start">
           <div>
             <h2 className="uppercase mb-4" style={{ fontFamily: "var(--font-anton)", fontSize: "1.6rem" }}>We&apos;re here<br />to help</h2>
             <p className="text-sm mb-8 leading-relaxed" style={{ color: "var(--muted)" }}>
@@ -49,18 +49,18 @@ export default function ContactPage() {
                 { icon: Phone, label: "Phone", value: "+44 (0) 1234 567 890", href: "tel:+441234567890" },
                 { icon: MapPin, label: "Location", value: "Birmingham, UK", href: "#" },
               ].map(({ icon: Icon, label, value, href }) => (
-                <a key={label} href={href} className="flex items-start gap-4 group">
+                <a key={label} href={href} className="flex items-center gap-4 group">
                   <div
                     className="w-10 h-10 rounded-[11px] grid place-items-center flex-shrink-0 transition-all"
                     style={{ background: "var(--surface)", border: "1px solid var(--line-2)" }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--accent)"; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--surface)"; }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--accent)"; (e.currentTarget.querySelector("svg") as HTMLElement | null)?.style && ((e.currentTarget.querySelector("svg") as HTMLElement).style.color = "#000"); }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--surface)"; (e.currentTarget.querySelector("svg") as HTMLElement | null)?.style && ((e.currentTarget.querySelector("svg") as HTMLElement).style.color = "var(--accent)"); }}
                   >
-                    <Icon className="w-4.5 h-4.5" style={{ color: "var(--accent)" }} />
+                    <Icon className="w-[18px] h-[18px] transition-colors" style={{ color: "var(--accent)" }} />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>{label}</p>
-                    <p className="text-sm font-semibold hover:text-[var(--accent)] transition-colors">{value}</p>
+                    <p className="text-sm font-semibold group-hover:text-[var(--accent)] transition-colors truncate">{value}</p>
                   </div>
                 </a>
               ))}
@@ -110,7 +110,7 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-7 py-4 rounded-[13px] font-semibold transition-all cursor-pointer disabled:opacity-50 hover:-translate-y-0.5"
+                  className="w-full sm:w-auto px-7 py-4 rounded-[13px] font-semibold transition-all cursor-pointer disabled:opacity-50 hover:-translate-y-0.5 flex items-center justify-center gap-2"
                   style={{ background: "var(--accent)", color: "#000" }}
                 >
                   {isSubmitting ? "Sending…" : "Send Message"}

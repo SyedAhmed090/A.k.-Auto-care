@@ -29,7 +29,7 @@ export default function MiniCart() {
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: "1px solid var(--line)" }}>
           <div className="flex items-center gap-2.5">
-            <ShoppingCart className="w-4.5 h-4.5" style={{ color: "var(--accent)" }} />
+            <ShoppingCart className="w-[18px] h-[18px]" style={{ color: "var(--accent)" }} />
             <h2 className="text-[1.1rem]" style={{ fontFamily: "var(--font-anton)" }}>YOUR CART</h2>
             {items.length > 0 && (
               <span
@@ -45,7 +45,7 @@ export default function MiniCart() {
             className="w-8 h-8 grid place-items-center rounded-lg transition-colors hover:bg-white/5 cursor-pointer"
             style={{ color: "var(--muted)" }}
           >
-            <X className="w-4.5 h-4.5" />
+            <X className="w-[18px] h-[18px]" />
           </button>
         </div>
 
@@ -71,7 +71,7 @@ export default function MiniCart() {
           ) : (
             <div className="flex flex-col gap-4">
               {items.map((item) => (
-                <div key={`${item.product.id}-${item.variant.sku}`} className="flex gap-3">
+                <div key={`${item.product.id}-${item.variant.sku}`} className="flex items-start gap-3">
                   <div
                     className="relative w-[60px] h-[60px] rounded-[10px] overflow-hidden flex-shrink-0"
                     style={{ background: "var(--surface-2)" }}
@@ -79,20 +79,20 @@ export default function MiniCart() {
                     <Image src={item.product.images[0]} alt={item.product.name} fill className="object-cover" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold line-clamp-1">{item.product.name}</p>
+                    <p className="text-sm font-semibold line-clamp-1 leading-tight">{item.product.name}</p>
                     <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>{item.variant.label}</p>
-                    <div className="flex items-center justify-between mt-2">
+                    <div className="flex items-center justify-between gap-2 mt-2">
                       <QuantityStepper
                         value={item.quantity}
                         onChange={(v) => updateQty(item.product.id, item.variant.sku, v)}
                       />
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-bold" style={{ fontFamily: "var(--font-anton)" }}>
+                        <span className="text-sm font-bold leading-none" style={{ fontFamily: "var(--font-anton)" }}>
                           {formatPrice(item.variant.price * item.quantity)}
                         </span>
                         <button
                           onClick={() => removeItem(item.product.id, item.variant.sku)}
-                          className="transition-colors cursor-pointer"
+                          className="flex items-center justify-center w-6 h-6 rounded transition-colors cursor-pointer"
                           style={{ color: "var(--muted-2)" }}
                           onMouseEnter={(e) => (e.currentTarget.style.color = "#ef4444")}
                           onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted-2)")}
@@ -110,16 +110,16 @@ export default function MiniCart() {
 
         {/* Footer */}
         {items.length > 0 && (
-          <div className="px-5 py-4" style={{ borderTop: "1px solid var(--line)", background: "var(--bg-2)" }}>
+          <div className="px-5 py-4 flex-shrink-0" style={{ borderTop: "1px solid var(--line)", background: "var(--bg-2)" }}>
             {promoDiscount > 0 && (
-              <div className="flex justify-between text-sm mb-1" style={{ color: "var(--accent)" }}>
+              <div className="flex items-center justify-between text-sm mb-1" style={{ color: "var(--accent)" }}>
                 <span>Discount</span>
                 <span className="font-bold">-{formatPrice(discount)}</span>
               </div>
             )}
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center justify-between mb-4">
               <span className="text-sm" style={{ color: "var(--muted)" }}>Total</span>
-              <span className="text-[1.4rem]" style={{ fontFamily: "var(--font-anton)" }}>
+              <span className="text-[1.4rem] leading-none" style={{ fontFamily: "var(--font-anton)" }}>
                 {formatPrice(total)}
               </span>
             </div>
@@ -129,12 +129,12 @@ export default function MiniCart() {
                 className="w-full py-3.5 rounded-[11px] font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer"
                 style={{ background: "var(--accent)", color: "#000" }}
               >
-                Checkout <ArrowRight className="w-4 h-4" />
+                Checkout <ArrowRight className="w-4 h-4 flex-shrink-0" />
               </button>
               <Link
                 href="/cart"
                 onClick={closeCart}
-                className="text-center text-sm py-1 transition-colors"
+                className="block w-full text-center text-sm py-2 transition-colors"
                 style={{ color: "var(--muted)" }}
               >
                 View full cart

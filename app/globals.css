@@ -93,3 +93,50 @@
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--surface-2); border-radius: 999px; }
+
+/* ── Button variants ── */
+.btn-accent {
+  background: var(--accent);
+  color: #0a0b0d;
+}
+.btn-accent:hover:not(:disabled) {
+  background: var(--accent-press);
+  box-shadow: 0 14px 30px rgba(216,255,53,.22);
+}
+
+.btn-ghost {
+  background: rgba(255,255,255,.02);
+  border: 1px solid var(--line-2);
+  color: var(--text);
+}
+.btn-ghost:hover:not(:disabled) {
+  background: rgba(255,255,255,.07);
+}
+
+.btn-add-to-cart {
+  border: 1px solid var(--line-2);
+  background: transparent;
+  color: var(--text);
+}
+.btn-add-to-cart:hover:not(:disabled) {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+}
+
+/* ── Card variants ── */
+.product-card {
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+}
+.product-card:hover {
+  border-color: var(--line-2);
+}
+
+.category-card {
+  border: 1px solid var(--line);
+  background: linear-gradient(160deg, var(--surface), var(--bg-2));
+}
+.category-card:hover {
+  border-color: var(--line-2);
+}

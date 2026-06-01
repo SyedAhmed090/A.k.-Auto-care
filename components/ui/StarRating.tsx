@@ -5,7 +5,7 @@ export default function StarRating({ rating, reviews, size = "sm" }: {
 }) {
   return (
     <div className="flex items-center gap-1.5">
-      <div className="flex">
+      <div className="flex items-center">
         {[1, 2, 3, 4, 5].map((s) => (
           <Star
             key={s}
@@ -16,8 +16,8 @@ export default function StarRating({ rating, reviews, size = "sm" }: {
       </div>
       {reviews !== undefined && (
         <span
-          className={`${size === "sm" ? "text-xs" : "text-sm"}`}
-          style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)", fontSize: ".62rem" }}
+          className="text-[.62rem] leading-none"
+          style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}
         >
           ({reviews})
         </span>

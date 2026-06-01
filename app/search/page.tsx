@@ -23,13 +23,13 @@ function SearchResults() {
   return (
     <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
       <div className="pt-14 pb-16" style={{ borderBottom: "1px solid var(--line)" }}>
-        <div className="max-w-[1280px] mx-auto px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2.5 mb-4 text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
             <span className="w-7 h-[1px]" style={{ background: "var(--accent)" }} />
             Search
           </div>
           <form onSubmit={handleSubmit}>
-            <div className="relative max-w-2xl">
+            <div className="relative w-full max-w-2xl">
               <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: "var(--muted)" }} />
               <input
                 autoFocus
@@ -57,7 +57,7 @@ function SearchResults() {
         </div>
       </div>
 
-      <div className="max-w-[1280px] mx-auto px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {!query && (
           <div className="text-center py-20">
             <Search className="w-12 h-12 mx-auto mb-4 opacity-20" />

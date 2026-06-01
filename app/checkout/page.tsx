@@ -81,15 +81,15 @@ export default function CheckoutPage() {
   );
 
   const SectionCard = ({ title, children }: { title: string; children: React.ReactNode }) => (
-    <div className="rounded-[20px] p-6 space-y-5" style={{ background: "var(--surface)", border: "1px solid var(--line)" }}>
-      <h2 className="uppercase" style={{ fontFamily: "var(--font-anton)", fontSize: "1.3rem" }}>{title}</h2>
+    <div className="w-full rounded-[20px] p-6 space-y-5" style={{ background: "var(--surface)", border: "1px solid var(--line)" }}>
+      <h2 className="uppercase text-left" style={{ fontFamily: "var(--font-anton)", fontSize: "1.3rem" }}>{title}</h2>
       {children}
     </div>
   );
 
   return (
     <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
-      <div className="max-w-[1100px] mx-auto px-8 py-14">
+      <div className="max-w-[1100px] mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <Link href="/cart" className="text-sm mb-8 inline-flex items-center gap-1.5 transition-colors hover:text-[var(--accent)]" style={{ color: "var(--muted)" }}>
           ← Back to Cart
         </Link>
@@ -103,25 +103,29 @@ export default function CheckoutPage() {
             </SectionCard>
 
             <SectionCard title="Shipping Address">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Field label="First Name" error={errors.firstName?.message}>
                   <input {...register("firstName")} placeholder="John" style={inputStyle(errors.firstName?.message)} />
                 </Field>
                 <Field label="Last Name" error={errors.lastName?.message}>
                   <input {...register("lastName")} placeholder="Smith" style={inputStyle(errors.lastName?.message)} />
                 </Field>
-                <div className="col-span-2">
+                <div className="col-span-1 sm:col-span-2">
                   <Field label="Address" error={errors.address?.message}>
                     <input {...register("address")} placeholder="123 Main Street" style={inputStyle(errors.address?.message)} />
                   </Field>
                 </div>
-                <Field label="City" error={errors.city?.message}>
-                  <input {...register("city")} placeholder="Birmingham" style={inputStyle(errors.city?.message)} />
-                </Field>
-                <Field label="Postcode" error={errors.postcode?.message}>
-                  <input {...register("postcode")} placeholder="B1 1AA" style={inputStyle(errors.postcode?.message)} />
-                </Field>
-                <div className="col-span-2">
+                <div>
+                  <Field label="City" error={errors.city?.message}>
+                    <input {...register("city")} placeholder="Birmingham" style={inputStyle(errors.city?.message)} />
+                  </Field>
+                </div>
+                <div>
+                  <Field label="Postcode" error={errors.postcode?.message}>
+                    <input {...register("postcode")} placeholder="B1 1AA" style={inputStyle(errors.postcode?.message)} />
+                  </Field>
+                </div>
+                <div className="col-span-1 sm:col-span-2">
                   <Field label="Country" error={errors.country?.message}>
                     <select {...register("country")} style={{ ...inputStyle(errors.country?.message), cursor: "pointer" }}>
                       <option value="">Select country…</option>
@@ -136,8 +140,7 @@ export default function CheckoutPage() {
             </SectionCard>
 
             <SectionCard title="Payment">
-              <div className="flex items-center justify-between -mt-1">
-                <div />
+              <div className="flex items-center justify-end -mt-1">
                 <div className="flex items-center gap-1.5 text-[.72rem]" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
                   <Lock className="w-3.5 h-3.5" /> Secured by Stripe
                 </div>
@@ -155,7 +158,7 @@ export default function CheckoutPage() {
                 <Field label="Card Number" error={errors.cardNumber?.message}>
                   <input {...register("cardNumber")} placeholder="4242 4242 4242 4242" maxLength={19} style={inputStyle(errors.cardNumber?.message)} onChange={(e) => setValue("cardNumber", fmtCard(e.target.value))} />
                 </Field>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Field label="Expiry" error={errors.expiry?.message}>
                     <input {...register("expiry")} placeholder="MM/YY" maxLength={5} style={inputStyle(errors.expiry?.message)} onChange={(e) => setValue("expiry", fmtExp(e.target.value))} />
                   </Field>
@@ -181,14 +184,14 @@ export default function CheckoutPage() {
                   Processing…
                 </span>
               ) : (
-                <><Lock className="w-4 h-4" /> Pay {formatPrice(total)}</>
+                <span className="flex items-center justify-center gap-2.5"><Lock className="w-4 h-4" /> Pay {formatPrice(total)}</span>
               )}
             </button>
           </form>
 
           {/* Summary */}
-          <div className="lg:col-span-2">
-            <div className="rounded-[20px] p-6 sticky top-28" style={{ background: "var(--surface)", border: "1px solid var(--line)" }}>
+          <div className="lg:col-span-2 w-full">
+            <div className="rounded-[20px] p-6 sticky top-28 w-full" style={{ background: "var(--surface)", border: "1px solid var(--line)" }}>
               <button
                 onClick={() => setSummaryOpen(!summaryOpen)}
                 className="flex items-center justify-between w-full lg:cursor-default"

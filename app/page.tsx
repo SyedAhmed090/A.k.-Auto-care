@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight, ChevronRight } from "lucide-react";
 import { getFeaturedProducts } from "@/data/products";
-import categories from "@/data/categories";
 import ProductCard from "@/components/product/ProductCard";
 
 const MARQUEE_ITEMS = [
@@ -54,8 +53,7 @@ export default function HomePage() {
       <section
         id="hero"
         ref={heroRef}
-        className="relative min-h-screen flex flex-col justify-between overflow-hidden"
-        style={{ paddingTop: "160px" }}
+        className="relative min-h-screen flex flex-col justify-between overflow-hidden pt-[120px] sm:pt-[140px] lg:pt-[160px]"
       >
         {/* Accent glow */}
         <div
@@ -78,7 +76,7 @@ export default function HomePage() {
         {/* Cursor glow */}
         <div
           ref={glowRef}
-          className="absolute pointer-events-none rounded-full opacity-0 transition-opacity duration-400"
+          className="absolute pointer-events-none rounded-full opacity-0 transition-opacity duration-300"
           style={{
             width: "380px", height: "380px",
             background: "radial-gradient(circle,rgba(216,255,53,.13),transparent 70%)",
@@ -89,7 +87,7 @@ export default function HomePage() {
         />
 
         {/* Hero content */}
-        <div className="relative z-[2] max-w-[1280px] mx-auto px-8 w-full">
+        <div className="relative z-[2] max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div
             className="reveal flex items-center gap-2.5 mb-8"
             style={{ color: "var(--muted)" }}
@@ -150,20 +148,13 @@ export default function HomePage() {
           <div className="reveal flex flex-wrap gap-4 mt-9">
             <Link
               href="/shop"
-              className="inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5"
-              style={{
-                background: "var(--accent)",
-                color: "#0a0b0d",
-              }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--accent-press)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 14px 30px rgba(216,255,53,.22)"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--accent)"; (e.currentTarget as HTMLElement).style.boxShadow = "none"; }}
+              className="btn-accent inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5"
             >
-              Shop the lineup <ArrowUpRight className="w-4.5 h-4.5" />
+              Shop the lineup <ArrowUpRight className="w-[18px] h-[18px]" />
             </Link>
             <Link
               href="/about"
-              className="inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/7"
-              style={{ border: "1px solid var(--line-2)", color: "var(--text)", background: "rgba(255,255,255,.02)" }}
+              className="btn-ghost inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5"
             >
               See the process
             </Link>
@@ -171,7 +162,7 @@ export default function HomePage() {
         </div>
 
         {/* Hero stage panel */}
-        <div className="relative z-[2] max-w-[1280px] mx-auto px-8 w-full mt-14 reveal">
+        <div className="relative z-[2] max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 w-full mt-14 reveal">
           {/* Reflective panel */}
           <div
             className="relative h-[330px] rounded-[26px] overflow-hidden"
@@ -195,16 +186,16 @@ export default function HomePage() {
               className="absolute left-0 right-0 top-[38%] h-[2px]"
               style={{ background: "linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent)" }}
             />
-            {/* Hero image */}
             <Image
               src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1400&q=80"
               alt="Luxury car"
               fill
               priority
-              className="object-cover opacity-20"
+              className="object-cover opacity-40"
             />
 
-            <div className="absolute bottom-6 left-7 right-7 flex justify-between items-end gap-5 z-[2]">
+
+            <div className="absolute bottom-6 left-5 right-5 sm:left-7 sm:right-7 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3 sm:gap-5 z-[2]">
               <div
                 className="text-[clamp(1.6rem,3vw,2.6rem)] tracking-[.04em] uppercase"
                 style={{
@@ -246,8 +237,17 @@ export default function HomePage() {
               { n: "120+", l: "Pro detailers" },
               { n: "4.9", l: "Avg rating" },
               { n: "100%", l: "Lab tested", accent: true },
-            ].map((s) => (
-              <div key={s.l} className="py-6 pr-1" style={{ borderRight: "1px solid var(--line)" }}>
+            ].map((s, i) => (
+              <div
+                key={s.l}
+                className={`py-6 px-6 flex flex-col justify-center${
+                  i === 0 ? " border-r border-b sm:border-b-0" :
+                  i === 1 ? " sm:border-r border-b sm:border-b-0" :
+                  i === 2 ? " border-r" :
+                  ""
+                }`}
+                style={{ borderColor: "var(--line)" }}
+              >
                 <div
                   className="text-[2.2rem] tracking-[.02em]"
                   style={{
@@ -293,91 +293,9 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── CATEGORIES ── */}
-      <section className="py-[120px]">
-        <div className="max-w-[1280px] mx-auto px-8">
-          <div className="flex items-end justify-between gap-7 mb-12 flex-wrap reveal">
-            <div>
-              <div
-                className="flex items-center gap-2.5 mb-4 text-[.72rem] tracking-[.14em] uppercase"
-                style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
-              >
-                <span className="w-7 h-[1px]" style={{ background: "var(--accent)" }} />
-                01 — The Lineup
-              </div>
-              <h2
-                className="uppercase leading-[.96] tracking-[.01em]"
-                style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(2.2rem,5vw,4rem)" }}
-              >
-                Built for<br />every stage
-              </h2>
-            </div>
-            <p className="max-w-[360px] text-[.92rem]" style={{ color: "var(--muted)" }}>
-              From bare prep to mirror-gloss protection — a complete system, no guesswork.
-            </p>
-          </div>
-
-          {/* Cat grid */}
-          <div className="grid grid-cols-2 md:grid-cols-6 auto-rows-[200px] gap-[18px]">
-            {categories.map((cat, i) => (
-              <Link
-                key={cat.slug}
-                href={`/categories/${cat.slug}`}
-                className={`reveal group relative rounded-[var(--r)] overflow-hidden flex flex-col justify-between p-6 cursor-pointer transition-all duration-400 ${
-                  i === 0 ? "md:col-span-2 row-span-2" : "md:col-span-2"
-                }`}
-                style={{
-                  border: "1px solid var(--line)",
-                  background: "linear-gradient(160deg,var(--surface),var(--bg-2))",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--line-2)")}
-                onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--line)")}
-              >
-                {/* Image */}
-                <Image
-                  src={cat.image}
-                  alt={cat.name}
-                  fill
-                  className="object-cover opacity-15 group-hover:opacity-25 transition-opacity duration-400"
-                />
-                {/* Accent glow on hover */}
-                <div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none"
-                  style={{ background: "radial-gradient(120% 100% at 80% 0%,rgba(216,255,53,.12),transparent 55%)" }}
-                />
-                <span
-                  className="relative z-[2] text-[.78rem]"
-                  style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted-2)" }}
-                >
-                  / {String(i + 1).padStart(2, "0")}
-                </span>
-                <ArrowUpRight
-                  className="absolute top-6 right-6 w-4.5 h-4.5 z-[2] opacity-0 group-hover:opacity-100 transition-all duration-400 -translate-y-1 group-hover:translate-y-0"
-                  style={{ color: "var(--accent)" }}
-                />
-                <div className="relative z-[2]">
-                  <div
-                    className={`uppercase leading-[.95] tracking-[.03em] ${i === 0 ? "text-[2.6rem]" : "text-[1.7rem]"}`}
-                    style={{ fontFamily: "var(--font-anton)" }}
-                  >
-                    {cat.name.split(" ")[0]}<br />
-                    {cat.name.split(" ").slice(1).join(" ")}
-                  </div>
-                  {i === 0 && (
-                    <p className="mt-2 text-sm max-w-[240px] relative z-[2]" style={{ color: "var(--muted)" }}>
-                      {cat.description.slice(0, 80)}…
-                    </p>
-                  )}
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ── FEATURED PRODUCT SPOTLIGHT ── */}
       <section style={{ borderTop: "1px solid var(--line)" }} className="py-[120px]">
-        <div className="max-w-[1280px] mx-auto px-8">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Stage */}
             <div
@@ -388,11 +306,39 @@ export default function HomePage() {
               }}
             >
               <Image
-                src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80"
-                alt="Armour Ceramic 9H"
+                src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80"
+                alt="Ceramic coating product"
                 fill
-                className="object-cover opacity-20"
+                className="object-cover opacity-30"
               />
+              {/* CSS product bottle */}
+              <div className="relative z-[2] flex flex-col items-center">
+                <div
+                  className="relative w-28 h-52 rounded-[20px] flex flex-col items-center justify-center gap-3"
+                  style={{
+                    background: "linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.03))",
+                    border: "1px solid rgba(255,255,255,.18)",
+                    boxShadow: "inset 0 1px 0 rgba(255,255,255,.28),0 40px 80px rgba(0,0,0,.6),0 0 80px rgba(216,255,53,.08)",
+                  }}
+                >
+                  <div
+                    className="absolute top-0 left-[22%] w-[14%] h-[55%] rounded-full pointer-events-none"
+                    style={{ background: "linear-gradient(180deg,rgba(255,255,255,.35),transparent)" }}
+                  />
+                  <span className="text-[2.2rem] tracking-[.06em]" style={{ fontFamily: "var(--font-anton)", color: "var(--accent)" }}>9H</span>
+                  <span className="text-[.55rem] tracking-[.22em] uppercase text-center px-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+                    Ceramic<br />Pro Coat
+                  </span>
+                  <div className="w-8 h-[1px]" style={{ background: "var(--line-2)" }} />
+                  <span className="text-[.5rem] tracking-[.16em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted-2)" }}>
+                    A.K. Auto Care
+                  </span>
+                </div>
+                <div
+                  className="w-16 h-3 mt-1 rounded-full opacity-20"
+                  style={{ background: "radial-gradient(ellipse,rgba(216,255,53,.7),transparent)" }}
+                />
+              </div>
               {/* Rings */}
               <div
                 className="absolute w-[380px] h-[380px] rounded-full pointer-events-none"
@@ -484,12 +430,9 @@ export default function HomePage() {
               </div>
               <Link
                 href="/products/armour-ceramic-9h"
-                className="inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5"
-                style={{ background: "var(--accent)", color: "#0a0b0d" }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--accent-press)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 14px 30px rgba(216,255,53,.22)"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--accent)"; (e.currentTarget as HTMLElement).style.boxShadow = "none"; }}
+                className="btn-accent inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5"
               >
-                Add to cart — £89 <ArrowUpRight className="w-4.5 h-4.5" />
+                View Product <ArrowUpRight className="w-[18px] h-[18px]" />
               </Link>
             </div>
           </div>
@@ -498,7 +441,7 @@ export default function HomePage() {
 
       {/* ── BEST SELLERS ── */}
       <section style={{ borderTop: "1px solid var(--line)" }} className="py-[120px]">
-        <div className="max-w-[1280px] mx-auto px-8">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between gap-7 mb-12 flex-wrap reveal">
             <div>
               <div
@@ -517,8 +460,7 @@ export default function HomePage() {
             </div>
             <Link
               href="/shop"
-              className="inline-flex items-center gap-2.5 px-6 py-3 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/7"
-              style={{ border: "1px solid var(--line-2)", color: "var(--text)", background: "rgba(255,255,255,.02)" }}
+              className="btn-ghost inline-flex items-center gap-2.5 px-6 py-3 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5"
             >
               View all products <ChevronRight className="w-4 h-4" />
             </Link>
@@ -533,7 +475,7 @@ export default function HomePage() {
 
       {/* ── PROCESS ── */}
       <section style={{ borderTop: "1px solid var(--line)" }} className="py-[120px]">
-        <div className="max-w-[1280px] mx-auto px-8">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between gap-7 mb-0 flex-wrap reveal">
             <div>
               <div
@@ -567,8 +509,10 @@ export default function HomePage() {
             ].map((step, i) => (
               <div
                 key={step.n}
-                className="reveal py-8 pr-6"
-                style={{ borderRight: i < 3 ? "1px solid var(--line)" : "none" }}
+                className={`reveal py-8 px-6 first:pl-0 last:pr-0 border-b lg:border-b-0${
+                  i < 3 ? " lg:border-r" : ""
+                }`}
+                style={{ borderColor: "var(--line)" }}
               >
                 <div
                   className="text-[.8rem] mb-12"
@@ -591,22 +535,21 @@ export default function HomePage() {
 
       {/* ── CTA BAND ── */}
       <section className="py-[120px]">
-        <div className="max-w-[1280px] mx-auto px-8">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
           <div
-            className="reveal relative rounded-[28px] overflow-hidden text-center py-18 px-16"
+            className="reveal relative rounded-[28px] overflow-hidden py-14 px-6 sm:py-16 sm:px-12 lg:py-[72px] lg:px-[60px]"
             style={{
               background: "radial-gradient(120% 120% at 80% 0%,rgba(216,255,53,.10),transparent 50%), linear-gradient(160deg,var(--surface),var(--bg-2))",
               border: "1px solid var(--line-2)",
-              padding: "72px 60px",
             }}
           >
             <Image
               src="https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=1200&q=80"
               alt="Detailing"
               fill
-              className="object-cover opacity-10"
+              className="object-cover opacity-25"
             />
-            <div className="relative z-[2]">
+            <div className="relative z-[2] flex flex-col items-center text-center">
               <div
                 className="flex items-center justify-center gap-2.5 mb-4 text-[.72rem] tracking-[.14em] uppercase"
                 style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
@@ -639,10 +582,7 @@ export default function HomePage() {
                   onBlur={(e) => (e.target.style.borderColor = "var(--line-2)")}
                 />
                 <button
-                  className="px-7 py-4 rounded-[13px] font-semibold transition-all hover:-translate-y-0.5 cursor-pointer"
-                  style={{ background: "var(--accent)", color: "#0a0b0d" }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--accent-press)"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--accent)"; }}
+                  className="btn-accent px-7 py-4 rounded-[13px] font-semibold transition-all hover:-translate-y-0.5 cursor-pointer"
                 >
                   Subscribe
                 </button>
