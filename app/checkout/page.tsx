@@ -9,7 +9,7 @@ import { z } from "zod";
 import { Lock, ChevronDown, ChevronUp } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
-import { getShippingOptions, vatAmount } from "@/lib/commerce";
+import { getShippingOptions, gstAmount } from "@/lib/commerce";
 
 const schema = z.object({
   email: z.string().email("Enter a valid email"),
@@ -70,7 +70,7 @@ export default function CheckoutPage() {
   const resolvedShipping = shippingOptions.find((o) => o.id === shippingId) ?? shippingOptions[0];
   const shippingCost = resolvedShipping?.price ?? 0;
   const total = afterDiscount + shippingCost;
-  const vat = vatAmount(total);
+  const vat = gstAmount(total);
 
   // Reset shipping selection when country (and therefore options) changes
   useEffect(() => {
@@ -175,6 +175,7 @@ export default function CheckoutPage() {
                   <Field label="Country" error={errors.country?.message}>
                     <select {...register("country")} style={{ ...inputStyle(errors.country?.message), cursor: "pointer" }}>
                       <option value="">Select country…</option>
+                      <option value="PK">Pakistan</option>
                       <option value="GB">United Kingdom</option>
                       <option value="US">United States</option>
                       <option value="CA">Canada</option>
@@ -354,7 +355,7 @@ export default function CheckoutPage() {
                     </span>
                   </div>
                   <p className="text-right text-[.72rem]" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
-                    Incl. VAT (20%): {formatPrice(vat)}
+                    Incl. GST (17%): {formatPrice(vat)}
                   </p>
                 </div>
               </div>

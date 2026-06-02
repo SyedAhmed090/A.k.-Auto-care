@@ -64,9 +64,9 @@ export default function ContactPage() {
             </p>
             <div className="space-y-5">
               {[
-                { icon: Mail, label: "Email", value: "hello@akautocare.co.uk", href: "mailto:hello@akautocare.co.uk" },
-                { icon: Phone, label: "Phone", value: "+44 (0) 1234 567 890", href: "tel:+441234567890" },
-                { icon: MapPin, label: "Location", value: "Birmingham, UK", href: "#" },
+                { icon: Mail, label: "Email", value: "hello@akautocare.pk", href: "mailto:hello@akautocare.pk" },
+                { icon: Phone, label: "Phone", value: "+92 300 0000000", href: "tel:+923000000000" },
+                { icon: MapPin, label: "Location", value: "Karachi, Pakistan", href: "#" },
               ].map(({ icon: Icon, label, value, href }) => (
                 <a key={label} href={href} className="flex items-center gap-4 group">
                   <div

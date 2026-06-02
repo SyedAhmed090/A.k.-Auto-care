@@ -3,7 +3,7 @@ import products from "@/data/products";
 import categories from "@/data/categories";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = "https://akautocareuk.com";
+  const base = "https://akautocare.pk";
   const staticRoutes = ["/", "/shop", "/about", "/contact", "/cart", "/policies/shipping-returns", "/policies/privacy", "/policies/terms"].map(
     (route) => ({ url: `${base}${route}`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: route === "/" ? 1 : 0.8 })
   );

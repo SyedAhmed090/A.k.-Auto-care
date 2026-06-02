@@ -1,8 +1,9 @@
-export const VAT_RATE = 0.2; // 20% UK VAT, inclusive in displayed prices
+export const GST_RATE = 0.17; // 17% Pakistan GST, inclusive in displayed prices
+export const FREE_SHIPPING_THRESHOLD = 5000; // PKR — standard domestic free-shipping floor
 
-/** Extract VAT amount from a VAT-inclusive price */
-export function vatAmount(inclusiveTotal: number): number {
-  return parseFloat((inclusiveTotal * (VAT_RATE / (1 + VAT_RATE))).toFixed(2));
+/** Extract GST amount from a GST-inclusive price */
+export function gstAmount(inclusiveTotal: number): number {
+  return parseFloat((inclusiveTotal * (GST_RATE / (1 + GST_RATE))).toFixed(2));
 }
 
 export type ShippingOption = {
@@ -12,21 +13,24 @@ export type ShippingOption = {
   description: string;
 };
 
-/** Returns available shipping options based on destination country and subtotal */
+/** Returns available shipping options based on destination country and subtotal (PKR) */
 export function getShippingOptions(country: string, subtotal: number): ShippingOption[] {
-  const isUK = country === "GB" || country === "";
-  if (isUK) {
+  const isPK = country === "PK" || country === "";
+  if (isPK) {
     return [
       {
-        id: "uk-standard",
+        id: "pk-standard",
         label: "Standard Delivery",
-        price: subtotal >= 75 ? 0 : 3.99,
-        description: subtotal >= 75 ? "Free · 3–5 business days" : "3–5 business days · £3.99",
+        price: subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 199,
+        description:
+          subtotal >= FREE_SHIPPING_THRESHOLD
+            ? "Free · 2–4 business days"
+            : "2–4 business days · Rs 199",
       },
       {
-        id: "uk-express",
+        id: "pk-express",
         label: "Express Delivery",
-        price: 9.99,
+        price: 499,
         description: "Next business day · order before 2pm",
       },
     ];
@@ -35,14 +39,14 @@ export function getShippingOptions(country: string, subtotal: number): ShippingO
     {
       id: "intl-standard",
       label: "International Standard",
-      price: 14.99,
-      description: "7–14 business days",
+      price: 2499,
+      description: "10–20 business days",
     },
     {
       id: "intl-express",
       label: "International Express",
-      price: 24.99,
-      description: "3–5 business days",
+      price: 4999,
+      description: "5–7 business days",
     },
   ];
 }

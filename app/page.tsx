@@ -399,7 +399,7 @@ export default function HomePage() {
                   display: "inline-block",
                 }}
               >
-                £89.99
+                Rs 32,999
               </div>
               <p className="max-w-[440px] mb-7" style={{ color: "var(--muted)" }}>
                 A single-layer nano-ceramic coating that locks in a deep, glassy gloss and shrugs off water, grime, and UV for years — not weeks.
@@ -545,7 +545,7 @@ export default function HomePage() {
                 Every formula in the A.K. lineup is developed for one outcome: a finish so clean it reflects the sky. We don&apos;t do approximate. We don&apos;t do &ldquo;good enough.&rdquo; We engineer surface chemistry for detailers who can see the difference between 70% and 100%.
               </p>
               <p className="text-[.96rem] leading-relaxed mb-8" style={{ color: "var(--muted)" }}>
-                Built in the UK. Tested on everything from daily drivers to concours-level restorations.
+                Built in Pakistan. Tested on everything from daily drivers to concours-level restorations.
               </p>
               <Link
                 href="/about"
@@ -560,7 +560,7 @@ export default function HomePage() {
                 { stat: "2019", label: "Founded" },
                 { stat: "40+", label: "Formulas tested" },
                 { stat: "14", label: "Products in range" },
-                { stat: "100%", label: "UK made" },
+                { stat: "100%", label: "Pakistan made" },
               ].map((item) => (
                 <div
                   key={item.stat}

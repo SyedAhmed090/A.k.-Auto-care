@@ -6,10 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatPrice(price: number) {
-  return new Intl.NumberFormat("en-GB", {
-    style: "currency",
-    currency: "GBP",
-  }).format(price);
+  return `Rs ${Math.round(price).toLocaleString("en-US")}`;
 }
 
 export function slugify(str: string) {

@@ -46,11 +46,11 @@ const products: Product[] = [
       { label: "Finish", value: "Spot-free rinse aid included" },
       { label: "Scent", value: "Fresh citrus" },
     ],
-    price: 18.99,
+    price: 6999,
     variants: [
-      { label: "500 ml", price: 18.99, sku: "ALPHA-FOAM-500" },
-      { label: "1 L", price: 29.99, sku: "ALPHA-FOAM-1L" },
-      { label: "5 L", price: 99.99, sku: "ALPHA-FOAM-5L" },
+      { label: "500 ml", price: 6999, sku: "ALPHA-FOAM-500" },
+      { label: "1 L", price: 10999, sku: "ALPHA-FOAM-1L" },
+      { label: "5 L", price: 36999, sku: "ALPHA-FOAM-5L" },
     ],
     images: [
       "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80",
@@ -80,10 +80,10 @@ const products: Product[] = [
       { label: "Reaction time", value: "2–5 min" },
       { label: "Scent", value: "Mild chemical" },
     ],
-    price: 22.99,
+    price: 8499,
     variants: [
-      { label: "500 ml", price: 22.99, sku: "IRONBUST-500" },
-      { label: "1 L", price: 38.99, sku: "IRONBUST-1L" },
+      { label: "500 ml", price: 8499, sku: "IRONBUST-500" },
+      { label: "1 L", price: 14499, sku: "IRONBUST-1L" },
     ],
     images: [
       "https://images.unsplash.com/photo-1558618047-f4e50b806c73?w=800&q=80",
@@ -111,10 +111,10 @@ const products: Product[] = [
       { label: "Safe on", value: "Clear coat, glass, plastic trim" },
       { label: "Residue", value: "Zero" },
     ],
-    price: 14.99,
+    price: 5499,
     variants: [
-      { label: "500 ml", price: 14.99, sku: "PANELWIPE-500" },
-      { label: "1 L", price: 24.99, sku: "PANELWIPE-1L" },
+      { label: "500 ml", price: 5499, sku: "PANELWIPE-500" },
+      { label: "1 L", price: 9249, sku: "PANELWIPE-1L" },
     ],
     images: [
       "https://images.unsplash.com/photo-1615906655593-ad0386982a0f?w=800&q=80",
@@ -145,10 +145,10 @@ const products: Product[] = [
       { label: "Recommended pad", value: "Foam cutting / wool" },
       { label: "Dust level", value: "Low" },
     ],
-    price: 34.99,
+    price: 12999,
     variants: [
-      { label: "250 ml", price: 34.99, sku: "CUTKING-250" },
-      { label: "500 ml", price: 54.99, sku: "CUTKING-500" },
+      { label: "250 ml", price: 12999, sku: "CUTKING-250" },
+      { label: "500 ml", price: 20499, sku: "CUTKING-500" },
     ],
     images: [
       "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&q=80",
@@ -178,10 +178,10 @@ const products: Product[] = [
       { label: "Recommended pad", value: "Foam finishing" },
       { label: "PTFE additive", value: "Yes" },
     ],
-    price: 28.99,
+    price: 10999,
     variants: [
-      { label: "250 ml", price: 28.99, sku: "GLOSSFIN-250" },
-      { label: "500 ml", price: 44.99, sku: "GLOSSFIN-500" },
+      { label: "250 ml", price: 10999, sku: "GLOSSFIN-250" },
+      { label: "500 ml", price: 16999, sku: "GLOSSFIN-500" },
     ],
     images: [
       "https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?w=800&q=80",
@@ -212,10 +212,10 @@ const products: Product[] = [
       { label: "Application temp", value: "10–30 °C" },
       { label: "Finish", value: "Warm amber gloss" },
     ],
-    price: 39.99,
+    price: 14999,
     variants: [
-      { label: "150 g", price: 39.99, sku: "SOVWAX-150" },
-      { label: "400 g", price: 79.99, sku: "SOVWAX-400" },
+      { label: "150 g", price: 14999, sku: "SOVWAX-150" },
+      { label: "400 g", price: 29999, sku: "SOVWAX-400" },
     ],
     images: [
       "https://images.unsplash.com/photo-1547327132-9bcc5bb8d26b?w=800&q=80",
@@ -244,10 +244,10 @@ const products: Product[] = [
       { label: "Water contact angle", value: ">100°" },
       { label: "Flash time", value: "20–30 min" },
     ],
-    price: 32.99,
+    price: 12499,
     variants: [
-      { label: "500 ml", price: 32.99, sku: "SHIELD-500" },
-      { label: "1 L", price: 54.99, sku: "SHIELD-1L" },
+      { label: "500 ml", price: 12499, sku: "SHIELD-500" },
+      { label: "1 L", price: 20499, sku: "SHIELD-1L" },
     ],
     images: [
       "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80",
@@ -278,10 +278,10 @@ const products: Product[] = [
       { label: "Thickness per coat", value: "~1 micron" },
       { label: "Temperature resistance", value: "Up to 800°C" },
     ],
-    price: 89.99,
+    price: 32999,
     variants: [
-      { label: "30 ml kit", price: 89.99, sku: "ARMOUR-30" },
-      { label: "50 ml kit", price: 129.99, sku: "ARMOUR-50" },
+      { label: "30 ml kit", price: 32999, sku: "ARMOUR-30" },
+      { label: "50 ml kit", price: 47999, sku: "ARMOUR-50" },
     ],
     images: [
       "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80",
@@ -310,10 +310,10 @@ const products: Product[] = [
       { label: "Anti-static", value: "Yes" },
       { label: "Water spot resistance", value: "High" },
     ],
-    price: 44.99,
+    price: 16999,
     variants: [
-      { label: "500 ml", price: 44.99, sku: "GRAPHEN-500" },
-      { label: "1 L", price: 74.99, sku: "GRAPHEN-1L" },
+      { label: "500 ml", price: 16999, sku: "GRAPHEN-500" },
+      { label: "1 L", price: 27999, sku: "GRAPHEN-1L" },
     ],
     images: [
       "https://images.unsplash.com/photo-1546614042-7df3c24c9e5d?w=800&q=80",
@@ -343,11 +343,11 @@ const products: Product[] = [
       { label: "Edge type", value: "Silk-banded (no stitching)" },
       { label: "Size", value: "40 × 40 cm" },
     ],
-    price: 24.99,
+    price: 9249,
     variants: [
-      { label: "3-pack", price: 24.99, sku: "UPLUSH-3" },
-      { label: "6-pack", price: 44.99, sku: "UPLUSH-6" },
-      { label: "12-pack", price: 79.99, sku: "UPLUSH-12" },
+      { label: "3-pack", price: 9249, sku: "UPLUSH-3" },
+      { label: "6-pack", price: 16999, sku: "UPLUSH-6" },
+      { label: "12-pack", price: 29999, sku: "UPLUSH-12" },
     ],
     images: [
       "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
@@ -376,10 +376,10 @@ const products: Product[] = [
       { label: "Material", value: "Dual-density foam" },
       { label: "Finger pocket", value: "Yes" },
     ],
-    price: 12.99,
+    price: 4799,
     variants: [
-      { label: "3-pack", price: 12.99, sku: "FOAMPAD-3" },
-      { label: "6-pack", price: 22.99, sku: "FOAMPAD-6" },
+      { label: "3-pack", price: 4799, sku: "FOAMPAD-3" },
+      { label: "6-pack", price: 8499, sku: "FOAMPAD-6" },
     ],
     images: [
       "https://images.unsplash.com/photo-1593941798580-e0c5bd98b1a9?w=800&q=80",
@@ -408,8 +408,8 @@ const products: Product[] = [
       { label: "Value", value: "£130 worth of product" },
       { label: "Guide included", value: "Yes — printed + digital QR" },
     ],
-    price: 99.99,
-    variants: [{ label: "Full Kit", price: 99.99, sku: "STARTKIT-01" }],
+    price: 36999,
+    variants: [{ label: "Full Kit", price: 36999, sku: "STARTKIT-01" }],
     images: [
       "https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?w=800&q=80",
       "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80",
@@ -436,8 +436,8 @@ const products: Product[] = [
       { label: "Value", value: "£210 worth of product" },
       { label: "Guide included", value: "Yes — digital QR code" },
     ],
-    price: 169.99,
-    variants: [{ label: "Pro Kit", price: 169.99, sku: "CERAMKIT-01" }],
+    price: 62999,
+    variants: [{ label: "Pro Kit", price: 62999, sku: "CERAMKIT-01" }],
     images: [
       "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80",
       "https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?w=800&q=80",
@@ -464,10 +464,10 @@ const products: Product[] = [
       { label: "Protection", value: "Light Si polymer" },
       { label: "Safe over", value: "Wax, sealant, ceramic coating" },
     ],
-    price: 16.99,
+    price: 6299,
     variants: [
-      { label: "500 ml", price: 16.99, sku: "QKDET-500" },
-      { label: "1 L", price: 27.99, sku: "QKDET-1L" },
+      { label: "500 ml", price: 6299, sku: "QKDET-500" },
+      { label: "1 L", price: 10499, sku: "QKDET-1L" },
     ],
     images: [
       "https://images.unsplash.com/photo-1615906655593-ad0386982a0f?w=800&q=80",

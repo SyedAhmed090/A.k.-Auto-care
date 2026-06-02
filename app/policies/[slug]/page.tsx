@@ -7,17 +7,17 @@ const policies: Record<string, { title: string; content: string }> = {
     content: `
 ## Shipping Policy
 
-**Standard UK Delivery** — £4.99, delivered within 3–5 business days.
+**Standard Delivery (Pakistan)** — Rs 199, delivered within 2–4 business days.
 
-**Free Delivery** — On all orders over £75. Applied automatically at checkout.
+**Free Delivery** — On all orders over Rs 5,000. Applied automatically at checkout.
 
-**Express Delivery** — £9.99, delivered next working day when ordered before 2 PM Monday–Friday.
+**Express Delivery** — Rs 499, delivered next working day when ordered before 2 PM Monday–Saturday.
 
-**International Shipping** — Available to EU and worldwide destinations. Rates calculated at checkout. Delivery times vary by destination (typically 7–14 business days).
+**International Shipping** — Available to worldwide destinations. Rates calculated at checkout. Delivery times vary by destination (typically 10–20 business days).
 
-Orders placed Monday–Friday before 2 PM are dispatched the same day. Orders placed after 2 PM or on weekends are dispatched the next working day.
+Orders placed Monday–Saturday before 2 PM are dispatched the same day. Orders placed after 2 PM or on Sundays are dispatched the next working day.
 
-You'll receive a dispatch confirmation email with tracking information as soon as your order leaves our warehouse.
+You'll receive a dispatch confirmation message with tracking information as soon as your order leaves our warehouse.
 
 ---
 
@@ -26,9 +26,9 @@ You'll receive a dispatch confirmation email with tracking information as soon a
 We want you to be 100% satisfied with your A.K. Auto Care products. If you're not happy for any reason, we offer a **30-day hassle-free returns policy**.
 
 **To start a return:**
-1. Email us at hello@akautocare.co.uk with your order number and reason for return.
-2. We'll send you a prepaid returns label within 24 hours.
-3. Pack the item(s) securely and drop off at any Post Office.
+1. Email us at hello@akautocare.pk with your order number and reason for return.
+2. We'll get back to you within 24 hours with return instructions.
+3. Pack the item(s) securely and hand off to our designated courier.
 4. Once received and inspected, we'll process your refund within 3–5 business days.
 
 **Conditions:**
@@ -44,7 +44,7 @@ We want you to be 100% satisfied with your A.K. Auto Care products. If you're no
 
 Last updated: January 2024
 
-A.K. Auto Care ("we", "us", "our") is committed to protecting your personal data.
+A.K. Auto Care ("we", "us", "our") is committed to protecting your personal data in accordance with applicable Pakistani data protection laws.
 
 ### What we collect
 - **Contact information**: name, email, phone number
@@ -63,10 +63,10 @@ A.K. Auto Care ("we", "us", "our") is committed to protecting your personal data
 We use Stripe for payment processing. Stripe's privacy policy governs their use of your payment data. We do not sell your personal data to any third party.
 
 ### Cookies
-We use essential cookies for cart functionality and session management, and optional analytics cookies (Google Analytics). You may opt out of analytics cookies at any time.
+We use essential cookies for cart functionality and session management, and optional analytics cookies. You may opt out of analytics cookies at any time.
 
 ### Your rights
-Under UK GDPR you have the right to: access your data, correct inaccuracies, request deletion, and object to processing. Email us at hello@akautocare.co.uk to exercise these rights.
+You have the right to access your data, correct inaccuracies, request deletion, and object to processing. Email us at hello@akautocare.pk to exercise these rights.
     `,
   },
   terms: {
@@ -76,7 +76,7 @@ Under UK GDPR you have the right to: access your data, correct inaccuracies, req
 
 Last updated: January 2024
 
-Please read these terms carefully before using akautocare.co.uk.
+Please read these terms carefully before using akautocare.pk.
 
 ### Acceptance
 By using our website and placing orders, you agree to these terms.
@@ -85,19 +85,19 @@ By using our website and placing orders, you agree to these terms.
 All products are subject to availability. We reserve the right to discontinue any product at any time. Product images are for illustration; actual packaging may vary slightly.
 
 ### Pricing
-All prices are in GBP and include VAT where applicable. Prices may change without notice, but you'll always pay the price shown at the time of your order.
+All prices are in Pakistani Rupees (PKR) and include GST where applicable. Prices may change without notice, but you'll always pay the price shown at the time of your order.
 
 ### Orders
-An order confirmation email doesn't constitute acceptance. We reserve the right to cancel orders for reasons including stock unavailability or pricing errors, in which case a full refund will be issued.
+An order confirmation does not constitute acceptance. We reserve the right to cancel orders for reasons including stock unavailability or pricing errors, in which case a full refund will be issued.
 
 ### Liability
 A.K. Auto Care products are formulated for use as directed. We are not liable for damage resulting from misuse. Our liability is limited to the value of the products purchased.
 
 ### Governing Law
-These terms are governed by the laws of England and Wales.
+These terms are governed by the laws of Pakistan.
 
 ### Contact
-Questions about these terms? Email hello@akautocare.co.uk.
+Questions about these terms? Email hello@akautocare.pk.
     `,
   },
 };

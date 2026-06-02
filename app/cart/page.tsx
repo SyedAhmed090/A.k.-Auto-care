@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Trash2, ShoppingCart, ArrowRight, Tag, Truck } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
-import { vatAmount } from "@/lib/commerce";
+import { gstAmount, getShippingOptions, FREE_SHIPPING_THRESHOLD } from "@/lib/commerce";
 import QuantityStepper from "@/components/ui/QuantityStepper";
 
 export default function CartPage() {
@@ -17,9 +17,9 @@ export default function CartPage() {
   const sub = subtotal();
   const discount = sub * promoDiscount;
   const afterDiscount = sub - discount;
-  const shipping = afterDiscount >= 75 ? 0 : 3.99;
+  const shipping = getShippingOptions("PK", afterDiscount)[0]?.price ?? 0;
   const total = afterDiscount + shipping;
-  const vat = vatAmount(total);
+  const vat = gstAmount(total);
 
   const handlePromo = async () => {
     if (!promoInput.trim() || promoLoading) return;
@@ -138,7 +138,7 @@ export default function CartPage() {
                 {[
                   { label: "Subtotal", value: formatPrice(sub) },
                   ...(promoDiscount > 0 ? [{ label: `Discount (${promoCode})`, value: `-${formatPrice(discount)}`, accent: true }] : []),
-                  { label: "Est. Shipping (UK)", value: shipping === 0 ? "FREE" : formatPrice(shipping), green: shipping === 0 },
+                  { label: "Est. Shipping (PK)", value: shipping === 0 ? "FREE" : formatPrice(shipping), green: shipping === 0 },
                 ].map((row) => (
                   <div key={row.label} className="flex items-center justify-between">
                     <span style={{ color: "var(--muted)" }}>{row.label}</span>
@@ -152,7 +152,7 @@ export default function CartPage() {
                 ))}
                 {shipping > 0 && (
                   <p className="text-xs flex items-center gap-1.5" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
-                    <Truck className="w-3.5 h-3.5 flex-shrink-0" /> Add {formatPrice(75 - afterDiscount)} for free shipping
+                    <Truck className="w-3.5 h-3.5 flex-shrink-0" /> Add {formatPrice(FREE_SHIPPING_THRESHOLD - afterDiscount)} for free shipping
                   </p>
                 )}
                 <div
@@ -172,7 +172,7 @@ export default function CartPage() {
                   </span>
                 </div>
                 <p className="text-right text-[.72rem]" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
-                  Incl. VAT (20%): {formatPrice(vat)}
+                  Incl. GST (17%): {formatPrice(vat)}
                 </p>
                 <p className="text-[.72rem]" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
                   Final shipping &amp; method selected at checkout
