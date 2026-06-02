@@ -37,7 +37,6 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
         <h1 className="text-[1.8rem] uppercase" style={{ fontFamily: "var(--font-anton)" }}>Orders <span style={{ color: "var(--muted)", fontFamily: "var(--font-hanken)", fontSize: "1rem" }}>({total})</span></h1>
       </div>
 
-      {/* Status filter tabs */}
       <div className="flex gap-2 flex-wrap mb-6">
         {STATUSES.map((s) => (
           <Link
