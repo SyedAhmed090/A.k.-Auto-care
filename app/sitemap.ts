@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import products from "@/data/products";
+import categories from "@/data/categories";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://akautocareuk.com";
@@ -12,5 +13,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "weekly" as const,
     priority: 0.9,
   }));
-  return [...staticRoutes, ...productRoutes];
+  const categoryRoutes = categories.map((c) => ({
+    url: `${base}/categories/${c.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
+  return [...staticRoutes, ...productRoutes, ...categoryRoutes];
 }

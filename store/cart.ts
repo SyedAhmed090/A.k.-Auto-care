@@ -20,17 +20,12 @@ interface CartStore {
   removeItem: (productId: string, variantSku: string) => void;
   updateQty: (productId: string, variantSku: string, qty: number) => void;
   clearCart: () => void;
-  applyPromo: (code: string) => number;
+  applyPromo: (code: string) => Promise<{ valid: boolean; discount: number; reason?: string }>;
   removePromo: () => void;
   itemCount: () => number;
   subtotal: () => number;
 }
 
-const PROMO_CODES: Record<string, number> = {
-  AKCARE10: 0.1,
-  DETAIL20: 0.2,
-  LAUNCH15: 0.15,
-};
 
 export const useCartStore = create<CartStore>()(
   persist(
@@ -46,19 +41,20 @@ export const useCartStore = create<CartStore>()(
       addItem: (product, variant, qty = 1) => {
         set((state) => {
           const existing = state.items.find(
-            (i) =>
-              i.product.id === product.id && i.variant.sku === variant.sku
+            (i) => i.product.id === product.id && i.variant.sku === variant.sku
           );
+          const maxQty = product.stock ?? 99;
           if (existing) {
+            const newQty = Math.min(existing.quantity + qty, maxQty);
             return {
               items: state.items.map((i) =>
                 i.product.id === product.id && i.variant.sku === variant.sku
-                  ? { ...i, quantity: i.quantity + qty }
+                  ? { ...i, quantity: newQty }
                   : i
               ),
             };
           }
-          return { items: [...state.items, { product, variant, quantity: qty }] };
+          return { items: [...state.items, { product, variant, quantity: Math.min(qty, maxQty) }] };
         });
         set({ isOpen: true });
       },
@@ -71,28 +67,36 @@ export const useCartStore = create<CartStore>()(
         })),
 
       updateQty: (productId, variantSku, qty) => {
-        if (qty < 1) {
-          get().removeItem(productId, variantSku);
-          return;
-        }
+        if (qty < 1) { get().removeItem(productId, variantSku); return; }
         set((state) => ({
-          items: state.items.map((i) =>
-            i.product.id === productId && i.variant.sku === variantSku
-              ? { ...i, quantity: qty }
-              : i
-          ),
+          items: state.items.map((i) => {
+            if (i.product.id === productId && i.variant.sku === variantSku) {
+              const maxQty = i.product.stock ?? 99;
+              return { ...i, quantity: Math.min(qty, maxQty) };
+            }
+            return i;
+          }),
         }));
       },
 
       clearCart: () => set({ items: [], promoCode: "", promoDiscount: 0 }),
 
-      applyPromo: (code) => {
-        const discount = PROMO_CODES[code.toUpperCase()];
-        if (discount) {
-          set({ promoCode: code.toUpperCase(), promoDiscount: discount });
-          return discount;
+      applyPromo: async (code) => {
+        const subtotal = get().subtotal();
+        try {
+          const res = await fetch("/api/promo", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ code, subtotal }),
+          });
+          const data = await res.json();
+          if (data.valid) {
+            set({ promoCode: code.toUpperCase(), promoDiscount: data.discount });
+          }
+          return data;
+        } catch {
+          return { valid: false, reason: "Unable to validate code." };
         }
-        return 0;
       },
 
       removePromo: () => set({ promoCode: "", promoDiscount: 0 }),

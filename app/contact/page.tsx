@@ -15,9 +15,28 @@ type FormData = z.infer<typeof schema>;
 
 export default function ContactPage() {
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({ resolver: zodResolver(schema) });
 
-  const onSubmit = async () => { await new Promise((r) => setTimeout(r, 1000)); setSent(true); };
+  const onSubmit = async (data: FormData) => {
+    setError("");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      if (json.ok) {
+        setSent(true);
+      } else {
+        // show error in the form
+        setError(json.error ?? "Something went wrong. Please try again.");
+      }
+    } catch {
+      setError("Could not send message. Please try again.");
+    }
+  };
 
   const inputCls = "w-full px-4 py-3 rounded-[11px] text-sm outline-none transition-all";
   const inputStyle = { background: "var(--surface)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" };
@@ -51,12 +70,10 @@ export default function ContactPage() {
               ].map(({ icon: Icon, label, value, href }) => (
                 <a key={label} href={href} className="flex items-center gap-4 group">
                   <div
-                    className="w-10 h-10 rounded-[11px] grid place-items-center flex-shrink-0 transition-all"
+                    className="w-10 h-10 rounded-[11px] grid place-items-center flex-shrink-0 transition-all group-hover:bg-[var(--accent)]"
                     style={{ background: "var(--surface)", border: "1px solid var(--line-2)" }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--accent)"; (e.currentTarget.querySelector("svg") as HTMLElement | null)?.style && ((e.currentTarget.querySelector("svg") as HTMLElement).style.color = "#000"); }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--surface)"; (e.currentTarget.querySelector("svg") as HTMLElement | null)?.style && ((e.currentTarget.querySelector("svg") as HTMLElement).style.color = "var(--accent)"); }}
                   >
-                    <Icon className="w-[18px] h-[18px] transition-colors" style={{ color: "var(--accent)" }} />
+                    <Icon className="w-[18px] h-[18px] transition-colors group-hover:text-black" style={{ color: "var(--accent)" }} />
                   </div>
                   <div className="min-w-0">
                     <p className="text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>{label}</p>
@@ -107,6 +124,11 @@ export default function ContactPage() {
                   <textarea {...register("message")} rows={5} placeholder="Tell us more…" className={inputCls} style={{ ...inputStyle, borderColor: errors.message ? "#ef4444" : "var(--line-2)", resize: "vertical" }} />
                   {errors.message && <p className="text-xs mt-1" style={{ color: "#ef4444" }}>{errors.message.message}</p>}
                 </div>
+                {error && (
+                  <p className="text-sm px-4 py-2 rounded-[11px]" style={{ color: "#ef4444", background: "rgba(239,68,68,.08)", border: "1px solid rgba(239,68,68,.2)" }}>
+                    {error}
+                  </p>
+                )}
                 <button
                   type="submit"
                   disabled={isSubmitting}

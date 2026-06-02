@@ -1,14 +1,15 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Lock, ChevronDown, ChevronUp } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
+import { getShippingOptions, vatAmount } from "@/lib/commerce";
 
 const schema = z.object({
   email: z.string().email("Enter a valid email"),
@@ -55,14 +56,28 @@ export default function CheckoutPage() {
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [shippingId, setShippingId] = useState("");
   const router = useRouter();
 
   const sub = subtotal();
   const discount = sub * promoDiscount;
-  const shipping = sub >= 75 ? 0 : 4.99;
-  const total = sub - discount + shipping;
+  const afterDiscount = sub - discount;
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(schema) });
+  const { register, handleSubmit, formState: { errors }, control } = useForm<FormData>({ resolver: zodResolver(schema) });
+  const country = useWatch({ control, name: "country", defaultValue: "" });
+
+  const shippingOptions = getShippingOptions(country, afterDiscount);
+  const resolvedShipping = shippingOptions.find((o) => o.id === shippingId) ?? shippingOptions[0];
+  const shippingCost = resolvedShipping?.price ?? 0;
+  const total = afterDiscount + shippingCost;
+  const vat = vatAmount(total);
+
+  // Reset shipping selection when country (and therefore options) changes
+  useEffect(() => {
+    const opts = getShippingOptions(country, afterDiscount);
+    if (opts.length > 0) setShippingId(opts[0].id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [country]);
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
@@ -79,6 +94,7 @@ export default function CheckoutPage() {
           city: data.city,
           postcode: data.postcode,
           country: data.country,
+          shippingMethod: resolvedShipping?.label ?? "Standard",
           items: items.map((i) => ({
             productId: i.product.id,
             productName: i.product.name,
@@ -90,7 +106,7 @@ export default function CheckoutPage() {
           })),
           subtotal: sub,
           discount,
-          shipping,
+          shipping: shippingCost,
           total,
           promoCode: promoCode || null,
         }),
@@ -111,7 +127,7 @@ export default function CheckoutPage() {
       <div className="min-h-[60vh] flex items-center justify-center" style={{ background: "var(--bg)" }}>
         <div className="text-center">
           <p className="mb-4" style={{ color: "var(--muted)" }}>Your cart is empty.</p>
-          <Link href="/shop" className="inline-flex items-center gap-2 px-6 py-3 rounded-[13px] font-semibold" style={{ background: "var(--accent)", color: "#000" }}>Shop Now</Link>
+          <Link href="/shop" className="btn-accent inline-flex items-center gap-2 px-6 py-3 rounded-[13px] font-semibold">Shop Now</Link>
         </div>
       </div>
     );
@@ -169,6 +185,58 @@ export default function CheckoutPage() {
               </div>
             </SectionCard>
 
+            {/* Shipping Method */}
+            <SectionCard title="Shipping Method">
+              {shippingOptions.length === 0 ? (
+                <p className="text-sm" style={{ color: "var(--muted)" }}>Select a country above to see shipping options.</p>
+              ) : (
+                <div className="space-y-2.5">
+                  {shippingOptions.map((opt) => {
+                    const active = (resolvedShipping?.id ?? shippingOptions[0]?.id) === opt.id;
+                    return (
+                      <label
+                        key={opt.id}
+                        className="flex items-center gap-3 p-4 rounded-[13px] cursor-pointer transition-all"
+                        style={{
+                          border: active ? "1px solid var(--accent)" : "1px solid var(--line-2)",
+                          background: active ? "rgba(216,255,53,.04)" : "var(--bg-2)",
+                        }}
+                      >
+                        <input
+                          type="radio"
+                          name="shippingMethod"
+                          value={opt.id}
+                          checked={active}
+                          onChange={() => setShippingId(opt.id)}
+                          className="sr-only"
+                        />
+                        <div
+                          className="w-4 h-4 rounded-full flex-shrink-0 border-2 grid place-items-center"
+                          style={{ borderColor: active ? "var(--accent)" : "var(--line-2)" }}
+                        >
+                          {active && <div className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--accent)" }} />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-sm font-semibold">{opt.label}</span>
+                            <span
+                              className="text-sm font-bold"
+                              style={{ fontFamily: "var(--font-hanken)", color: opt.price === 0 ? "#4ade80" : "var(--text)" }}
+                            >
+                              {opt.price === 0 ? "FREE" : formatPrice(opt.price)}
+                            </span>
+                          </div>
+                          <p className="text-[.78rem]" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
+                            {opt.description}
+                          </p>
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
+              )}
+            </SectionCard>
+
             <SectionCard title="Payment">
               <div className="flex items-center justify-end -mt-1">
                 <div className="flex items-center gap-1.5 text-[.72rem]" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
@@ -209,8 +277,7 @@ export default function CheckoutPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 rounded-[13px] font-semibold flex items-center justify-center gap-2.5 transition-all cursor-pointer disabled:opacity-50 hover:-translate-y-0.5"
-              style={{ background: "var(--accent)", color: "#000" }}
+              className="w-full py-4 rounded-[13px] font-semibold flex items-center justify-center gap-2.5 transition-all cursor-pointer disabled:opacity-50 hover:-translate-y-0.5 btn-accent"
             >
               {loading ? (
                 <span className="flex items-center gap-2">
@@ -221,7 +288,9 @@ export default function CheckoutPage() {
                   Processing…
                 </span>
               ) : (
-                <span className="flex items-center justify-center gap-2.5"><Lock className="w-4 h-4" /> Pay {formatPrice(total)}</span>
+                <span className="flex items-center justify-center gap-2.5">
+                  <Lock className="w-4 h-4" /> Place Order · {formatPrice(total)}
+                </span>
               )}
             </button>
           </form>
@@ -264,12 +333,16 @@ export default function CheckoutPage() {
                 <div className="pt-3 space-y-2 text-sm" style={{ borderTop: "1px solid var(--line)" }}>
                   {[
                     { l: "Subtotal", v: formatPrice(sub) },
-                    ...(promoDiscount > 0 ? [{ l: "Discount", v: `-${formatPrice(discount)}`, accent: true }] : []),
-                    { l: "Shipping", v: shipping === 0 ? "FREE" : formatPrice(shipping) },
+                    ...(promoDiscount > 0 ? [{ l: `Discount (${promoCode})`, v: `-${formatPrice(discount)}`, accent: true }] : []),
+                    {
+                      l: resolvedShipping ? resolvedShipping.label : "Shipping",
+                      v: shippingCost === 0 ? "FREE" : shippingOptions.length === 0 ? "—" : formatPrice(shippingCost),
+                      green: shippingCost === 0,
+                    },
                   ].map((row) => (
                     <div key={row.l} className="flex justify-between">
                       <span style={{ color: "var(--muted)" }}>{row.l}</span>
-                      <span style={{ color: (row as any).accent ? "var(--accent)" : "var(--text)" }}>{row.v}</span>
+                      <span style={{ color: (row as any).accent ? "var(--accent)" : (row as any).green ? "#4ade80" : "var(--text)" }}>{row.v}</span>
                     </div>
                   ))}
                   <div className="flex justify-between pt-2" style={{ borderTop: "1px solid var(--line)" }}>
@@ -285,6 +358,9 @@ export default function CheckoutPage() {
                       {formatPrice(total)}
                     </span>
                   </div>
+                  <p className="text-right text-[.72rem]" style={{ color: "var(--muted-2)", fontFamily: "var(--font-space-mono)" }}>
+                    Incl. VAT (20%): {formatPrice(vat)}
+                  </p>
                 </div>
               </div>
             </div>

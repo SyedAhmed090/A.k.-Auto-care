@@ -5,22 +5,32 @@ import Image from "next/image";
 import { Trash2, ShoppingCart, ArrowRight, Tag, Truck } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
+import { vatAmount } from "@/lib/commerce";
 import QuantityStepper from "@/components/ui/QuantityStepper";
 
 export default function CartPage() {
   const { items, removeItem, updateQty, subtotal, promoCode, promoDiscount, applyPromo, removePromo, clearCart } = useCartStore();
   const [promoInput, setPromoInput] = useState("");
   const [promoMsg, setPromoMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [promoLoading, setPromoLoading] = useState(false);
 
   const sub = subtotal();
   const discount = sub * promoDiscount;
-  const shipping = sub >= 75 ? 0 : 4.99;
-  const total = sub - discount + shipping;
+  const afterDiscount = sub - discount;
+  const shipping = afterDiscount >= 75 ? 0 : 3.99;
+  const total = afterDiscount + shipping;
+  const vat = vatAmount(total);
 
-  const handlePromo = () => {
-    if (!promoInput.trim()) return;
-    const result = applyPromo(promoInput);
-    setPromoMsg(result ? { ok: true, text: `Code applied! ${(result * 100).toFixed(0)}% off` } : { ok: false, text: "Invalid code." });
+  const handlePromo = async () => {
+    if (!promoInput.trim() || promoLoading) return;
+    setPromoLoading(true);
+    const result = await applyPromo(promoInput);
+    setPromoLoading(false);
+    setPromoMsg(
+      result.valid
+        ? { ok: true, text: `Code applied! ${(result.discount * 100).toFixed(0)}% off` }
+        : { ok: false, text: result.reason ?? "Invalid code." }
+    );
   };
 
   if (items.length === 0) {
@@ -33,8 +43,7 @@ export default function CartPage() {
         <p className="mb-6 text-sm" style={{ color: "var(--muted)" }}>Add some products to continue shopping.</p>
         <Link
           href="/shop"
-          className="inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold transition-all hover:-translate-y-0.5"
-          style={{ background: "var(--accent)", color: "#000" }}
+          className="btn-accent inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold transition-all hover:-translate-y-0.5"
         >
           Browse Products <ArrowRight className="w-[18px] h-[18px]" />
         </Link>
@@ -95,10 +104,7 @@ export default function CartPage() {
                       </span>
                       <button
                         onClick={() => removeItem(item.product.id, item.variant.sku)}
-                        className="flex items-center justify-center w-7 h-7 rounded-md transition-colors cursor-pointer"
-                        style={{ color: "var(--muted-2)" }}
-                        onMouseEnter={(e) => (e.currentTarget.style.color = "#ef4444")}
-                        onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted-2)")}
+                        className="flex items-center justify-center w-7 h-7 rounded-md cursor-pointer hover-danger"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -109,10 +115,7 @@ export default function CartPage() {
             ))}
             <button
               onClick={clearCart}
-              className="flex items-center text-xs px-1 py-1 transition-colors cursor-pointer"
-              style={{ color: "var(--muted-2)" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#ef4444")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted-2)")}
+              className="flex items-center text-xs px-1 py-1 cursor-pointer hover-danger"
             >
               Clear cart
             </button>
@@ -135,13 +138,13 @@ export default function CartPage() {
                 {[
                   { label: "Subtotal", value: formatPrice(sub) },
                   ...(promoDiscount > 0 ? [{ label: `Discount (${promoCode})`, value: `-${formatPrice(discount)}`, accent: true }] : []),
-                  { label: "Shipping", value: shipping === 0 ? "FREE" : formatPrice(shipping), green: shipping === 0 },
+                  { label: "Est. Shipping (UK)", value: shipping === 0 ? "FREE" : formatPrice(shipping), green: shipping === 0 },
                 ].map((row) => (
                   <div key={row.label} className="flex items-center justify-between">
                     <span style={{ color: "var(--muted)" }}>{row.label}</span>
                     <span
                       className="font-semibold"
-                      style={{ color: (row as any).accent ? "var(--accent)" : (row as any).green ? "var(--accent)" : "var(--text)" }}
+                      style={{ color: (row as any).accent ? "var(--accent)" : (row as any).green ? "#4ade80" : "var(--text)" }}
                     >
                       {row.value}
                     </span>
@@ -149,7 +152,7 @@ export default function CartPage() {
                 ))}
                 {shipping > 0 && (
                   <p className="text-xs flex items-center gap-1.5" style={{ color: "var(--muted-2)", fontFamily: "var(--font-space-mono)" }}>
-                    <Truck className="w-3.5 h-3.5 flex-shrink-0" /> Add {formatPrice(75 - sub)} for free shipping
+                    <Truck className="w-3.5 h-3.5 flex-shrink-0" /> Add {formatPrice(75 - afterDiscount)} for free shipping
                   </p>
                 )}
                 <div
@@ -168,6 +171,12 @@ export default function CartPage() {
                     {formatPrice(total)}
                   </span>
                 </div>
+                <p className="text-right text-[.72rem]" style={{ color: "var(--muted-2)", fontFamily: "var(--font-space-mono)" }}>
+                  Incl. VAT (20%): {formatPrice(vat)}
+                </p>
+                <p className="text-[.72rem]" style={{ color: "var(--muted-2)", fontFamily: "var(--font-space-mono)" }}>
+                  Final shipping &amp; method selected at checkout
+                </p>
               </div>
 
               <div className="mb-5">
@@ -184,7 +193,7 @@ export default function CartPage() {
                     </span>
                     <button
                       onClick={() => { removePromo(); setPromoMsg(null); setPromoInput(""); }}
-                      className="text-[.75rem] transition-colors cursor-pointer"
+                      className="text-[.75rem] transition-colors cursor-pointer hover:text-[var(--text)]"
                       style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}
                     >
                       Remove
@@ -204,10 +213,11 @@ export default function CartPage() {
                       />
                       <button
                         onClick={handlePromo}
-                        className="flex-shrink-0 px-4 py-2.5 rounded-[11px] text-sm font-bold cursor-pointer transition-all"
+                        disabled={promoLoading}
+                        className="flex-shrink-0 px-4 py-2.5 rounded-[11px] text-sm font-bold cursor-pointer transition-all disabled:opacity-50 hover:bg-[var(--surface-2)]"
                         style={{ background: "var(--surface-2)", color: "var(--text)", border: "1px solid var(--line-2)" }}
                       >
-                        Apply
+                        {promoLoading ? "…" : "Apply"}
                       </button>
                     </div>
                     {promoMsg && (
@@ -221,16 +231,13 @@ export default function CartPage() {
 
               <Link
                 href="/checkout"
-                className="w-full py-4 rounded-[13px] font-semibold flex items-center justify-center gap-2.5 transition-all hover:-translate-y-0.5"
-                style={{ background: "var(--accent)", color: "#000", display: "flex" }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--accent-press)"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--accent)"; }}
+                className="btn-accent w-full py-4 rounded-[13px] font-semibold flex items-center justify-center gap-2.5 transition-all hover:-translate-y-0.5"
               >
                 Checkout <ArrowRight className="w-[18px] h-[18px]" />
               </Link>
               <Link
                 href="/shop"
-                className="block text-center text-sm mt-3 transition-colors"
+                className="block text-center text-sm mt-3 transition-colors hover:text-[var(--text)]"
                 style={{ color: "var(--muted)" }}
               >
                 Continue Shopping

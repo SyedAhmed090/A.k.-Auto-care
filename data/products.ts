@@ -16,6 +16,7 @@ export interface Product {
   price: number;
   variants: Variant[];
   images: string[];
+  stock?: number;
   inStock: boolean;
   featured: boolean;
   rating: number;
@@ -52,6 +53,7 @@ const products: Product[] = [
       "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80",
       "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
     ],
+    stock: 47,
     inStock: true,
     featured: true,
     rating: 4.8,
@@ -84,6 +86,7 @@ const products: Product[] = [
       "https://images.unsplash.com/photo-1558618047-f4e50b806c73?w=800&q=80",
       "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80",
     ],
+    stock: 3,
     inStock: true,
     featured: false,
     rating: 4.7,
@@ -114,6 +117,7 @@ const products: Product[] = [
       "https://images.unsplash.com/photo-1615906655593-ad0386982a0f?w=800&q=80",
       "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80",
     ],
+    stock: 28,
     inStock: true,
     featured: false,
     rating: 4.6,
@@ -147,6 +151,7 @@ const products: Product[] = [
       "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&q=80",
       "https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?w=800&q=80",
     ],
+    stock: 24,
     inStock: true,
     featured: true,
     rating: 4.9,
@@ -179,6 +184,7 @@ const products: Product[] = [
       "https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?w=800&q=80",
       "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&q=80",
     ],
+    stock: 2,
     inStock: true,
     featured: true,
     rating: 4.7,

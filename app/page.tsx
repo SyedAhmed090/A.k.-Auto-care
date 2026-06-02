@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight, ChevronRight } from "lucide-react";
@@ -14,6 +14,31 @@ const MARQUEE_ITEMS = [
 export default function HomePage() {
   const featured = getFeaturedProducts();
   const heroRef = useRef<HTMLElement>(null);
+  const [nlEmail, setNlEmail] = useState("");
+  const [nlState, setNlState] = useState<"idle" | "submitting" | "ok" | "error">("idle");
+  const [nlError, setNlError] = useState("");
+
+  const handleNewsletter = async () => {
+    if (!nlEmail.trim() || nlState === "submitting") return;
+    setNlState("submitting");
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: nlEmail }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setNlState("ok");
+      } else {
+        setNlError(data.error ?? "Something went wrong.");
+        setNlState("error");
+      }
+    } catch {
+      setNlError("Network error. Please try again.");
+      setNlState("error");
+    }
+  };
 
   // Scroll reveal
   useEffect(() => {
@@ -692,26 +717,40 @@ export default function HomePage() {
               <p className="max-w-[460px] mx-auto mb-8 text-[.97rem]" style={{ color: "var(--muted)" }}>
                 Get early access to new products and pro how-tos. No spam — just gloss.
               </p>
-              <div className="flex gap-3 max-w-[480px] mx-auto flex-wrap justify-center">
-                <input
-                  type="email"
-                  placeholder="your@email.com"
-                  className="flex-1 min-w-[220px] px-5 py-4 rounded-[13px] text-[1rem] outline-none transition-all"
-                  style={{
-                    background: "rgba(8,9,11,.6)",
-                    border: "1px solid var(--line-2)",
-                    color: "var(--text)",
-                    fontFamily: "var(--font-hanken)",
-                  }}
-                  onFocus={(e) => (e.target.style.borderColor = "var(--accent)")}
-                  onBlur={(e) => (e.target.style.borderColor = "var(--line-2)")}
-                />
-                <button
-                  className="btn-accent px-7 py-4 rounded-[13px] font-semibold transition-all hover:-translate-y-0.5 cursor-pointer"
-                >
-                  Subscribe
-                </button>
-              </div>
+              {nlState === "ok" ? (
+                <p className="text-[1rem] font-semibold" style={{ color: "var(--accent)", fontFamily: "var(--font-space-mono)" }}>
+                  You&apos;re on the list. Welcome to the garage.
+                </p>
+              ) : (
+                <div className="w-full max-w-[480px] mx-auto">
+                  <div className="flex gap-3 flex-wrap justify-center">
+                    <input
+                      type="email"
+                      value={nlEmail}
+                      onChange={(e) => { setNlEmail(e.target.value); if (nlState === "error") setNlState("idle"); }}
+                      onKeyDown={(e) => e.key === "Enter" && handleNewsletter()}
+                      placeholder="your@email.com"
+                      className="flex-1 min-w-[220px] px-5 py-4 rounded-[13px] text-[1rem] outline-none transition-all"
+                      style={{
+                        background: "rgba(8,9,11,.6)",
+                        border: `1px solid ${nlState === "error" ? "#ef4444" : "var(--line-2)"}`,
+                        color: "var(--text)",
+                        fontFamily: "var(--font-hanken)",
+                      }}
+                    />
+                    <button
+                      onClick={handleNewsletter}
+                      disabled={nlState === "submitting"}
+                      className="btn-accent px-7 py-4 rounded-[13px] font-semibold transition-all hover:-translate-y-0.5 cursor-pointer disabled:opacity-60"
+                    >
+                      {nlState === "submitting" ? "…" : "Subscribe"}
+                    </button>
+                  </div>
+                  {nlState === "error" && (
+                    <p className="mt-2 text-sm text-center" style={{ color: "#ef4444" }}>{nlError}</p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
