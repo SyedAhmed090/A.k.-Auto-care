@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -50,9 +51,11 @@ const SectionCard = ({ title, children }: { title: string; children: React.React
 );
 
 export default function CheckoutPage() {
-  const { items, subtotal, promoDiscount, clearCart } = useCartStore();
+  const { items, subtotal, promoDiscount, promoCode, clearCart } = useCartStore();
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const router = useRouter();
 
   const sub = subtotal();
   const discount = sub * promoDiscount;
@@ -61,12 +64,46 @@ export default function CheckoutPage() {
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(schema) });
 
-  const onSubmit = async () => {
+  const onSubmit = async (data: FormData) => {
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1800));
-    const orderId = "AK-" + Math.random().toString(36).slice(2, 8).toUpperCase();
-    clearCart();
-    window.location.href = `/order-confirmation?order=${orderId}&total=${total.toFixed(2)}`;
+    setSubmitError("");
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: data.email,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          address: data.address,
+          city: data.city,
+          postcode: data.postcode,
+          country: data.country,
+          items: items.map((i) => ({
+            productId: i.product.id,
+            productName: i.product.name,
+            variantLabel: i.variant.label,
+            variantSku: i.variant.sku,
+            price: i.variant.price,
+            quantity: i.quantity,
+            image: i.product.images[0],
+          })),
+          subtotal: sub,
+          discount,
+          shipping,
+          total,
+          promoCode: promoCode || null,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Order failed");
+      const { orderId } = await res.json();
+      clearCart();
+      router.push(`/order-confirmation?order=${orderId}`);
+    } catch {
+      setSubmitError("Something went wrong placing your order. Please try again.");
+      setLoading(false);
+    }
   };
 
   if (items.length === 0) {
@@ -162,6 +199,12 @@ export default function CheckoutPage() {
                 </div>
               </div>
             </SectionCard>
+
+            {submitError && (
+              <p className="text-sm text-center py-2 px-4 rounded-[11px]" style={{ color: "#ef4444", background: "rgba(239,68,68,.08)", border: "1px solid rgba(239,68,68,.2)" }}>
+                {submitError}
+              </p>
+            )}
 
             <button
               type="submit"

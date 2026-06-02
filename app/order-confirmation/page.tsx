@@ -1,13 +1,28 @@
-"use client";
-import { useSearchParams } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
 import { CheckCircle, Package, ArrowRight } from "lucide-react";
-import { Suspense } from "react";
+import { formatPrice } from "@/lib/utils";
 
-function Confirmation() {
-  const params = useSearchParams();
-  const orderId = params.get("order") ?? "AK-XXXXXX";
-  const total = params.get("total") ?? "0.00";
+async function getOrder(id: string) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+  const { data } = await supabase.from("orders").select().eq("id", id).single();
+  return data;
+}
+
+export default async function OrderConfirmationPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ order?: string }>;
+}) {
+  const { order: orderId } = await searchParams;
+  const order = orderId ? await getOrder(orderId) : null;
+
+  const displayId = orderId ? `AK-${orderId.slice(0, 8).toUpperCase()}` : "AK-XXXXXX";
+  const total = order?.total ? formatPrice(order.total) : "—";
+  const name = order ? `${order.first_name} ${order.last_name}` : null;
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4" style={{ background: "var(--bg)" }}>
@@ -18,6 +33,7 @@ function Confirmation() {
         >
           <CheckCircle className="w-9 h-9" style={{ color: "var(--accent)" }} />
         </div>
+
         <h1
           className="uppercase tracking-[.01em] mb-2"
           style={{ fontFamily: "var(--font-anton)", fontSize: "2.2rem" }}
@@ -25,7 +41,7 @@ function Confirmation() {
           Order Confirmed!
         </h1>
         <p className="mb-8 text-[.97rem]" style={{ color: "var(--muted)" }}>
-          Thank you. We&apos;ll send a confirmation to your email shortly.
+          {name ? `Thank you, ${order.first_name}.` : "Thank you."} We&apos;ll be in touch shortly.
         </p>
 
         <div
@@ -38,8 +54,9 @@ function Confirmation() {
           </div>
           <div className="text-sm">
             {[
-              { label: "Order Number", value: orderId, mono: true },
-              { label: "Total", value: `£${total}` },
+              { label: "Order Number", value: displayId, mono: true },
+              { label: "Total", value: total },
+              ...(order?.email ? [{ label: "Email", value: order.email }] : []),
               { label: "Estimated Delivery", value: "3–5 business days" },
               { label: "Status", value: "Processing", accent: true },
             ].map((row) => (
@@ -58,6 +75,30 @@ function Confirmation() {
               </div>
             ))}
           </div>
+
+          {order?.items && Array.isArray(order.items) && order.items.length > 0 && (
+            <div className="mt-4 space-y-3">
+              <p className="text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+                Items ordered
+              </p>
+              {order.items.map((item: any, i: number) => (
+                <div key={i} className="flex items-center justify-between gap-3 text-sm">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span
+                      className="w-5 h-5 rounded-full grid place-items-center text-[.6rem] font-bold flex-shrink-0"
+                      style={{ background: "var(--muted)", color: "var(--bg)", fontFamily: "var(--font-space-mono)" }}
+                    >
+                      {item.quantity}
+                    </span>
+                    <span className="truncate">{item.productName}</span>
+                  </div>
+                  <span className="whitespace-nowrap flex-shrink-0" style={{ fontFamily: "var(--font-space-mono)", fontSize: ".78rem" }}>
+                    {formatPrice(item.price * item.quantity)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <Link
@@ -73,8 +114,4 @@ function Confirmation() {
       </div>
     </div>
   );
-}
-
-export default function OrderConfirmationPage() {
-  return <Suspense><Confirmation /></Suspense>;
 }
