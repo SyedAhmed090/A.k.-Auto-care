@@ -71,7 +71,7 @@ export default function HomePage() {
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
           style={{ zIndex: 0 }}
-          src="https://ak.picdn.net/shutterstock/videos/3850691477/preview/stock-footage-man-polishes-taillight-car-headlight-polishing-machine.mp4"
+          src="/mixkit-close-up-of-a-man-polishing-a-newly-polished-car-47833-hd-ready.mp4"
         />
 
         {/* Dark overlay — dims the video so text remains legible */}
