@@ -1,11 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-
-// Server-side only — never exported to client
-const PROMOS: Record<string, { discount: number; minSpend: number }> = {
-  AKCARE10: { discount: 0.10, minSpend: 0 },
-  DETAIL20: { discount: 0.20, minSpend: 50 },
-  LAUNCH15: { discount: 0.15, minSpend: 0 },
-};
+import { PROMOS } from "@/lib/promos";
 
 export async function POST(req: NextRequest) {
   try {

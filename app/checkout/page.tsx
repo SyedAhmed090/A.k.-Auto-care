@@ -238,11 +238,6 @@ export default function CheckoutPage() {
             </SectionCard>
 
             <SectionCard title="Payment">
-              <div className="flex items-center justify-end -mt-1">
-                <div className="flex items-center gap-1.5 text-[.72rem]" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
-                  <Lock className="w-3.5 h-3.5" /> Secured by Stripe
-                </div>
-              </div>
               <div
                 className="rounded-[12px] p-5 flex items-center gap-4"
                 style={{ border: "1px solid var(--line-2)", background: "rgba(255,255,255,.03)" }}

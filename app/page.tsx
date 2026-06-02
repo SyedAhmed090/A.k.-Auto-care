@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowUpRight, ChevronRight } from "lucide-react";
 import { getFeaturedProducts } from "@/data/products";
+import categories from "@/data/categories";
 import ProductCard from "@/components/product/ProductCard";
 
 const MARQUEE_ITEMS = [
@@ -441,8 +442,71 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── CATEGORY SHOWCASE ── */}
+      <section style={{ borderTop: "1px solid var(--line)", background: "var(--bg-2)" }} className="py-[120px]">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-end justify-between gap-7 mb-12 flex-wrap reveal">
+            <div>
+              <div
+                className="flex items-center gap-2.5 mb-4 text-[.72rem] tracking-[.14em] uppercase"
+                style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
+              >
+                <span className="w-7 h-[1px]" style={{ background: "var(--accent)" }} />
+                Shop by Category
+              </div>
+              <h2
+                className="uppercase leading-[.96] tracking-[.01em]"
+                style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(2.2rem,5vw,4rem)" }}
+              >
+                Every product<br />in its place
+              </h2>
+            </div>
+            <Link
+              href="/shop"
+              className="btn-ghost inline-flex items-center gap-2.5 px-6 py-3 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5"
+            >
+              All products <ChevronRight className="w-4 h-4" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {categories.map((cat) => (
+              <Link
+                key={cat.slug}
+                href={`/categories/${cat.slug}`}
+                className="category-card group reveal rounded-[var(--r-lg)] p-6 flex flex-col justify-between min-h-[170px] transition-all hover:-translate-y-0.5"
+              >
+                <div
+                  className="text-[.68rem] tracking-[.18em] uppercase mb-3 flex items-center gap-2"
+                  style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
+                >
+                  <span className="w-4 h-[1px]" style={{ background: "var(--accent)" }} />
+                  {cat.slug.replace(/-/g, " ")}
+                </div>
+                <div>
+                  <h3
+                    className="uppercase leading-[.96] tracking-[.01em] mb-2 transition-colors group-hover:text-[var(--accent)]"
+                    style={{ fontFamily: "var(--font-anton)", fontSize: "1.5rem" }}
+                  >
+                    {cat.name}
+                  </h3>
+                  <p className="text-[.85rem] line-clamp-2 mb-4" style={{ color: "var(--muted)" }}>
+                    {cat.description}
+                  </p>
+                </div>
+                <div
+                  className="flex items-center gap-1 text-[.75rem] font-semibold"
+                  style={{ color: "var(--accent)", fontFamily: "var(--font-space-mono)" }}
+                >
+                  Shop now <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── BRAND STORY ── */}
-      <section style={{ borderTop: "1px solid var(--line)", background: "var(--bg-2)" }} className="py-24">
+      <section style={{ borderTop: "1px solid var(--line)" }} className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="reveal">

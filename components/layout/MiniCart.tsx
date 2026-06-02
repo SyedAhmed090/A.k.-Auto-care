@@ -94,10 +94,7 @@ export default function MiniCart() {
                         </span>
                         <button
                           onClick={() => removeItem(item.product.id, item.variant.sku)}
-                          className="flex items-center justify-center w-6 h-6 rounded transition-colors cursor-pointer"
-                          style={{ color: "var(--muted-2)" }}
-                          onMouseEnter={(e) => (e.currentTarget.style.color = "#ef4444")}
-                          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted-2)")}
+                          className="flex items-center justify-center w-6 h-6 rounded cursor-pointer hover-danger"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>

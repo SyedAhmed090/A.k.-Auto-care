@@ -90,7 +90,7 @@ export default function CartPage() {
                     {item.variant.label} · {formatPrice(item.variant.price)} each
                   </p>
                   <div className="flex items-center justify-between mt-3 gap-2 flex-wrap">
-                    <QuantityStepper value={item.quantity} onChange={(v) => updateQty(item.product.id, item.variant.sku, v)} />
+                    <QuantityStepper value={item.quantity} max={item.product.stock ?? 99} onChange={(v) => updateQty(item.product.id, item.variant.sku, v)} />
                     <div className="flex items-center gap-3">
                       <span
                         className="text-[1.3rem] leading-none"

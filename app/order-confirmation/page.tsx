@@ -1,13 +1,10 @@
-import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
 import { CheckCircle, Package, ArrowRight } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
+import { createAdminClient } from "@/utils/supabase/admin";
 
 async function getOrder(id: string) {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+  const supabase = createAdminClient();
   const { data } = await supabase.from("orders").select().eq("id", id).single();
   return data;
 }
