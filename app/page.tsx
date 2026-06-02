@@ -62,26 +62,49 @@ export default function HomePage() {
         ref={heroRef}
         className="relative min-h-[85vh] flex flex-col justify-between overflow-hidden pt-[120px] sm:pt-[140px] lg:pt-[160px]"
       >
-        {/* Accent glow */}
+        {/* Background video — swap src for the licensed MP4 once downloaded from Shutterstock
+            (clip 3850691477). Host in /public or upload to a CDN, then set src below. */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ zIndex: 0 }}
+          src="https://ak.picdn.net/shutterstock/videos/3850691477/preview/stock-footage-man-polishes-taillight-car-headlight-polishing-machine.mp4"
+        />
+
+        {/* Dark overlay — dims the video so text remains legible */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            zIndex: 1,
+            background: "linear-gradient(180deg, rgba(8,9,11,.72) 0%, rgba(8,9,11,.55) 50%, rgba(8,9,11,.82) 100%)",
+          }}
+        />
+
+        {/* Accent glow — sits on top of video */}
         <div
           className="absolute top-[-10%] left-1/2 -translate-x-1/2 pointer-events-none"
           style={{
+            zIndex: 1,
             width: "1100px", height: "700px",
-            background: "radial-gradient(ellipse at center, rgba(216,255,53,.10), transparent 60%)",
+            background: "radial-gradient(ellipse at center, rgba(216,255,53,.08), transparent 60%)",
             filter: "blur(20px)",
           }}
         />
         {/* Grid */}
         <div
-          className="absolute inset-0 opacity-[0.12] pointer-events-none"
+          className="absolute inset-0 opacity-[0.08] pointer-events-none"
           style={{
+            zIndex: 1,
             backgroundImage: "linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px)",
             backgroundSize: "64px 64px",
             maskImage: "radial-gradient(ellipse 90% 70% at 50% 30%,#000 30%,transparent 75%)",
           }}
         />
         {/* Hero content */}
-        <div className="relative z-[2] max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div className="relative z-[3] max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div
             className="reveal flex items-center gap-2.5 mb-8"
             style={{ color: "var(--muted)" }}
@@ -156,7 +179,7 @@ export default function HomePage() {
         </div>
 
         {/* Hero stage panel */}
-        <div className="relative z-[2] max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 w-full mt-14 reveal">
+        <div className="relative z-[3] max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 w-full mt-14 reveal">
           {/* Reflective panel */}
           <div
             className="relative h-[330px] rounded-[26px] overflow-hidden"
