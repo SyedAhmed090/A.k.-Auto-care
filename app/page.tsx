@@ -121,6 +121,13 @@ export default function HomePage() {
               </span>
             </div>
 
+            <p
+              className="reveal text-[1.15rem] mb-5"
+              style={{ fontFamily: "serif", color: "var(--accent)", direction: "rtl" }}
+            >
+              پاکستان کا بہترین کار کیئر برانڈ
+            </p>
+
             <h1
               className="reveal uppercase leading-[.92] tracking-[.01em]"
               style={{
@@ -545,7 +552,7 @@ export default function HomePage() {
                 Every formula in the A.K. lineup is developed for one outcome: a finish so clean it reflects the sky. We don&apos;t do approximate. We don&apos;t do &ldquo;good enough.&rdquo; We engineer surface chemistry for detailers who can see the difference between 70% and 100%.
               </p>
               <p className="text-[.96rem] leading-relaxed mb-8" style={{ color: "var(--muted)" }}>
-                Built in Pakistan. Tested on everything from daily drivers to concours-level restorations.
+                Formulated and distributed from Karachi. Tested on everything from daily commuters to concours-level restorations — in Pakistan's heat, dust, and monsoon.
               </p>
               <Link
                 href="/about"
@@ -596,21 +603,21 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {[
               {
-                name: "James R.",
-                role: "Professional Detailer, London",
-                text: "The ceramic coating is genuinely the best I've used at this price point. Slick application, zero streaking, and the hydrophobic effect is still going strong at 8 months.",
+                name: "Ahmed K.",
+                role: "Car Enthusiast, Karachi",
+                text: "My Civic was looking terrible after monsoon season — the ceramic coating completely transformed it. Six months later, rainwater still beads off perfectly. Best product I've found in Pakistan.",
                 rating: 5,
               },
               {
-                name: "Marcus T.",
-                role: "Enthusiast, Manchester",
-                text: "I've tried probably 15 different polishes over the years. The A.K. compound cut through my paint defects faster and left a better base for the sealant than anything else I've used.",
+                name: "Hassan M.",
+                role: "Professional Detailer, Lahore",
+                text: "In Punjab's summers, paint gets destroyed by UV and dust. The Armour 9H Ceramic is the only coating I've found that actually holds up through a Pakistani summer without fading or water spotting.",
                 rating: 5,
               },
               {
-                name: "Sophie K.",
-                role: "Detailing Studio Owner, Bristol",
-                text: "We switched our whole studio over to A.K. six months ago. The consistency batch-to-batch is exceptional — exactly what you need when you're doing 30+ cars a month.",
+                name: "Sana R.",
+                role: "Detailing Studio Owner, Islamabad",
+                text: "We detail 20+ cars a month. A.K.'s compound and polish combo gives consistent, world-class results every time — and the WhatsApp support is fast and genuinely helpful.",
                 rating: 5,
               },
             ].map((review) => (

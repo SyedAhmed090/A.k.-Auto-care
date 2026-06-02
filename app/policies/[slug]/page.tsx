@@ -7,17 +7,17 @@ const policies: Record<string, { title: string; content: string }> = {
     content: `
 ## Shipping Policy
 
-**Standard Delivery (Pakistan)** — Rs 199, delivered within 2–4 business days.
+**Standard Delivery (Pakistan)** — Rs 199, delivered within 1–2 business days in Karachi, 3–5 days for other cities.
 
 **Free Delivery** — On all orders over Rs 5,000. Applied automatically at checkout.
 
-**Express Delivery** — Rs 499, delivered next working day when ordered before 2 PM Monday–Saturday.
+**Express Delivery** — Rs 499. Same/next day in Karachi, 2–3 days for other cities. Order before 2 PM Monday–Saturday.
 
-**International Shipping** — Available to worldwide destinations. Rates calculated at checkout. Delivery times vary by destination (typically 10–20 business days).
+**International Shipping** — Available worldwide. Rates calculated at checkout. Delivery 5–20 business days.
 
-Orders placed Monday–Saturday before 2 PM are dispatched the same day. Orders placed after 2 PM or on Sundays are dispatched the next working day.
+All orders are dispatched from Karachi via **TCS** or **Leopards Courier**. You will receive a tracking number via WhatsApp or SMS once your order is dispatched.
 
-You'll receive a dispatch confirmation message with tracking information as soon as your order leaves our warehouse.
+Orders placed Monday–Saturday before 2 PM are dispatched the same day. Orders after 2 PM or on Sundays are dispatched the next working day.
 
 ---
 
@@ -26,15 +26,14 @@ You'll receive a dispatch confirmation message with tracking information as soon
 We want you to be 100% satisfied with your A.K. Auto Care products. If you're not happy for any reason, we offer a **30-day hassle-free returns policy**.
 
 **To start a return:**
-1. Email us at hello@akautocare.pk with your order number and reason for return.
-2. We'll get back to you within 24 hours with return instructions.
-3. Pack the item(s) securely and hand off to our designated courier.
-4. Once received and inspected, we'll process your refund within 3–5 business days.
+1. WhatsApp us at +92 300 0000000 or email hello@akautocare.pk with your order number and reason for return.
+2. We'll arrange a TCS or Leopards Courier pickup from your address within 24 hours.
+3. Once received and inspected at our Karachi warehouse (Block 7, PECHS, Karachi — 75400), we'll process your refund within 3–5 business days.
 
 **Conditions:**
 - Items must be returned in their original packaging.
 - Opened or partially used products are eligible for return if you're dissatisfied with performance — just let us know.
-- Refunds are issued to the original payment method.
+- Refunds are issued to your original payment method (JazzCash, EasyPaisa, bank account, or cash on return for COD orders).
     `,
   },
   privacy: {

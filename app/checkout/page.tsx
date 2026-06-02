@@ -57,6 +57,7 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [shippingId, setShippingId] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("cod");
   const router = useRouter();
 
   const sub = subtotal();
@@ -95,6 +96,7 @@ export default function CheckoutPage() {
           postcode: data.postcode,
           country: data.country,
           shippingMethod: resolvedShipping?.label ?? "Standard",
+          paymentMethod,
           items: items.map((i) => ({
             productId: i.product.id,
             productName: i.product.name,
@@ -238,30 +240,42 @@ export default function CheckoutPage() {
               )}
             </SectionCard>
 
-            <SectionCard title="Payment">
-              <div
-                className="rounded-[12px] p-5 flex items-center gap-4"
-                style={{ border: "1px solid var(--line-2)", background: "rgba(255,255,255,.03)" }}
-              >
-                <div
-                  className="w-10 h-10 rounded-full grid place-items-center flex-shrink-0"
-                  style={{ background: "rgba(216,255,53,.1)", border: "1px solid rgba(216,255,53,.2)" }}
-                >
-                  <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none" style={{ color: "var(--accent)" }}>
-                    <rect x="2" y="5" width="16" height="11" rx="2" stroke="currentColor" strokeWidth="1.5"/>
-                    <path d="M2 9h16" stroke="currentColor" strokeWidth="1.5"/>
-                    <path d="M6 13h3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                  </svg>
-                </div>
-                <div>
-                  <p className="text-[.88rem] font-semibold" style={{ color: "var(--text)", fontFamily: "var(--font-hanken)" }}>
-                    Secure payment coming soon
-                  </p>
-                  <p className="text-[.78rem] mt-0.5" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
-                    Stripe integration in progress — card details are never stored here
-                  </p>
-                </div>
+            <SectionCard title="Payment Method">
+              <div className="space-y-2.5">
+                {[
+                  { id: "cod", label: "Cash on Delivery (COD)", description: "Pay cash when your order arrives — no card needed", emoji: "💵" },
+                  { id: "jazzcash", label: "JazzCash", description: "Send to 0300-0000000 · Share screenshot on WhatsApp after ordering", emoji: "📱" },
+                  { id: "easypaisa", label: "EasyPaisa", description: "Send to 0300-0000000 · Share screenshot on WhatsApp after ordering", emoji: "📱" },
+                  { id: "bank", label: "Bank Transfer", description: "HBL · A/C: 0000-0000000-001 · Branch: PECHS, Karachi · Share receipt on WhatsApp", emoji: "🏦" },
+                ].map((method) => {
+                  const active = paymentMethod === method.id;
+                  return (
+                    <label
+                      key={method.id}
+                      className="flex items-center gap-3 p-4 rounded-[13px] cursor-pointer transition-all"
+                      style={{
+                        border: active ? "1px solid var(--accent)" : "1px solid var(--line-2)",
+                        background: active ? "rgba(216,255,53,.04)" : "var(--bg-2)",
+                      }}
+                    >
+                      <input type="radio" name="paymentMethod" value={method.id} checked={active} onChange={() => setPaymentMethod(method.id)} className="sr-only" />
+                      <div className="w-4 h-4 rounded-full flex-shrink-0 border-2 grid place-items-center" style={{ borderColor: active ? "var(--accent)" : "var(--line-2)" }}>
+                        {active && <div className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--accent)" }} />}
+                      </div>
+                      <span className="text-lg leading-none">{method.emoji}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold">{method.label}</p>
+                        <p className="text-[.75rem]" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>{method.description}</p>
+                      </div>
+                    </label>
+                  );
+                })}
               </div>
+              {paymentMethod !== "cod" && (
+                <p className="text-[.75rem] px-1 mt-1" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
+                  After placing your order, send your payment screenshot to our WhatsApp (+92 300 0000000). Your order will be confirmed once payment is verified.
+                </p>
+              )}
             </SectionCard>
 
             {submitError && (
@@ -285,7 +299,8 @@ export default function CheckoutPage() {
                 </span>
               ) : (
                 <span className="flex items-center justify-center gap-2.5">
-                  <Lock className="w-4 h-4" /> Place Order · {formatPrice(total)}
+                  <Lock className="w-4 h-4" />
+                  {paymentMethod === "cod" ? "Place Order — Pay on Delivery" : "Place Order — I'll Send Payment"} · {formatPrice(total)}
                 </span>
               )}
             </button>

@@ -24,14 +24,14 @@ export function getShippingOptions(country: string, subtotal: number): ShippingO
         price: subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 199,
         description:
           subtotal >= FREE_SHIPPING_THRESHOLD
-            ? "Free · 2–4 business days"
-            : "2–4 business days · Rs 199",
+            ? "Free · Karachi 1–2 days, other cities 3–5 days · TCS / Leopards"
+            : "Karachi 1–2 days, other cities 3–5 days · TCS / Leopards · Rs 199",
       },
       {
         id: "pk-express",
         label: "Express Delivery",
         price: 499,
-        description: "Next business day · order before 2pm",
+        description: "Karachi same/next day · other cities 2–3 days · order before 2pm",
       },
     ];
   }

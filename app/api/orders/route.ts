@@ -20,6 +20,7 @@ const orderSchema = z.object({
   postcode: z.string().min(3),
   country: z.string().min(2),
   shippingMethod: z.string(),
+  paymentMethod: z.enum(["cod", "jazzcash", "easypaisa", "bank"]).default("cod"),
   items: z.array(itemSchema).min(1).max(50),
   promoCode: z.string().nullable().optional(),
 });
@@ -101,6 +102,7 @@ export async function POST(req: NextRequest) {
         postcode: data.postcode,
         country: data.country,
         shipping_method: selectedShipping?.label ?? "Standard",
+        payment_method: data.paymentMethod,
         items: lineItems,
         subtotal,
         discount,

@@ -37,7 +37,7 @@ const products: Product[] = [
     categorySlug: "cleaners-degreasers",
     tagline: "Thick, clinging foam that lifts dirt without touching the paint.",
     description:
-      "Alpha Foam Cannon Soap is a high-sudsing, pH-neutral shampoo engineered for foam cannons and foam guns. Its thick foam sheet clings to vertical surfaces, dwelling on contaminants long enough to safely emulsify road grime, brake dust, and organic material before you ever touch the car.",
+      "Alpha Foam Cannon Soap is a high-sudsing, pH-neutral shampoo engineered for foam cannons and foam guns. Its thick foam sheet clings to vertical surfaces, dwelling on contaminants long enough to safely emulsify road grime, brake dust, and organic material before you ever touch the car. Especially effective in Karachi's dusty coastal environment — thick foam lifts road dust and sea-salt deposits safely before you ever touch the paint.",
     howToUse:
       "Dilute 30–60 ml per litre of water in your foam cannon reservoir. Apply top-down, let dwell 2–3 min, then rinse. Follow with a contact wash if needed.",
     specs: [
@@ -71,7 +71,7 @@ const products: Product[] = [
     categorySlug: "cleaners-degreasers",
     tagline: "Bleeds purple on contact — turns iron particles into liquid.",
     description:
-      "IronBuster is a pH-balanced, colour-changing fallout remover that reacts on contact with iron contamination. As the purple reaction spreads across the panel you can see exactly how contaminated your paint really is. Safe on painted surfaces, alloys, chrome, and glass.",
+      "IronBuster is a pH-balanced, colour-changing fallout remover that reacts on contact with iron contamination. As the purple reaction spreads across the panel you can see exactly how contaminated your paint really is. Safe on painted surfaces, alloys, chrome, and glass. In Pakistan's industrial and construction-heavy cities, iron fallout accumulates rapidly on exposed paintwork — IronBuster's colour-change reaction shows exactly how contaminated your car really is.",
     howToUse:
       "Spray onto cool, dry or damp paintwork. Allow 3–5 min dwell. Agitate with a soft brush where needed. Rinse thoroughly. Do not let dry on the surface.",
     specs: [
@@ -103,7 +103,7 @@ const products: Product[] = [
     categorySlug: "cleaners-degreasers",
     tagline: "Streak-free IPA solution for flawless pre-coating prep.",
     description:
-      "Panel Wipe is a ready-to-use isopropyl alcohol solution that strips oils, polish residue, and silicone from paint surfaces. A mandatory final step before applying any ceramic coating, wax, or sealant to ensure maximum bonding.",
+      "Panel Wipe is a ready-to-use isopropyl alcohol solution that strips oils, polish residue, and silicone from paint surfaces. A mandatory final step before applying any ceramic coating, wax, or sealant to ensure maximum bonding. Pakistan's humid monsoon season means waxes and coatings struggle to bond if prep is skipped — Panel Wipe guarantees a completely clean, oil-free surface every time.",
     howToUse:
       "Spray liberally onto a clean microfiber cloth. Wipe panel in straight lines. Buff immediately with a second dry cloth before it evaporates. Work one panel at a time.",
     specs: [
@@ -136,7 +136,7 @@ const products: Product[] = [
     categorySlug: "polishes-compounds",
     tagline: "Aggressive cut, minimal dust — removes deep scratches fast.",
     description:
-      "Cut King is a fast-cut, low-dust machine compound that aggressively removes P1500 and finer sanding marks, heavy swirls, and oxidation. Its diminishing abrasive technology means it refines as it cuts so you spend less time on correction.",
+      "Cut King is a fast-cut, low-dust machine compound that aggressively removes P1500 and finer sanding marks, heavy swirls, and oxidation. Its diminishing abrasive technology means it refines as it cuts so you spend less time on correction. Pakistan's extreme UV and sand-based micro-scratching leave deep defects in clear coat — Cut King's aggressive diminishing abrasive handles these conditions faster than any local alternative.",
     howToUse:
       "Apply a small amount to a foam or wool cutting pad. Work panel at speed 4–5 on a dual-action polisher. Wipe residue with a clean MF towel. Follow with a finishing polish.",
     specs: [
@@ -169,7 +169,7 @@ const products: Product[] = [
     categorySlug: "polishes-compounds",
     tagline: "Light correction and jaw-dropping gloss in a single step.",
     description:
-      "Gloss Finish is a light-cut, high-gloss one-step polish perfect for lightly swirled or single-stage paint. It removes minor defects and leaves behind a deep, reflective finish without a separate finishing polish step.",
+      "Gloss Finish is a light-cut, high-gloss one-step polish perfect for lightly swirled or single-stage paint. It removes minor defects and leaves behind a deep, reflective finish without a separate finishing polish step. For the light swirls that accumulate from daily dust wiping — a near-universal issue on Pakistani roads — Gloss Finish restores a deep, reflective finish in a single step.",
     howToUse:
       "Apply to a foam finishing pad. Work on speed 3–4 on a dual-action polisher. Buff off residue with a plush MF towel. Can be applied by hand for maintenance.",
     specs: [
@@ -203,7 +203,7 @@ const products: Product[] = [
     categorySlug: "waxes-sealants",
     tagline: "Brazilian carnauba warmth with 3-month durability.",
     description:
-      "Sovereign is a premium Grade-1 carnauba paste wax blended with synthetic polymers for extended durability without sacrificing the warm, liquid-depth look only carnauba can deliver. Suitable for all paint types.",
+      "Sovereign is a premium Grade-1 carnauba paste wax blended with synthetic polymers for extended durability without sacrificing the warm, liquid-depth look only carnauba can deliver. Suitable for all paint types. Pakistan's summer heat of up to 45°C demands a wax with real durability — Sovereign's Grade-1 carnauba blend holds through the hottest months without whitening or streaking.",
     howToUse:
       "Apply a thin, even coat with a foam applicator pad. Allow to haze (5–10 min in shade). Buff off with a plush microfiber towel using circular motions.",
     specs: [
@@ -235,7 +235,7 @@ const products: Product[] = [
     categorySlug: "waxes-sealants",
     tagline: "Synthetic polymer protection — 6 months of hydrophobic shine.",
     description:
-      "Shield is a pure synthetic polymer sealant that bonds to clear coat to deliver 6 months of water-beading, UV-blocking, and anti-contamination protection. Its slick finish is noticeably easier to maintain than untreated paint.",
+      "Shield is a pure synthetic polymer sealant that bonds to clear coat to deliver 6 months of water-beading, UV-blocking, and anti-contamination protection. Its slick finish is noticeably easier to maintain than untreated paint. Pakistan's monsoon rains and intense UV exposure test any paint protection layer — Shield's synthetic polymer bonds deeply and outlasts standard waxes through multiple seasons.",
     howToUse:
       "Apply a thin layer with a microfiber or foam applicator. Cure 20–30 min in the shade. Buff off with a clean MF cloth. Can be layered after 1 hour for added thickness.",
     specs: [
@@ -268,7 +268,7 @@ const products: Product[] = [
     categorySlug: "ceramic-coatings",
     tagline: "Professional-grade 9H nano-ceramic in a DIY bottle.",
     description:
-      "Armour Ceramic 9H is a professional-grade SiO2 ceramic coating brought to the DIYer. Its nano-ceramic formula achieves a pencil hardness of 9H, providing extreme scratch resistance, chemical resistance, and a hydrophobic effect that lasts 3+ years.",
+      "Armour Ceramic 9H is a professional-grade SiO2 ceramic coating brought to the DIYer. Its nano-ceramic formula achieves a pencil hardness of 9H, providing extreme scratch resistance, chemical resistance, and a hydrophobic effect that lasts 3+ years. Engineered to survive Pakistan's extreme temperature swings — 45°C summer highs to cool winters — and resist the industrial pollution and dust that shortens paint life across Karachi and Lahore.",
     howToUse:
       "Apply to fully corrected, panel-wiped paint only. Wrap suede applicator, apply 5–6 drops per panel, spread in a cross-hatch pattern. Allow flash time (~2 min), level with a clean MF towel. Cure 12 hours before water contact.",
     specs: [
@@ -301,7 +301,7 @@ const products: Product[] = [
     categorySlug: "ceramic-coatings",
     tagline: "Spray-on graphene topcoat — 12 months with zero effort.",
     description:
-      "Graphene Boost is a spray-on graphene-infused Si coating that adds 12 months of water-repelling, anti-static, and anti-water-spot protection. Works over bare paint, existing waxes, sealants, or ceramic coatings as a maintenance layer.",
+      "Graphene Boost is a spray-on graphene-infused Si coating that adds 12 months of water-repelling, anti-static, and anti-water-spot protection. Works over bare paint, existing waxes, sealants, or ceramic coatings as a maintenance layer. Karachi's coastal salt air and fine construction dust are particularly damaging to bare paint — Graphene Boost's anti-static graphene layer actively repels dust particles between washes.",
     howToUse:
       "Mist 2–3 sprays per panel onto a damp or dry, clean surface. Spread with a damp MF cloth, flip and buff dry. Works as a detailing spray topcoat.",
     specs: [
@@ -334,7 +334,7 @@ const products: Product[] = [
     categorySlug: "towels-applicators",
     tagline: "1200 GSM plush pile — the gentlest wipe for your paint.",
     description:
-      "Ultra Plush towels use a 70/30 polyester/polyamide blend at 1200 GSM to deliver maximum absorption and zero marring on the most delicate paint finishes. Silk-banded edges prevent scratching during buffing.",
+      "Ultra Plush towels use a 70/30 polyester/polyamide blend at 1200 GSM to deliver maximum absorption and zero marring on the most delicate paint finishes. Silk-banded edges prevent scratching during buffing. In Pakistan's dusty conditions, towel quality is everything — these 1200 GSM silk-banded microfibers lift residue without dragging particles across the paint surface.",
     howToUse:
       "Use for final wipe-down, wax/polish removal, or spray detailer maintenance. Wash before first use. Machine wash cold, no fabric softener, tumble dry low.",
     specs: [
@@ -367,7 +367,7 @@ const products: Product[] = [
     categorySlug: "towels-applicators",
     tagline: "Open-cell & closed-cell foam in one pad for total control.",
     description:
-      "These dual-sided foam applicator pads feature an open-cell face for spreading creams, waxes, and light polishes, with a closed-cell backing for even pressure on curves and tight areas. Finger pocket for precise control.",
+      "These dual-sided foam applicator pads feature an open-cell face for spreading creams, waxes, and light polishes, with a closed-cell backing for even pressure on curves and tight areas. Finger pocket for precise control. Dual-density foam that holds up in Pakistan's heat — the closed-cell backing resists compression even in high-temperature storage conditions common across the country.",
     howToUse:
       "Dampen pad slightly before use. Apply product to the open-cell face. Spread product in circular overlapping motions. Rinse thoroughly after use and air-dry.",
     specs: [
@@ -400,7 +400,7 @@ const products: Product[] = [
     categorySlug: "kits-bundles",
     tagline: "Everything to take your car from grimy to gleaming.",
     description:
-      "The Full Detail Starter Kit packs our most popular products into one discounted bundle — perfect for first-time detailers or anyone streamlining their setup. Includes foam soap, fallout remover, one-step polish, carnauba wax, and 3 ultra-plush towels.",
+      "The Full Detail Starter Kit packs our most popular products into one discounted bundle — perfect for first-time detailers or anyone streamlining their setup. Includes foam soap, fallout remover, one-step polish, carnauba wax, and 3 ultra-plush towels. Everything you need for a complete Pakistani car care session — from dusty pre-wash to wax-sealed finish — at a bundled price that beats buying individually.",
     howToUse:
       "Follow the sequence: foam wash → fallout remover → one-step polish → carnauba wax → final wipe. Full step-by-step guide included in the box.",
     specs: [
@@ -428,7 +428,7 @@ const products: Product[] = [
     categorySlug: "kits-bundles",
     tagline: "Full paint decon, correction, and ceramic coating system.",
     description:
-      "The Ceramic Pro Kit is the complete professional workflow: IPA panel wipe, heavy compound, finishing polish, Armour 9H ceramic coating, and 6 ultra-plush towels — everything needed from bare paint to ceramic-sealed perfection.",
+      "The Ceramic Pro Kit is the complete professional workflow: IPA panel wipe, heavy compound, finishing polish, Armour 9H ceramic coating, and 6 ultra-plush towels — everything needed from bare paint to ceramic-sealed perfection. The complete professional workflow tuned for Pakistan: strip monsoon grime, correct heat-induced swirls, panel wipe, then seal with Armour 9H ceramic for years of protection in our conditions.",
     howToUse:
       "Follow the 5-stage system included: strip → compound → polish → panel wipe → coat. Step-by-step digital guide in the box.",
     specs: [
@@ -456,7 +456,7 @@ const products: Product[] = [
     categorySlug: "waxes-sealants",
     tagline: "Between-wash gloss booster with light protection.",
     description:
-      "Quick Detailer is a spray-and-wipe maintenance product that removes light dust, fingerprints, and water spots between washes while adding a slick, high-gloss finish. Compatible with all paint protection layers.",
+      "Quick Detailer is a spray-and-wipe maintenance product that removes light dust, fingerprints, and water spots between washes while adding a slick, high-gloss finish. Compatible with all paint protection layers. Between washes in Karachi's dusty streets, Quick Detailer removes light dust without water — protecting your coating daily and keeping paint looking freshly detailed all week.",
     howToUse:
       "Mist 2–3 sprays per panel. Spread with a clean MF towel on one side, flip and buff to a streak-free finish. Use on a cool, shaded surface.",
     specs: [
