@@ -57,129 +57,130 @@ export default function HomePage() {
   return (
     <>
       {/* ── HERO ── */}
-      <section
-        id="hero"
-        ref={heroRef}
-        className="relative min-h-[85vh] flex flex-col justify-between overflow-hidden pt-[120px] sm:pt-[140px] lg:pt-[160px]"
-      >
-        {/* Background video — swap src for the licensed MP4 once downloaded from Shutterstock
-            (clip 3850691477). Host in /public or upload to a CDN, then set src below. */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ zIndex: 0 }}
-          src="/mixkit-close-up-of-a-man-polishing-a-newly-polished-car-47833-hd-ready.mp4"
-        />
+      <section id="hero" ref={heroRef} className="flex flex-col">
 
-        {/* Dark overlay — dims the video so text remains legible */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            zIndex: 1,
-            background: "linear-gradient(180deg, rgba(8,9,11,.72) 0%, rgba(8,9,11,.55) 50%, rgba(8,9,11,.82) 100%)",
-          }}
-        />
+        {/* ── VIDEO BLOCK — video covers only this top portion, ending after the CTAs ── */}
+        <div className="relative overflow-hidden min-h-[85vh] flex flex-col justify-end pt-[120px] sm:pt-[140px] lg:pt-[160px] pb-20">
+          {/* Background video */}
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ zIndex: 0 }}
+            src="/mixkit-close-up-of-a-man-polishing-a-newly-polished-car-47833-hd-ready.mp4"
+          />
 
-        {/* Accent glow — sits on top of video */}
-        <div
-          className="absolute top-[-10%] left-1/2 -translate-x-1/2 pointer-events-none"
-          style={{
-            zIndex: 1,
-            width: "1100px", height: "700px",
-            background: "radial-gradient(ellipse at center, rgba(216,255,53,.08), transparent 60%)",
-            filter: "blur(20px)",
-          }}
-        />
-        {/* Grid */}
-        <div
-          className="absolute inset-0 opacity-[0.08] pointer-events-none"
-          style={{
-            zIndex: 1,
-            backgroundImage: "linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px)",
-            backgroundSize: "64px 64px",
-            maskImage: "radial-gradient(ellipse 90% 70% at 50% 30%,#000 30%,transparent 75%)",
-          }}
-        />
-        {/* Hero content */}
-        <div className="relative z-[3] max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          {/* Dark overlay */}
           <div
-            className="reveal flex items-center gap-2.5 mb-8"
-            style={{ color: "var(--muted)" }}
-          >
-            <span
-              className="w-[7px] h-[7px] rounded-full"
-              style={{ background: "var(--accent)", boxShadow: "0 0 12px var(--accent)" }}
-            />
-            <span
-              className="text-[.72rem] tracking-[.14em] uppercase"
-              style={{ fontFamily: "var(--font-space-mono)" }}
-            >
-              Pro-grade surface science
-            </span>
-          </div>
-
-          <h1
-            className="reveal uppercase leading-[.92] tracking-[.01em]"
+            className="absolute inset-0 pointer-events-none"
             style={{
-              fontFamily: "var(--font-anton)",
-              fontSize: "clamp(3.4rem, 9.5vw, 9rem)",
+              zIndex: 1,
+              background: "linear-gradient(180deg, rgba(8,9,11,.65) 0%, rgba(8,9,11,.45) 40%, rgba(8,9,11,.80) 100%)",
             }}
-            data-d="0"
-          >
-            <span className="block">FLAWLESS</span>
-            <span
-              className="block"
-              style={{
-                background: "linear-gradient(170deg,#fff 0%,#e7eaef 18%,#9aa0ab 46%,#fff 60%,#aeb4be 78%,#5b606b 100%)",
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                color: "transparent",
-              }}
-            >
-              FINISH,
-            </span>
-            <span
-              className="block"
-              style={{
-                WebkitTextStroke: "1.4px #c5cad2",
-                color: "transparent",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              START
-            </span>
-            <span className="block">TO FINISH.</span>
-          </h1>
+          />
 
-          <p
-            className="reveal mt-7 text-[1.12rem] max-w-[520px]"
-            style={{ color: "var(--muted)" }}
-          >
-            Prep, correct, coat, protect. Engineered car care products trusted by
-            detailers and obsessives who refuse to settle for &ldquo;good enough.&rdquo;
-          </p>
+          {/* Accent glow */}
+          <div
+            className="absolute top-[-10%] left-1/2 -translate-x-1/2 pointer-events-none"
+            style={{
+              zIndex: 1,
+              width: "1100px", height: "700px",
+              background: "radial-gradient(ellipse at center, rgba(216,255,53,.08), transparent 60%)",
+              filter: "blur(20px)",
+            }}
+          />
 
-          <div className="reveal flex flex-wrap gap-4 mt-9">
-            <Link
-              href="/shop"
-              className="btn-accent inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5"
+          {/* Grid */}
+          <div
+            className="absolute inset-0 opacity-[0.08] pointer-events-none"
+            style={{
+              zIndex: 1,
+              backgroundImage: "linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px)",
+              backgroundSize: "64px 64px",
+              maskImage: "radial-gradient(ellipse 90% 70% at 50% 30%,#000 30%,transparent 75%)",
+            }}
+          />
+
+          {/* Hero content */}
+          <div className="relative z-[3] max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <div
+              className="reveal flex items-center gap-2.5 mb-8"
+              style={{ color: "var(--muted)" }}
             >
-              Shop the lineup <ArrowUpRight className="w-[18px] h-[18px]" />
-            </Link>
-            <Link
-              href="/about"
-              className="btn-ghost inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5"
+              <span
+                className="w-[7px] h-[7px] rounded-full"
+                style={{ background: "var(--accent)", boxShadow: "0 0 12px var(--accent)" }}
+              />
+              <span
+                className="text-[.72rem] tracking-[.14em] uppercase"
+                style={{ fontFamily: "var(--font-space-mono)" }}
+              >
+                Pro-grade surface science
+              </span>
+            </div>
+
+            <h1
+              className="reveal uppercase leading-[.92] tracking-[.01em]"
+              style={{
+                fontFamily: "var(--font-anton)",
+                fontSize: "clamp(3.4rem, 9.5vw, 9rem)",
+              }}
+              data-d="0"
             >
-              See the process
-            </Link>
+              <span className="block">FLAWLESS</span>
+              <span
+                className="block"
+                style={{
+                  background: "linear-gradient(170deg,#fff 0%,#e7eaef 18%,#9aa0ab 46%,#fff 60%,#aeb4be 78%,#5b606b 100%)",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  color: "transparent",
+                }}
+              >
+                FINISH,
+              </span>
+              <span
+                className="block"
+                style={{
+                  WebkitTextStroke: "1.4px #c5cad2",
+                  color: "transparent",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                START
+              </span>
+              <span className="block">TO FINISH.</span>
+            </h1>
+
+            <p
+              className="reveal mt-7 text-[1.12rem] max-w-[520px]"
+              style={{ color: "var(--muted)" }}
+            >
+              Prep, correct, coat, protect. Engineered car care products trusted by
+              detailers and obsessives who refuse to settle for &ldquo;good enough.&rdquo;
+            </p>
+
+            <div className="reveal flex flex-wrap gap-4 mt-9">
+              <Link
+                href="/shop"
+                className="btn-accent inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5"
+              >
+                Shop the lineup <ArrowUpRight className="w-[18px] h-[18px]" />
+              </Link>
+              <Link
+                href="/about"
+                className="btn-ghost inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5"
+              >
+                See the process
+              </Link>
+            </div>
           </div>
         </div>
 
-        {/* Hero stage panel */}
-        <div className="relative z-[3] max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 w-full mt-14 reveal">
+        {/* ── STAGE PANEL — sits below the video on solid dark background ── */}
+        <div className="relative max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 w-full mt-14 reveal">
           {/* Reflective panel */}
           <div
             className="relative h-[330px] rounded-[26px] overflow-hidden"
