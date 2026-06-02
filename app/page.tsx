@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowUpRight, ChevronRight } from "lucide-react";
 import { getFeaturedProducts } from "@/data/products";
 import ProductCard from "@/components/product/ProductCard";
@@ -180,13 +179,7 @@ export default function HomePage() {
               className="absolute left-0 right-0 top-[38%] h-[2px]"
               style={{ background: "linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent)" }}
             />
-            <Image
-              src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1400&q=80"
-              alt="Luxury car"
-              fill
-              priority
-              className="object-cover opacity-40"
-            />
+            {/* TODO: replace with real product/car photography */}
 
 
             <div className="absolute bottom-6 left-5 right-5 sm:left-7 sm:right-7 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3 sm:gap-5 z-[2]">
@@ -260,26 +253,26 @@ export default function HomePage() {
 
       {/* ── MARQUEE ── */}
       <div
-        className="overflow-hidden opacity-60"
+        className="overflow-hidden opacity-40"
         style={{ borderBottom: "1px solid var(--line)" }}
       >
-        <div className="flex items-center gap-[34px] py-[14px] whitespace-nowrap marquee-track" style={{ animationDuration: "60s" }}>
+        <div className="flex items-center gap-[34px] py-[12px] whitespace-nowrap marquee-track" style={{ animationDuration: "80s" }}>
           {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
             <span key={i} className="flex items-center gap-[34px]">
               <span
-                className="text-[.72rem] tracking-[.18em] uppercase"
+                className="text-[.68rem] tracking-[.18em] uppercase"
                 style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
               >
                 {item}
               </span>
-              <span className="text-[.9rem] opacity-50" style={{ color: "var(--muted)" }}>✦</span>
+              <span className="text-[.7rem] opacity-40" style={{ color: "var(--muted)" }}>·</span>
             </span>
           ))}
         </div>
       </div>
 
       {/* ── FEATURED PRODUCT SPOTLIGHT ── */}
-      <section style={{ borderTop: "1px solid var(--line)" }} className="py-[120px]">
+      <section style={{ borderTop: "1px solid var(--line)", background: "var(--bg-2)" }} className="py-[120px]">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Stage */}
@@ -290,12 +283,7 @@ export default function HomePage() {
                 border: "1px solid var(--line)",
               }}
             >
-              <Image
-                src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80"
-                alt="Ceramic coating product"
-                fill
-                className="object-cover opacity-30"
-              />
+              {/* TODO: replace with real product photography */}
               {/* CSS product bottle */}
               <div className="relative z-[2] flex flex-col items-center">
                 <div
@@ -454,7 +442,7 @@ export default function HomePage() {
       </section>
 
       {/* ── BRAND STORY ── */}
-      <section style={{ borderTop: "1px solid var(--line)" }} className="py-24">
+      <section style={{ borderTop: "1px solid var(--line)", background: "var(--bg-2)" }} className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="reveal">
@@ -545,7 +533,7 @@ export default function HomePage() {
               >
                 <div className="flex gap-0.5">
                   {Array.from({ length: review.rating }).map((_, i) => (
-                    <svg key={i} className="w-4 h-4" viewBox="0 0 16 16" fill="var(--accent)">
+                    <svg key={i} className="w-4 h-4" viewBox="0 0 16 16" fill="#f59e0b">
                       <path d="M8 1l1.85 3.75L14 5.5l-3 2.9.7 4.1L8 10.5l-3.7 1.95L5 8.4 2 5.5l4.15-.75L8 1z" />
                     </svg>
                   ))}
@@ -562,7 +550,7 @@ export default function HomePage() {
           </div>
           <div className="text-center mt-10 reveal">
             <div className="inline-flex items-center gap-3 text-[.78rem]" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
-              <span style={{ color: "var(--accent)" }}>★ 4.9 / 5</span>
+              <span style={{ color: "#f59e0b" }}>★ 4.9 / 5</span>
               <span style={{ color: "var(--line-2)" }}>|</span>
               Based on 200+ verified purchases
             </div>
@@ -624,7 +612,7 @@ export default function HomePage() {
       </section>
 
       {/* ── PROCESS ── */}
-      <section style={{ borderTop: "1px solid var(--line)" }} className="py-[120px]">
+      <section style={{ borderTop: "1px solid var(--line)", background: "var(--bg-2)" }} className="py-[120px]">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between gap-7 mb-0 flex-wrap reveal">
             <div>
@@ -665,8 +653,8 @@ export default function HomePage() {
                 style={{ borderColor: "var(--line)" }}
               >
                 <div
-                  className="text-[.8rem] mb-12"
-                  style={{ fontFamily: "var(--font-space-mono)", color: "var(--accent)" }}
+                  className="text-[.72rem] mb-4"
+                  style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
                 >
                   / STEP {step.n}
                 </div>
@@ -687,19 +675,13 @@ export default function HomePage() {
       <section className="py-[120px]">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
           <div
-            className="reveal relative rounded-[28px] overflow-hidden py-14 px-6 sm:py-16 sm:px-12 lg:py-[72px] lg:px-[60px]"
+            className="reveal rounded-[28px] py-14 px-6 sm:py-16 sm:px-12 lg:py-[72px] lg:px-[60px]"
             style={{
-              background: "radial-gradient(120% 120% at 80% 0%,rgba(216,255,53,.10),transparent 50%), linear-gradient(160deg,var(--surface),var(--bg-2))",
+              background: "radial-gradient(120% 120% at 80% 0%,rgba(216,255,53,.12),transparent 50%), linear-gradient(160deg,var(--surface),var(--bg-2))",
               border: "1px solid var(--line-2)",
             }}
           >
-            <Image
-              src="https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=1200&q=80"
-              alt="Detailing"
-              fill
-              className="object-cover opacity-25"
-            />
-            <div className="relative z-[2] flex flex-col items-center text-center">
+            <div className="flex flex-col items-center text-center">
               <div
                 className="flex items-center justify-center gap-2.5 mb-4 text-[.72rem] tracking-[.14em] uppercase"
                 style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}

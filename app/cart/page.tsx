@@ -151,7 +151,7 @@ export default function CartPage() {
                   </div>
                 ))}
                 {shipping > 0 && (
-                  <p className="text-xs flex items-center gap-1.5" style={{ color: "var(--muted-2)", fontFamily: "var(--font-space-mono)" }}>
+                  <p className="text-xs flex items-center gap-1.5" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
                     <Truck className="w-3.5 h-3.5 flex-shrink-0" /> Add {formatPrice(75 - afterDiscount)} for free shipping
                   </p>
                 )}
@@ -171,10 +171,10 @@ export default function CartPage() {
                     {formatPrice(total)}
                   </span>
                 </div>
-                <p className="text-right text-[.72rem]" style={{ color: "var(--muted-2)", fontFamily: "var(--font-space-mono)" }}>
+                <p className="text-right text-[.72rem]" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
                   Incl. VAT (20%): {formatPrice(vat)}
                 </p>
-                <p className="text-[.72rem]" style={{ color: "var(--muted-2)", fontFamily: "var(--font-space-mono)" }}>
+                <p className="text-[.72rem]" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
                   Final shipping &amp; method selected at checkout
                 </p>
               </div>

@@ -25,6 +25,9 @@ export interface Product {
   createdAt: string;
 }
 
+// TODO: replace all Unsplash placeholder images with real product photography.
+// Each product should have distinct owned shots; placeholder images are reused
+// across products and are for layout/sizing reference only.
 const products: Product[] = [
   // ─── Cleaners & Degreasers ───────────────────────────────
   {

@@ -358,7 +358,7 @@ export default function CheckoutPage() {
                       {formatPrice(total)}
                     </span>
                   </div>
-                  <p className="text-right text-[.72rem]" style={{ color: "var(--muted-2)", fontFamily: "var(--font-space-mono)" }}>
+                  <p className="text-right text-[.72rem]" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
                     Incl. VAT (20%): {formatPrice(vat)}
                   </p>
                 </div>
