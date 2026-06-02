@@ -1,9 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createHash } from "crypto";
 
 const COOKIE = "ak_admin_session";
 
-export function middleware(req: NextRequest) {
+async function sha256Hex(text: string): Promise<string> {
+  const data = new TextEncoder().encode(text);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(hashBuffer))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Only protect /admin/* (not /api/admin/login itself)
@@ -17,7 +24,7 @@ export function middleware(req: NextRequest) {
   }
 
   const token = req.cookies.get(COOKIE)?.value;
-  const expected = createHash("sha256").update(`ak-admin:${secret}`).digest("hex");
+  const expected = await sha256Hex(`ak-admin:${secret}`);
 
   if (token !== expected) {
     const loginUrl = req.nextUrl.clone();
