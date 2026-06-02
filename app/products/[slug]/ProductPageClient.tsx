@@ -232,7 +232,7 @@ export default function ProductPageClient({ product, related }: { product: Produ
 
             {/* Trust */}
             <div className="rounded-[14px] p-4 space-y-2" style={{ background: "var(--surface)", border: "1px solid var(--line)" }}>
-              {["Free shipping on orders over £75", "30-day hassle-free returns", "Secure payment via Stripe"].map((t) => (
+              {["Free delivery on orders over Rs 5,000", "30-day hassle-free returns", "Cash on Delivery available"].map((t) => (
                 <p key={t} className="flex items-center gap-2.5 text-xs" style={{ color: "var(--muted)" }}>
                   <CheckCircle className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "var(--accent)" }} />
                   {t}

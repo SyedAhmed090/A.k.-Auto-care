@@ -48,7 +48,7 @@ A.K. Auto Care ("we", "us", "our") is committed to protecting your personal data
 ### What we collect
 - **Contact information**: name, email, phone number
 - **Shipping address**: for order fulfilment
-- **Payment information**: processed securely by Stripe — we never store card details
+- **Payment information**: we accept Cash on Delivery, JazzCash, EasyPaisa, and bank transfer — card details are never stored
 - **Order history**: to manage your purchases
 - **Usage data**: cookies and analytics to improve your experience
 
@@ -59,7 +59,7 @@ A.K. Auto Care ("we", "us", "our") is committed to protecting your personal data
 - To improve our website and product range (anonymised analytics only)
 
 ### Third parties
-We use Stripe for payment processing. Stripe's privacy policy governs their use of your payment data. We do not sell your personal data to any third party.
+We use TCS and Leopards Courier for order fulfilment. We do not sell your personal data to any third party.
 
 ### Cookies
 We use essential cookies for cart functionality and session management, and optional analytics cookies. You may opt out of analytics cookies at any time.

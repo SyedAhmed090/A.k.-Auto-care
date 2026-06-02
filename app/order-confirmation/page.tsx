@@ -20,6 +20,14 @@ export default async function OrderConfirmationPage({
   const displayId = orderId ? `AK-${orderId.slice(0, 8).toUpperCase()}` : "AK-XXXXXX";
   const total = order?.total ? formatPrice(order.total) : "—";
   const name = order ? `${order.first_name} ${order.last_name}` : null;
+  // Redact email — show only first char + *** + domain to avoid exposing PII
+  // to anyone who might guess the order UUID.
+  const redactedEmail = order?.email
+    ? (() => {
+        const [local, domain] = order.email.split("@");
+        return `${local[0]}***@${domain}`;
+      })()
+    : null;
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4" style={{ background: "var(--bg)" }}>
@@ -53,7 +61,7 @@ export default async function OrderConfirmationPage({
             {[
               { label: "Order Number", value: displayId, mono: true },
               { label: "Total", value: total },
-              ...(order?.email ? [{ label: "Email", value: order.email }] : []),
+              ...(redactedEmail ? [{ label: "Email", value: redactedEmail }] : []),
               { label: "Estimated Delivery", value: "3–5 business days" },
               { label: "Status", value: "Processing", accent: true },
             ].map((row) => (

@@ -1,9 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { checkRateLimit, getIP } from "@/lib/rateLimit";
 
-const schema = z.object({ email: z.string().email() });
+const schema = z.object({ email: z.string().email().max(254) });
 
 export async function POST(req: NextRequest) {
+  // Rate limit: 3 signups per IP per hour
+  const ip = getIP(req.headers);
+  if (!checkRateLimit(`newsletter:${ip}`, 3, 60 * 60_000)) {
+    return NextResponse.json({ ok: false, error: "Too many attempts. Please try again later." }, { status: 429 });
+  }
+
   try {
     const body = await req.json();
     const parsed = schema.safeParse(body);
