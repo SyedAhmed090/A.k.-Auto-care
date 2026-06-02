@@ -405,7 +405,7 @@ const products: Product[] = [
       "Follow the sequence: foam wash → fallout remover → one-step polish → carnauba wax → final wipe. Full step-by-step guide included in the box.",
     specs: [
       { label: "Includes", value: "5 full-size products + 3 MF towels" },
-      { label: "Value", value: "£130 worth of product" },
+      { label: "Value", value: "Rs 50,000+ worth of product" },
       { label: "Guide included", value: "Yes — printed + digital QR" },
     ],
     price: 36999,
@@ -433,7 +433,7 @@ const products: Product[] = [
       "Follow the 5-stage system included: strip → compound → polish → panel wipe → coat. Step-by-step digital guide in the box.",
     specs: [
       { label: "Includes", value: "6 products + 6 MF towels" },
-      { label: "Value", value: "£210 worth of product" },
+      { label: "Value", value: "Rs 80,000+ worth of product" },
       { label: "Guide included", value: "Yes — digital QR code" },
     ],
     price: 62999,

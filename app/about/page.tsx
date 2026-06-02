@@ -45,7 +45,7 @@ export default function AboutPage() {
               <div className="space-y-4 text-[.97rem] leading-relaxed" style={{ color: "var(--muted)" }}>
                 <p>A.K. Auto Care was founded by a group of detailing obsessives who were tired of choosing between professional-grade results and products accessible to the everyday enthusiast.</p>
                 <p>Every formula in our range is developed and tested in real-world conditions — on show cars, daily drivers, and everything in between. We don&apos;t launch a product until it outperforms what&apos;s already on the market.</p>
-                <p>Today, A.K. Auto Care products are used by independent detailers, car clubs, and passionate owners across the UK and beyond.</p>
+                <p>Today, A.K. Auto Care products are used by independent detailers, car clubs, and passionate owners across Pakistan and beyond.</p>
               </div>
             </div>
             <div className="relative mt-8 lg:mt-0">
@@ -79,7 +79,7 @@ export default function AboutPage() {
               { n: "01", title: "Proper Formulation", body: "Every product is chemically engineered for a specific job — never a jack-of-all-trades solution." },
               { n: "02", title: "Proven Performance", body: "We test on real paint in real conditions before anything reaches the shop." },
               { n: "03", title: "Community First", body: "Built with feedback from detailers of every experience level, beginner to pro." },
-              { n: "04", title: "Fast UK Delivery", body: "Orders dispatched same day when placed before 2 PM. Free shipping over £75." },
+              { n: "04", title: "Fast Pakistan Delivery", body: "Orders dispatched same day when placed before 2 PM. Free delivery on orders over Rs 5,000 via TCS / Leopards." },
             ].map((v) => (
               <div key={v.n} className="p-6 rounded-[var(--r)]" style={{ border: "1px solid var(--line)", background: "var(--bg-2)" }}>
                 <div className="text-[.72rem] mb-6" style={{ fontFamily: "var(--font-space-mono)", color: "var(--accent)" }}>/ {v.n}</div>

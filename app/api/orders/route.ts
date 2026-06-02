@@ -14,6 +14,7 @@ const itemSchema = z.object({
 
 const orderSchema = z.object({
   email: z.string().email().max(254),
+  phone: z.string().min(10).max(20),
   firstName: z.string().min(2).max(80),
   lastName: z.string().min(2).max(80),
   address: z.string().min(5).max(300),
@@ -102,6 +103,7 @@ export async function POST(req: NextRequest) {
       .from("orders")
       .insert({
         email: data.email,
+        phone: data.phone,
         first_name: data.firstName,
         last_name: data.lastName,
         address: data.address,

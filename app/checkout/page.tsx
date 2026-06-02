@@ -13,6 +13,7 @@ import { getShippingOptions, gstAmount } from "@/lib/commerce";
 
 const schema = z.object({
   email: z.string().email("Enter a valid email"),
+  phone: z.string().min(10, "Enter a valid phone number").max(20, "Invalid number"),
   firstName: z.string().min(2, "Required"),
   lastName: z.string().min(2, "Required"),
   address: z.string().min(5, "Enter your address"),
@@ -89,6 +90,7 @@ export default function CheckoutPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: data.email,
+          phone: data.phone,
           firstName: data.firstName,
           lastName: data.lastName,
           address: data.address,
@@ -148,6 +150,9 @@ export default function CheckoutPage() {
               <Field label="Email" error={errors.email?.message}>
                 <input {...register("email")} type="email" placeholder="you@example.com" style={inputStyle(errors.email?.message)} />
               </Field>
+              <Field label="WhatsApp / Phone" error={errors.phone?.message}>
+                <input {...register("phone")} type="tel" placeholder="+92 300 0000000" style={inputStyle(errors.phone?.message)} />
+              </Field>
             </SectionCard>
 
             <SectionCard title="Shipping Address">
@@ -165,12 +170,12 @@ export default function CheckoutPage() {
                 </div>
                 <div>
                   <Field label="City" error={errors.city?.message}>
-                    <input {...register("city")} placeholder="Birmingham" style={inputStyle(errors.city?.message)} />
+                    <input {...register("city")} placeholder="Karachi" style={inputStyle(errors.city?.message)} />
                   </Field>
                 </div>
                 <div>
                   <Field label="Postcode" error={errors.postcode?.message}>
-                    <input {...register("postcode")} placeholder="B1 1AA" style={inputStyle(errors.postcode?.message)} />
+                    <input {...register("postcode")} placeholder="75400" style={inputStyle(errors.postcode?.message)} />
                   </Field>
                 </div>
                 <div className="col-span-1 sm:col-span-2">

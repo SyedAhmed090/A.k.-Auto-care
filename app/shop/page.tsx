@@ -12,7 +12,7 @@ const SORT_OPTIONS = [
 ];
 
 export default function ShopPage() {
-  const [priceMax, setPriceMax] = useState(200);
+  const [priceMax, setPriceMax] = useState(100000);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [sort, setSort] = useState("featured");
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -47,16 +47,16 @@ export default function ShopPage() {
           className="text-[.72rem] tracking-[.14em] uppercase mb-3"
           style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
         >
-          Max Price: <span style={{ color: "var(--accent)" }}>£{priceMax}</span>
+          Max Price: <span style={{ color: "var(--accent)" }}>Rs {priceMax.toLocaleString("en-US")}</span>
         </h3>
         <input
-          type="range" min={10} max={200} step={5} value={priceMax}
+          type="range" min={0} max={100000} step={1000} value={priceMax}
           onChange={(e) => setPriceMax(Number(e.target.value))}
           className="w-full"
           style={{ accentColor: "var(--accent)" }}
         />
         <div className="flex justify-between text-xs mt-1" style={{ color: "var(--muted-2)", fontFamily: "var(--font-space-mono)" }}>
-          <span>£10</span><span>£200</span>
+          <span>Rs 0</span><span>Rs 1,00,000</span>
         </div>
       </div>
 
@@ -85,9 +85,9 @@ export default function ShopPage() {
         <span className="text-sm font-medium" style={{ color: "var(--text)" }}>In Stock Only</span>
       </label>
 
-      {(inStockOnly || priceMax < 200) && (
+      {(inStockOnly || priceMax < 100000) && (
         <button
-          onClick={() => { setInStockOnly(false); setPriceMax(200); }}
+          onClick={() => { setInStockOnly(false); setPriceMax(100000); }}
           className="flex items-center gap-1.5 text-sm transition-colors cursor-pointer"
           style={{ color: "var(--accent)" }}
         >

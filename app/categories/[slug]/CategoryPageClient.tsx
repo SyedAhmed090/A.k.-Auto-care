@@ -13,7 +13,7 @@ const SORT_OPTIONS = [
 ];
 
 export default function CategoryPageClient({ category, products }: { category: Category; products: Product[] }) {
-  const [priceMax, setPriceMax] = useState(200);
+  const [priceMax, setPriceMax] = useState(100000);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [sort, setSort] = useState("featured");
 
@@ -85,9 +85,9 @@ export default function CategoryPageClient({ category, products }: { category: C
               <span onClick={() => setInStockOnly(!inStockOnly)}>In Stock</span>
             </label>
             <div className="flex items-center gap-2">
-              <span className="text-xs whitespace-nowrap" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>Max: £{priceMax}</span>
+              <span className="text-xs whitespace-nowrap" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>Max: Rs {priceMax.toLocaleString("en-US")}</span>
               <input
-                type="range" min={10} max={200} step={5} value={priceMax}
+                type="range" min={0} max={100000} step={1000} value={priceMax}
                 onChange={(e) => setPriceMax(Number(e.target.value))}
                 className="w-28"
                 style={{ accentColor: "var(--accent)" }}
