@@ -1,16 +1,17 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, ShoppingBag, LogOut } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, Tag, LogOut } from "lucide-react";
 
 const NAV = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { href: "/admin/orders", label: "Orders", icon: ShoppingBag, exact: false },
+  { href: "/admin",        label: "Dashboard", icon: LayoutDashboard, exact: true  },
+  { href: "/admin/orders", label: "Orders",    icon: ShoppingBag,     exact: false },
+  { href: "/admin/promos", label: "Promos",    icon: Tag,             exact: false },
 ];
 
 export default function AdminNav() {
   const pathname = usePathname();
-  const router = useRouter();
+  const router   = useRouter();
 
   const logout = async () => {
     await fetch("/api/admin/logout", { method: "POST" });
@@ -23,31 +24,25 @@ export default function AdminNav() {
         <p className="text-[.65rem] tracking-[.18em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>A.K. Auto Care</p>
         <p className="text-[1.1rem] font-bold uppercase mt-0.5" style={{ fontFamily: "var(--font-anton)" }}>Admin</p>
       </div>
+
       <nav className="flex-1 px-3 py-4 space-y-1">
         {NAV.map(({ href, label, icon: Icon, exact }) => {
           const active = exact ? pathname === href : pathname.startsWith(href);
           return (
-            <Link
-              key={href}
-              href={href}
+            <Link key={href} href={href}
               className="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-sm font-semibold transition-all"
-              style={{
-                background: active ? "rgba(216,255,53,.1)" : "transparent",
-                color: active ? "var(--accent)" : "var(--muted)",
-              }}
-            >
+              style={{ background: active ? "rgba(216,255,53,.1)" : "transparent", color: active ? "var(--accent)" : "var(--muted)" }}>
               <Icon className="w-4 h-4 flex-shrink-0" />
               {label}
             </Link>
           );
         })}
       </nav>
+
       <div className="px-3 pb-4">
-        <button
-          onClick={logout}
+        <button onClick={logout}
           className="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-sm font-semibold w-full transition-all cursor-pointer"
-          style={{ color: "var(--muted)" }}
-        >
+          style={{ color: "var(--muted)" }}>
           <LogOut className="w-4 h-4 flex-shrink-0" />
           Log Out
         </button>
