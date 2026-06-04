@@ -1,12 +1,22 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckCircle, Package, ArrowRight } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import { createAdminClient } from "@/utils/supabase/admin";
 
+export const metadata: Metadata = {
+  title: "Order Confirmed",
+  robots: "noindex",
+};
+
 async function getOrder(id: string) {
-  const supabase = createAdminClient();
-  const { data } = await supabase.from("orders").select().eq("id", id).single();
-  return data;
+  try {
+    const supabase = createAdminClient();
+    const { data } = await supabase.from("orders").select().eq("id", id).single();
+    return data;
+  } catch {
+    return null;
+  }
 }
 
 export default async function OrderConfirmationPage({

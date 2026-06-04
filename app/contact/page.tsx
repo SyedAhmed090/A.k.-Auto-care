@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Mail, Phone, MapPin, CheckCircle } from "lucide-react";
+import { WHATSAPP_NUMBER } from "@/lib/constants";
 
 const schema = z.object({
   name: z.string().min(2, "Name required"),
@@ -65,7 +66,7 @@ export default function ContactPage() {
             <div className="space-y-5">
               {[
                 { icon: Mail, label: "Email", value: "hello@akautocare.pk", href: "mailto:hello@akautocare.pk" },
-                { icon: Phone, label: "Phone", value: "+92 300 0000000", href: "tel:+923000000000" },
+                { icon: Phone, label: "Phone", value: `+92 ${WHATSAPP_NUMBER.slice(1, 4)} ${WHATSAPP_NUMBER.slice(4)}`, href: `tel:+${WHATSAPP_NUMBER}` },
                 { icon: MapPin, label: "Location", value: "Block 7, PECHS, Karachi — 75400", href: "#" },
               ].map(({ icon: Icon, label, value, href }) => (
                 <a key={label} href={href} className="flex items-center gap-4 group">

@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatPrice(price: number) {
-  return `Rs ${Math.round(price).toLocaleString("en-US")}`;
+  return `Rs ${Math.round(price).toLocaleString("en-PK")}`;
 }
 
 export function slugify(str: string) {

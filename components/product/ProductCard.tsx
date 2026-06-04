@@ -31,6 +31,7 @@ export default function ProductCard({ product }: { product: Product }) {
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             className="object-cover w-full h-full transition-all duration-500 group-hover:scale-105"
+            onError={(e) => { e.currentTarget.src = "/placeholder.svg"; }}
           />
 
           {product.badge && (

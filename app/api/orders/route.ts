@@ -19,6 +19,7 @@ const orderSchema = z.object({
   lastName:       z.string().min(2).max(80),
   address:        z.string().min(5).max(300),
   city:           z.string().min(2).max(100),
+  province:       z.string().max(100).optional(),
   postcode:       z.string().min(3).max(20),
   country:        z.string().min(2).max(2),
   shippingMethod: z.string().max(40),
@@ -67,6 +68,7 @@ export async function POST(req: NextRequest) {
     // Re-validate promo server-side — try DB first, fall back to hardcoded
     let discount  = 0;
     let promoUsed: { id: string } | null = null;
+    let dbAttempted = false;
     const promoCode = data.promoCode ? data.promoCode.toUpperCase() : null;
 
     if (promoCode) {
@@ -79,6 +81,8 @@ export async function POST(req: NextRequest) {
           .eq("active", true)
           .single();
 
+        dbAttempted = true;
+
         if (!error && p && subtotal >= p.min_spend) {
           const notExpired  = !p.expires_at || new Date(p.expires_at) >= new Date();
           const notExhausted = p.max_uses === null || p.uses < p.max_uses;
@@ -88,15 +92,11 @@ export async function POST(req: NextRequest) {
           }
         }
       } catch {
-        // DB unavailable — fall back to hardcoded
-        const p = PROMOS[promoCode];
-        if (p && subtotal >= p.minSpend) {
-          discount = parseFloat((subtotal * p.discount).toFixed(2));
-        }
+        // DB unavailable — fall through to hardcoded fallback
       }
 
-      // Hardcoded fallback when DB returned nothing
-      if (discount === 0 && !promoUsed) {
+      // Fall back to hardcoded only if the DB was not reachable (not if DB rejected the code)
+      if (!dbAttempted) {
         const p = PROMOS[promoCode];
         if (p && subtotal >= p.minSpend) {
           discount = parseFloat((subtotal * p.discount).toFixed(2));
@@ -116,7 +116,7 @@ export async function POST(req: NextRequest) {
       .insert({
         email: data.email, phone: data.phone,
         first_name: data.firstName, last_name: data.lastName,
-        address: data.address, city: data.city, postcode: data.postcode, country: data.country,
+        address: data.address, city: data.city, province: data.province ?? null, postcode: data.postcode, country: data.country,
         shipping_method: selectedShipping?.label ?? "Standard",
         payment_method: data.paymentMethod,
         items: lineItems, subtotal, discount, shipping: shippingCost, total,

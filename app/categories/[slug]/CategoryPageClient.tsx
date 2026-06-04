@@ -3,6 +3,7 @@ import { useState, useMemo } from "react";
 import Image from "next/image";
 import type { Category } from "@/data/categories";
 import type { Product } from "@/data/products";
+import { filterAndSort } from "@/lib/commerce";
 import ProductCard from "@/components/product/ProductCard";
 
 const SORT_OPTIONS = [
@@ -17,21 +18,17 @@ export default function CategoryPageClient({ category, products }: { category: C
   const [inStockOnly, setInStockOnly] = useState(false);
   const [sort, setSort] = useState("featured");
 
-  const filtered = useMemo(() => {
-    let list = [...products].filter((p) => p.price <= priceMax);
-    if (inStockOnly) list = list.filter((p) => p.inStock);
-    if (sort === "price-asc") list.sort((a, b) => a.price - b.price);
-    else if (sort === "price-desc") list.sort((a, b) => b.price - a.price);
-    else if (sort === "newest") list.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-    return list;
-  }, [products, priceMax, inStockOnly, sort]);
+  const filtered = useMemo(
+    () => filterAndSort([...products], { priceMax, inStockOnly, sort }),
+    [products, priceMax, inStockOnly, sort]
+  );
 
   return (
     <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
       {/* Hero */}
       <div className="relative h-64 sm:h-80 overflow-hidden">
         <Image src={category.image} alt={category.name} fill className="object-cover opacity-30" />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(to right, var(--bg) 40%, transparent)" }} />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(to right, var(--bg) 30%, transparent 70%, transparent)" }} />
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -109,7 +106,7 @@ export default function CategoryPageClient({ category, products }: { category: C
             <p className="text-lg" style={{ color: "var(--muted)" }}>No products match your filters.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 items-stretch">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">
             {filtered.map((p) => <ProductCard key={p.id} product={p} />)}
           </div>
         )}

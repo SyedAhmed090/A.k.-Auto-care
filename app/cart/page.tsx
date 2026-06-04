@@ -77,7 +77,7 @@ export default function CartPage() {
                   className="relative w-20 h-20 rounded-[10px] overflow-hidden flex-shrink-0 self-start"
                   style={{ background: "var(--surface)" }}
                 >
-                  <Image src={item.product.images[0]} alt={item.product.name} fill className="object-cover opacity-70" />
+                  <Image src={item.product.images[0]} alt={item.product.name} fill className="object-cover opacity-70" onError={(e) => { e.currentTarget.src = "/placeholder.svg"; }} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <Link
@@ -113,12 +113,16 @@ export default function CartPage() {
                 </div>
               </div>
             ))}
-            <button
-              onClick={clearCart}
-              className="flex items-center text-xs px-1 py-1 cursor-pointer hover-danger"
-            >
-              Clear cart
-            </button>
+            <div className="flex items-center justify-between pt-2">
+              <div />
+              <button
+                onClick={() => { if (window.confirm("Clear all items from your cart?")) clearCart(); }}
+                className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg cursor-pointer transition-all"
+                style={{ border: "1px solid rgba(239,68,68,.2)", color: "#ef4444", background: "rgba(239,68,68,.06)" }}
+              >
+                <Trash2 className="w-3 h-3" /> Clear cart
+              </button>
+            </div>
           </div>
 
           {/* Summary */}

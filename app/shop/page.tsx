@@ -1,7 +1,9 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { SlidersHorizontal, X } from "lucide-react";
 import products from "@/data/products";
+import { filterAndSort } from "@/lib/commerce";
 import ProductCard from "@/components/product/ProductCard";
 
 const SORT_OPTIONS = [
@@ -12,23 +14,18 @@ const SORT_OPTIONS = [
 ];
 
 export default function ShopPage() {
+  const searchParams = useSearchParams();
   const [priceMax, setPriceMax] = useState(100000);
   const [inStockOnly, setInStockOnly] = useState(false);
-  const [sort, setSort] = useState("featured");
+  const [sort, setSort] = useState(searchParams.get("sort") ?? "featured");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [page, setPage] = useState(1);
   const PER_PAGE = 12;
 
-  const filtered = useMemo(() => {
-    let list = [...products];
-    list = list.filter((p) => p.price <= priceMax);
-    if (inStockOnly) list = list.filter((p) => p.inStock);
-    if (sort === "price-asc") list.sort((a, b) => a.price - b.price);
-    else if (sort === "price-desc") list.sort((a, b) => b.price - a.price);
-    else if (sort === "newest") list.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-    else list.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
-    return list;
-  }, [priceMax, inStockOnly, sort]);
+  const filtered = useMemo(
+    () => filterAndSort([...products], { priceMax, inStockOnly, sort }),
+    [priceMax, inStockOnly, sort]
+  );
 
   const paginated = filtered.slice(0, page * PER_PAGE);
 

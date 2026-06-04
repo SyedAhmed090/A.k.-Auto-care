@@ -1,11 +1,10 @@
 "use client";
+import { WHATSAPP_NUMBER, WHATSAPP_MESSAGE } from "@/lib/constants";
 
 export default function WhatsAppButton() {
-  const phone = "923000000000"; // TODO: replace with real WhatsApp business number
-  const message = encodeURIComponent("Hi! I'm interested in A.K. Auto Care products. Can you help me?");
   return (
     <a
-      href={`https://wa.me/${phone}?text=${message}`}
+      href={`https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with us on WhatsApp"

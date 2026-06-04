@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { checkRateLimit, getIP } from "@/lib/rateLimit";
 
+const RESEND_URL = "https://api.resend.com/emails";
+
 const schema = z.object({
   name: z.string().min(2).max(100),
   email: z.string().email().max(254),
@@ -10,7 +12,6 @@ const schema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-  // Rate limit: 3 contact submissions per IP per 10 minutes
   const ip = getIP(req.headers);
   if (!checkRateLimit(`contact:${ip}`, 3, 10 * 60_000)) {
     return NextResponse.json({ ok: false, error: "Too many submissions. Please try again later." }, { status: 429 });
@@ -24,17 +25,23 @@ export async function POST(req: NextRequest) {
     }
     const { name, email, subject, message } = parsed.data;
 
-    // TODO: connect transactional email provider (e.g. Resend)
-    // Set RESEND_API_KEY, CONTACT_EMAIL_FROM, CONTACT_EMAIL_TO in .env.local
-    // Example:
-    //   const resend = new Resend(process.env.RESEND_API_KEY);
-    //   await resend.emails.send({
-    //     from: process.env.CONTACT_EMAIL_FROM!,
-    //     to: process.env.CONTACT_EMAIL_TO!,
-    //     subject: `[A.K. Auto Care] ${subject}`,
-    //     text: `From: ${name} <${email}>\n\n${message}`,
-    //   });
-    console.log("[Contact form]", { name, email, subject, message });
+    const apiKey = process.env.RESEND_API_KEY;
+    const from = process.env.CONTACT_EMAIL_FROM ?? "noreply@akautocare.pk";
+    const to = process.env.CONTACT_EMAIL_TO ?? "hello@akautocare.pk";
+
+    if (apiKey) {
+      await fetch(RESEND_URL, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          from,
+          to,
+          replyTo: email,
+          subject: `[A.K. Auto Care Contact] ${subject}`,
+          text: `From: ${name} <${email}>\n\n${message}`,
+        }),
+      });
+    }
 
     return NextResponse.json({ ok: true });
   } catch {

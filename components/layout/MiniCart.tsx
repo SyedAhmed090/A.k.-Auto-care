@@ -2,9 +2,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { X, ShoppingCart, ArrowRight, Trash2 } from "lucide-react";
+import { X, ShoppingCart, ArrowRight, Trash2, Truck } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
+import { getShippingOptions, FREE_SHIPPING_THRESHOLD } from "@/lib/commerce";
 import QuantityStepper from "@/components/ui/QuantityStepper";
 
 export default function MiniCart() {
@@ -12,7 +13,9 @@ export default function MiniCart() {
   const { isOpen, closeCart, items, removeItem, updateQty, subtotal, promoDiscount } = useCartStore();
   const sub = subtotal();
   const discount = sub * promoDiscount;
-  const total = sub - discount;
+  const afterDiscount = sub - discount;
+  const shipping = getShippingOptions("PK", afterDiscount)[0]?.price ?? 0;
+  const total = afterDiscount + shipping;
 
   return (
     <>
@@ -63,7 +66,7 @@ export default function MiniCart() {
                 <p className="text-sm mt-1" style={{ color: "var(--muted)" }}>Add some products to get started</p>
               </div>
               <button
-                onClick={closeCart}
+                onClick={() => { closeCart(); router.push("/shop"); }}
                 className="px-5 py-2.5 rounded-[11px] text-sm font-semibold transition-all cursor-pointer"
                 style={{ background: "var(--accent)", color: "#000" }}
               >
@@ -78,7 +81,7 @@ export default function MiniCart() {
                     className="relative w-[60px] h-[60px] rounded-[10px] overflow-hidden flex-shrink-0"
                     style={{ background: "var(--surface-2)" }}
                   >
-                    <Image src={item.product.images[0]} alt={item.product.name} fill className="object-cover" />
+                    <Image src={item.product.images[0]} alt={item.product.name} fill className="object-cover" onError={(e) => { e.currentTarget.src = "/placeholder.svg"; }} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold line-clamp-1 leading-tight">{item.product.name}</p>
@@ -86,6 +89,7 @@ export default function MiniCart() {
                     <div className="flex items-center justify-between gap-2 mt-2">
                       <QuantityStepper
                         value={item.quantity}
+                        max={item.product.stock ?? 99}
                         onChange={(v) => updateQty(item.product.id, item.variant.sku, v)}
                       />
                       <div className="flex items-center gap-2">
@@ -115,6 +119,19 @@ export default function MiniCart() {
                 <span>Discount</span>
                 <span className="font-bold">-{formatPrice(discount)}</span>
               </div>
+            )}
+            <div className="flex items-center justify-between text-sm mb-2">
+              <span className="flex items-center gap-1.5" style={{ color: "var(--muted)" }}>
+                <Truck className="w-3.5 h-3.5" /> Est. Shipping (PK)
+              </span>
+              <span className="font-semibold" style={{ color: shipping === 0 ? "#4ade80" : "var(--text)" }}>
+                {shipping === 0 ? "FREE" : formatPrice(shipping)}
+              </span>
+            </div>
+            {shipping > 0 && (
+              <p className="text-[.65rem] mb-2" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
+                Add {formatPrice(FREE_SHIPPING_THRESHOLD - afterDiscount)} for free shipping
+              </p>
             )}
             <div className="flex items-center justify-between mb-4">
               <span className="text-sm" style={{ color: "var(--muted)" }}>Total</span>

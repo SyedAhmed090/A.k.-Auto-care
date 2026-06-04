@@ -62,7 +62,7 @@ export default function ProductPageClient({ product, related }: { product: Produ
               className="relative aspect-square rounded-[20px] overflow-hidden"
               style={{ background: "radial-gradient(70% 70% at 50% 40%,#1a1e26,#0a0c10)", border: "1px solid var(--line)" }}
             >
-              <Image src={product.images[activeImg]} alt={product.name} fill className="object-cover opacity-85" priority />
+              <Image src={product.images[activeImg]} alt={product.name} fill className="object-cover opacity-85" priority onError={(e) => { e.currentTarget.src = "/placeholder.svg"; }} />
               {product.badge && (
                 <span
                   className="absolute top-4 left-4 text-[.6rem] font-bold px-2.5 py-1 rounded-full tracking-[.12em] uppercase"
@@ -84,7 +84,7 @@ export default function ProductPageClient({ product, related }: { product: Produ
                       background: "var(--surface)",
                     }}
                   >
-                    <Image src={img} alt={`View ${i + 1}`} fill className="object-cover opacity-75" />
+                    <Image src={img} alt={`View ${i + 1}`} fill className="object-cover opacity-75" onError={(e) => { e.currentTarget.src = "/placeholder.svg"; }} />
                   </button>
                 ))}
               </div>

@@ -10,6 +10,7 @@ import { Lock, ChevronDown, ChevronUp } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
 import { getShippingOptions, gstAmount } from "@/lib/commerce";
+import { WHATSAPP_NUMBER, PAYMENT_DETAILS } from "@/lib/constants";
 
 const schema = z.object({
   email: z.string().email("Enter a valid email"),
@@ -18,6 +19,7 @@ const schema = z.object({
   lastName: z.string().min(2, "Required"),
   address: z.string().min(5, "Enter your address"),
   city: z.string().min(2, "Required"),
+  province: z.string().optional(),
   postcode: z.string().min(3, "Enter postcode"),
   country: z.string().min(2, "Required"),
 });
@@ -95,6 +97,7 @@ export default function CheckoutPage() {
           lastName: data.lastName,
           address: data.address,
           city: data.city,
+          province: data.province || null,
           postcode: data.postcode,
           country: data.country,
           shippingMethod: resolvedShipping?.label ?? "Standard",
@@ -174,6 +177,11 @@ export default function CheckoutPage() {
                   </Field>
                 </div>
                 <div>
+                  <Field label="Province / State" error={errors.province?.message}>
+                    <input {...register("province")} placeholder="Sindh" style={inputStyle(errors.province?.message)} />
+                  </Field>
+                </div>
+                <div>
                   <Field label="Postcode" error={errors.postcode?.message}>
                     <input {...register("postcode")} placeholder="75400" style={inputStyle(errors.postcode?.message)} />
                   </Field>
@@ -249,9 +257,9 @@ export default function CheckoutPage() {
               <div className="space-y-2.5">
                 {[
                   { id: "cod", label: "Cash on Delivery (COD)", description: "Pay cash when your order arrives — no card needed", emoji: "💵" },
-                  { id: "jazzcash", label: "JazzCash", description: "Send to 0300-0000000 · Share screenshot on WhatsApp after ordering", emoji: "📱" },
-                  { id: "easypaisa", label: "EasyPaisa", description: "Send to 0300-0000000 · Share screenshot on WhatsApp after ordering", emoji: "📱" },
-                  { id: "bank", label: "Bank Transfer", description: "HBL · A/C: 0000-0000000-001 · Branch: PECHS, Karachi · Share receipt on WhatsApp", emoji: "🏦" },
+                  { id: "jazzcash", label: "JazzCash", description: `Send to ${PAYMENT_DETAILS.jazzcash.number} · Share screenshot on WhatsApp after ordering`, emoji: "📱" },
+                  { id: "easypaisa", label: "EasyPaisa", description: `Send to ${PAYMENT_DETAILS.easypaisa.number} · Share screenshot on WhatsApp after ordering`, emoji: "📱" },
+                  { id: "bank", label: "Bank Transfer", description: `${PAYMENT_DETAILS.bank.bank} · A/C: ${PAYMENT_DETAILS.bank.account} · Branch: ${PAYMENT_DETAILS.bank.branch} · Share receipt on WhatsApp`, emoji: "🏦" },
                 ].map((method) => {
                   const active = paymentMethod === method.id;
                   return (
@@ -278,7 +286,7 @@ export default function CheckoutPage() {
               </div>
               {paymentMethod !== "cod" && (
                 <p className="text-[.75rem] px-1 mt-1" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
-                  After placing your order, send your payment screenshot to our WhatsApp (+92 300 0000000). Your order will be confirmed once payment is verified.
+                  After placing your order, send your payment screenshot to our WhatsApp (+92 {WHATSAPP_NUMBER.slice(1, 4)} {WHATSAPP_NUMBER.slice(4)}). Your order will be confirmed once payment is verified.
                 </p>
               )}
             </SectionCard>
@@ -328,7 +336,7 @@ export default function CheckoutPage() {
                 {items.map((item) => (
                   <div key={`${item.product.id}-${item.variant.sku}`} className="flex gap-3">
                     <div className="relative w-12 h-12 rounded-[8px] overflow-hidden flex-shrink-0" style={{ background: "var(--surface-2)" }}>
-                      <Image src={item.product.images[0]} alt={item.product.name} fill className="object-cover opacity-70" />
+                      <Image src={item.product.images[0]} alt={item.product.name} fill className="object-cover opacity-70" onError={(e) => { e.currentTarget.src = "/placeholder.svg"; }} />
                       <span
                         className="absolute -top-1 -right-1 w-[18px] h-[18px] rounded-full text-[.6rem] font-bold grid place-items-center"
                         style={{ background: "var(--muted)", color: "var(--bg)", fontFamily: "var(--font-space-mono)" }}

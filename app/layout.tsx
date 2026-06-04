@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Anton, Hanken_Grotesk, Space_Mono } from "next/font/google";
+import { Truck } from "lucide-react";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -50,7 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           className="w-full text-center py-2 px-4 text-[.7rem] font-semibold tracking-[.08em]"
           style={{ background: "var(--accent)", color: "#000", fontFamily: "var(--font-space-mono)" }}
         >
-          🚚 Free delivery on orders over Rs 5,000 · Ships via TCS &amp; Leopards · Cash on Delivery available
+          <Truck className="inline w-3.5 h-3.5 -mt-0.5 mr-1" /> Free delivery on orders over Rs 5,000 · Ships via TCS &amp; Leopards · Cash on Delivery available
         </div>
         <Header />
         <MiniCart />
