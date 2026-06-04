@@ -60,14 +60,17 @@ export default function HomePage() {
       <section id="hero" ref={heroRef} className="flex flex-col">
 
         {/* ── VIDEO BLOCK — video covers only this top portion, ending after the CTAs ── */}
-        <div className="relative overflow-hidden min-h-[85vh] flex flex-col justify-end pt-[120px] sm:pt-[140px] lg:pt-[160px] pb-20">
-          {/* Background video */}
+        <div
+          className="relative overflow-hidden min-h-[85vh] flex flex-col justify-end pt-[120px] sm:pt-[140px] lg:pt-[160px] pb-20"
+          style={{ background: "radial-gradient(120% 100% at 50% 40%, #1a1e26, var(--bg))" }}
+        >
+          {/* Background video — hidden on mobile for performance */}
           <video
             autoPlay
             muted
             loop
             playsInline
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover hidden md:block"
             style={{ zIndex: 0 }}
             src="/mixkit-close-up-of-a-man-polishing-a-newly-polished-car-47833-hd-ready.mp4"
           />
@@ -628,7 +631,7 @@ export default function HomePage() {
               >
                 <div className="flex gap-0.5">
                   {Array.from({ length: review.rating }).map((_, i) => (
-                    <svg key={i} className="w-4 h-4" viewBox="0 0 16 16" fill="#f59e0b">
+                    <svg key={i} className="w-4 h-4" viewBox="0 0 16 16" fill="#fbbf24">
                       <path d="M8 1l1.85 3.75L14 5.5l-3 2.9.7 4.1L8 10.5l-3.7 1.95L5 8.4 2 5.5l4.15-.75L8 1z" />
                     </svg>
                   ))}
@@ -645,7 +648,7 @@ export default function HomePage() {
           </div>
           <div className="text-center mt-10 reveal">
             <div className="inline-flex items-center gap-3 text-[.78rem]" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
-              <span style={{ color: "#f59e0b" }}>★ 4.9 / 5</span>
+              <span style={{ color: "#fbbf24" }}>★ 4.9 / 5</span>
               <span style={{ color: "var(--line-2)" }}>|</span>
               Based on 200+ verified purchases
             </div>

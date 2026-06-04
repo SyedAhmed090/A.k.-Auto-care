@@ -28,7 +28,7 @@ export default function CategoryPageClient({ category, products }: { category: C
       {/* Hero */}
       <div className="relative h-64 sm:h-80 overflow-hidden">
         <Image src={category.image} alt={category.name} fill className="object-cover opacity-30" />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(to right, var(--bg) 30%, transparent 70%, transparent)" }} />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(to right, var(--bg) 40%, transparent 80%)" }} />
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -82,7 +82,7 @@ export default function CategoryPageClient({ category, products }: { category: C
               <span onClick={() => setInStockOnly(!inStockOnly)}>In Stock</span>
             </label>
             <div className="flex items-center gap-2">
-              <span className="text-xs whitespace-nowrap" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>Max: Rs {priceMax.toLocaleString("en-US")}</span>
+              <span className="text-xs whitespace-nowrap" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>Max: Rs {priceMax.toLocaleString("en-PK")}</span>
               <input
                 type="range" min={0} max={100000} step={1000} value={priceMax}
                 onChange={(e) => setPriceMax(Number(e.target.value))}

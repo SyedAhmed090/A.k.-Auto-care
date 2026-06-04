@@ -123,7 +123,7 @@ export default async function OrderConfirmationPage({
         >
           Continue Shopping <ArrowRight className="w-[18px] h-[18px]" />
         </Link>
-        <Link href="/" className="block mt-3 text-sm transition-colors" style={{ color: "var(--muted)" }}>
+        <Link href="/" className="block mt-3 text-sm transition-colors hover:text-[var(--accent)]" style={{ color: "var(--muted)" }}>
           Return to Home
         </Link>
       </div>

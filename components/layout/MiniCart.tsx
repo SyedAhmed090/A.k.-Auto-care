@@ -1,8 +1,9 @@
 "use client";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { X, ShoppingCart, ArrowRight, Trash2, Truck } from "lucide-react";
+import { X, ShoppingCart, ArrowRight, Trash2, Truck, Tag } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
 import { getShippingOptions, FREE_SHIPPING_THRESHOLD } from "@/lib/commerce";
@@ -10,12 +11,27 @@ import QuantityStepper from "@/components/ui/QuantityStepper";
 
 export default function MiniCart() {
   const router = useRouter();
-  const { isOpen, closeCart, items, removeItem, updateQty, subtotal, promoDiscount } = useCartStore();
+  const { isOpen, closeCart, items, removeItem, updateQty, subtotal, promoDiscount, promoCode, applyPromo, removePromo } = useCartStore();
+  const [promoInput, setPromoInput] = useState("");
+  const [promoMsg, setPromoMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [promoLoading, setPromoLoading] = useState(false);
   const sub = subtotal();
   const discount = sub * promoDiscount;
   const afterDiscount = sub - discount;
   const shipping = getShippingOptions("PK", afterDiscount)[0]?.price ?? 0;
   const total = afterDiscount + shipping;
+
+  const handlePromo = async () => {
+    if (!promoInput.trim() || promoLoading) return;
+    setPromoLoading(true);
+    const result = await applyPromo(promoInput);
+    setPromoLoading(false);
+    setPromoMsg(
+      result.valid
+        ? { ok: true, text: `Code applied! ${(result.discount * 100).toFixed(0)}% off` }
+        : { ok: false, text: result.reason ?? "Invalid code." }
+    );
+  };
 
   return (
     <>
@@ -114,6 +130,47 @@ export default function MiniCart() {
         {/* Footer */}
         {items.length > 0 && (
           <div className="px-5 py-4 flex-shrink-0" style={{ borderTop: "1px solid var(--line)", background: "var(--bg-2)" }}>
+            {/* Promo code */}
+            <div className="mb-3">
+              {promoDiscount > 0 ? (
+                <div className="flex items-center justify-between text-sm" style={{ color: "var(--accent)" }}>
+                  <span className="flex items-center gap-1.5"><Tag className="w-3 h-3" /> {promoCode}</span>
+                  <button
+                    onClick={() => { removePromo(); setPromoMsg(null); setPromoInput(""); }}
+                    className="text-xs cursor-pointer hover:text-[var(--text)] transition-colors"
+                    style={{ color: "var(--muted)" }}
+                  >
+                    Remove
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={promoInput}
+                    onChange={(e) => setPromoInput(e.target.value)}
+                    placeholder="Promo code"
+                    className="flex-1 min-w-0 px-2.5 py-2 rounded-[9px] text-xs outline-none"
+                    style={{ background: "var(--surface)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }}
+                    onKeyDown={(e) => e.key === "Enter" && handlePromo()}
+                  />
+                  <button
+                    onClick={handlePromo}
+                    disabled={promoLoading}
+                    className="flex-shrink-0 px-3 py-2 rounded-[9px] text-xs font-bold cursor-pointer transition-all disabled:opacity-50"
+                    style={{ background: "var(--surface-2)", color: "var(--text)", border: "1px solid var(--line-2)" }}
+                  >
+                    {promoLoading ? "…" : "Apply"}
+                  </button>
+                </div>
+              )}
+              {promoMsg && (
+                <p className="text-[.65rem] mt-1" style={{ color: promoMsg.ok ? "var(--accent)" : "#ef4444" }}>
+                  {promoMsg.text}
+                </p>
+              )}
+            </div>
+
             {promoDiscount > 0 && (
               <div className="flex items-center justify-between text-sm mb-1" style={{ color: "var(--accent)" }}>
                 <span>Discount</span>

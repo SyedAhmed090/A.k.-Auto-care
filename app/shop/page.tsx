@@ -44,7 +44,7 @@ export default function ShopPage() {
           className="text-[.72rem] tracking-[.14em] uppercase mb-3"
           style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
         >
-          Max Price: <span style={{ color: "var(--accent)" }}>Rs {priceMax.toLocaleString("en-US")}</span>
+          Max Price: <span style={{ color: "var(--accent)" }}>Rs {priceMax.toLocaleString("en-PK")}</span>
         </h3>
         <input
           type="range" min={0} max={100000} step={1000} value={priceMax}
@@ -179,7 +179,7 @@ export default function ShopPage() {
         <>
           <div className="fixed inset-0 z-50" style={{ background: "rgba(8,9,11,.8)" }} onClick={() => setFiltersOpen(false)} />
           <div
-            className="fixed bottom-0 left-0 right-0 z-[60] rounded-t-[20px] p-6 max-h-[80vh] overflow-y-auto"
+            className="fixed bottom-0 left-0 right-0 z-[70] rounded-t-[20px] p-6 max-h-[80vh] overflow-y-auto"
             style={{ background: "var(--surface)", border: "1px solid var(--line-2)" }}
           >
             <div className="flex items-center justify-between mb-5">

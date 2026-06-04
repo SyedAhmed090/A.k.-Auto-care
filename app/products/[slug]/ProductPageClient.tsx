@@ -3,12 +3,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Plus, Minus, Zap, CheckCircle } from "lucide-react";
+import { Zap, CheckCircle } from "lucide-react";
 import type { Product } from "@/data/products";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
 import StarRating from "@/components/ui/StarRating";
 import ProductCard from "@/components/product/ProductCard";
+import QuantityStepper from "@/components/ui/QuantityStepper";
 
 const TABS = ["Description", "How to Use", "Specs"] as const;
 type Tab = typeof TABS[number];
@@ -187,29 +188,7 @@ export default function ProductPageClient({ product, related }: { product: Produ
               >
                 Qty
               </p>
-              <div className="flex items-center rounded-[11px] overflow-hidden" style={{ border: "1px solid var(--line-2)" }}>
-                <button
-                  onClick={() => setQty(Math.max(1, qty - 1))}
-                  className="w-10 h-10 grid place-items-center hover:bg-white/5 transition-colors cursor-pointer"
-                  style={{ color: "var(--muted)" }}
-                >
-                  <Minus className="w-3.5 h-3.5" />
-                </button>
-                <span
-                  className="w-10 text-center text-sm font-bold"
-                  style={{ fontFamily: "var(--font-space-mono)" }}
-                >
-                  {qty}
-                </span>
-                <button
-                  onClick={() => setQty(Math.min(maxQty, qty + 1))}
-                  disabled={qty >= maxQty}
-                  className="w-10 h-10 grid place-items-center hover:bg-white/5 transition-colors cursor-pointer disabled:opacity-30"
-                  style={{ color: "var(--muted)" }}
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                </button>
-              </div>
+              <QuantityStepper value={qty} onChange={setQty} max={maxQty} />
             </div>
 
             {/* CTAs */}

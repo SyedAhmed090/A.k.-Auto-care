@@ -46,7 +46,7 @@ export default function Header() {
     <>
       <header
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+          "fixed top-9 left-0 right-0 z-50 transition-all duration-300",
           scrolled
             ? "border-b bg-[rgba(8,9,11,0.72)] backdrop-blur-[18px]"
             : "border-b border-transparent"
@@ -178,7 +178,7 @@ export default function Header() {
       {/* Search overlay */}
       {searchOpen && (
         <div
-          className="fixed inset-0 z-[60] flex items-start justify-center pt-24 px-4"
+          className="fixed inset-0 z-[70] flex items-start justify-center pt-24 px-4"
           style={{ background: "rgba(8,9,11,.85)", backdropFilter: "blur(12px)" }}
           onClick={() => setSearchOpen(false)}
         >

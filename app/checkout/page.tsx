@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Lock, ChevronDown, ChevronUp } from "lucide-react";
+import { Lock, ChevronDown, ChevronUp, Banknote, Smartphone, Building } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
 import { getShippingOptions, gstAmount } from "@/lib/commerce";
@@ -255,34 +255,35 @@ export default function CheckoutPage() {
 
             <SectionCard title="Payment Method">
               <div className="space-y-2.5">
-                {[
-                  { id: "cod", label: "Cash on Delivery (COD)", description: "Pay cash when your order arrives — no card needed", emoji: "💵" },
-                  { id: "jazzcash", label: "JazzCash", description: `Send to ${PAYMENT_DETAILS.jazzcash.number} · Share screenshot on WhatsApp after ordering`, emoji: "📱" },
-                  { id: "easypaisa", label: "EasyPaisa", description: `Send to ${PAYMENT_DETAILS.easypaisa.number} · Share screenshot on WhatsApp after ordering`, emoji: "📱" },
-                  { id: "bank", label: "Bank Transfer", description: `${PAYMENT_DETAILS.bank.bank} · A/C: ${PAYMENT_DETAILS.bank.account} · Branch: ${PAYMENT_DETAILS.bank.branch} · Share receipt on WhatsApp`, emoji: "🏦" },
-                ].map((method) => {
-                  const active = paymentMethod === method.id;
-                  return (
-                    <label
-                      key={method.id}
-                      className="flex items-center gap-3 p-4 rounded-[13px] cursor-pointer transition-all"
-                      style={{
-                        border: active ? "1px solid var(--accent)" : "1px solid var(--line-2)",
-                        background: active ? "rgba(216,255,53,.04)" : "var(--bg-2)",
-                      }}
-                    >
-                      <input type="radio" name="paymentMethod" value={method.id} checked={active} onChange={() => setPaymentMethod(method.id)} className="sr-only" />
-                      <div className="w-4 h-4 rounded-full flex-shrink-0 border-2 grid place-items-center" style={{ borderColor: active ? "var(--accent)" : "var(--line-2)" }}>
-                        {active && <div className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--accent)" }} />}
-                      </div>
-                      <span className="text-lg leading-none">{method.emoji}</span>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold">{method.label}</p>
-                        <p className="text-[.75rem]" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>{method.description}</p>
-                      </div>
-                    </label>
-                  );
-                })}
+                  {[
+                    { id: "cod", label: "Cash on Delivery (COD)", description: "Pay cash when your order arrives — no card needed", icon: Banknote },
+                    { id: "jazzcash", label: "JazzCash", description: `Send to ${PAYMENT_DETAILS.jazzcash.number} · Share screenshot on WhatsApp after ordering`, icon: Smartphone },
+                    { id: "easypaisa", label: "EasyPaisa", description: `Send to ${PAYMENT_DETAILS.easypaisa.number} · Share screenshot on WhatsApp after ordering`, icon: Smartphone },
+                    { id: "bank", label: "Bank Transfer", description: `${PAYMENT_DETAILS.bank.bank} · A/C: ${PAYMENT_DETAILS.bank.account} · Branch: ${PAYMENT_DETAILS.bank.branch} · Share receipt on WhatsApp`, icon: Building },
+                  ].map((method) => {
+                    const active = paymentMethod === method.id;
+                    const Icon = method.icon;
+                    return (
+                      <label
+                        key={method.id}
+                        className="flex items-center gap-3 p-4 rounded-[13px] cursor-pointer transition-all"
+                        style={{
+                          border: active ? "1px solid var(--accent)" : "1px solid var(--line-2)",
+                          background: active ? "rgba(216,255,53,.04)" : "var(--bg-2)",
+                        }}
+                      >
+                        <input type="radio" name="paymentMethod" value={method.id} checked={active} onChange={() => setPaymentMethod(method.id)} className="sr-only" />
+                        <div className="w-4 h-4 rounded-full flex-shrink-0 border-2 grid place-items-center" style={{ borderColor: active ? "var(--accent)" : "var(--line-2)" }}>
+                          {active && <div className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--accent)" }} />}
+                        </div>
+                        <Icon className="w-5 h-5 flex-shrink-0" style={{ color: "var(--accent)" }} />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold">{method.label}</p>
+                          <p className="text-[.75rem]" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>{method.description}</p>
+                        </div>
+                      </label>
+                    );
+                  })}
               </div>
               {paymentMethod !== "cod" && (
                 <p className="text-[.75rem] px-1 mt-1" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>

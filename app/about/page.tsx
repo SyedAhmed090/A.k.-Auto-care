@@ -9,7 +9,7 @@ export default function AboutPage() {
       {/* Hero */}
       <div className="relative h-72 sm:h-96 overflow-hidden">
         <Image src="https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?w=1600&q=80" alt="About" fill className="object-cover opacity-25" />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(to right, var(--bg) 50%, transparent)" }} />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(to right, var(--bg) 40%, transparent 80%)" }} />
         <div
           className="absolute inset-0 pointer-events-none"
           style={{

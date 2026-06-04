@@ -1,19 +1,27 @@
 "use client";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Plus, Check } from "lucide-react";
 import { Product } from "@/data/products";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
 import StarRating from "@/components/ui/StarRating";
 
+const LOW_STOCK_THRESHOLD = 5;
+
 export default function ProductCard({ product }: { product: Product }) {
+  const [added, setAdded] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
 
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     addItem(product, product.variants[0]);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1500);
   };
+
+  const isLowStock = product.inStock && product.stock != null && product.stock <= LOW_STOCK_THRESHOLD;
 
   return (
     <Link href={`/products/${product.slug}`} className="group block h-full">
@@ -36,10 +44,19 @@ export default function ProductCard({ product }: { product: Product }) {
 
           {product.badge && (
             <span
-              className="absolute top-3.5 left-3.5 text-[.6rem] font-bold px-2.5 py-1 rounded-full tracking-[.12em] uppercase"
+              className="absolute top-3.5 left-3.5 text-[.6rem] font-bold px-2.5 py-1 rounded-full tracking-[.12em] uppercase z-10"
               style={{ background: "var(--accent)", color: "#000", fontFamily: "var(--font-space-mono)" }}
             >
               {product.badge}
+            </span>
+          )}
+
+          {isLowStock && (
+            <span
+              className="absolute top-3.5 right-3.5 text-[.6rem] font-bold px-2.5 py-1 rounded-full tracking-[.12em] uppercase z-10"
+              style={{ background: "#fb923c", color: "#000", fontFamily: "var(--font-space-mono)" }}
+            >
+              Only {product.stock} left
             </span>
           )}
 
@@ -70,7 +87,7 @@ export default function ProductCard({ product }: { product: Product }) {
                 color: "var(--text)",
               }}
             >
-              {formatPrice(product.price)}
+              {product.variants.length > 1 ? `from ${formatPrice(product.price)}` : formatPrice(product.price)}
             </span>
 
             <button
@@ -78,8 +95,9 @@ export default function ProductCard({ product }: { product: Product }) {
               disabled={!product.inStock}
               className="btn-add-to-cart w-[42px] h-[42px] rounded-[11px] grid place-items-center transition-all duration-200 cursor-pointer disabled:opacity-40"
               aria-label={`Add ${product.name} to cart`}
+              style={added ? { background: "var(--accent)", color: "#000", border: "1px solid var(--accent)" } : undefined}
             >
-              <Plus className="w-[18px] h-[18px]" />
+              {added ? <Check className="w-[18px] h-[18px]" /> : <Plus className="w-[18px] h-[18px]" />}
             </button>
           </div>
         </div>

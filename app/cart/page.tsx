@@ -13,6 +13,7 @@ export default function CartPage() {
   const [promoInput, setPromoInput] = useState("");
   const [promoMsg, setPromoMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [promoLoading, setPromoLoading] = useState(false);
+  const [confirmClear, setConfirmClear] = useState(false);
 
   const sub = subtotal();
   const discount = sub * promoDiscount;
@@ -116,7 +117,7 @@ export default function CartPage() {
             <div className="flex items-center justify-between pt-2">
               <div />
               <button
-                onClick={() => { if (window.confirm("Clear all items from your cart?")) clearCart(); }}
+                onClick={() => setConfirmClear(true)}
                 className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg cursor-pointer transition-all"
                 style={{ border: "1px solid rgba(239,68,68,.2)", color: "#ef4444", background: "rgba(239,68,68,.06)" }}
               >
@@ -124,6 +125,43 @@ export default function CartPage() {
               </button>
             </div>
           </div>
+
+          {/* Clear cart confirmation */}
+          {confirmClear && (
+            <>
+              <div className="fixed inset-0 z-50" style={{ background: "rgba(8,9,11,.8)" }} onClick={() => setConfirmClear(false)} />
+              <div
+                className="fixed inset-0 z-[60] flex items-center justify-center p-4"
+                onClick={() => setConfirmClear(false)}
+              >
+                <div
+                  className="w-full max-w-sm rounded-[20px] p-6 text-center"
+                  style={{ background: "var(--surface)", border: "1px solid var(--line-2)" }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Trash2 className="w-8 h-8 mx-auto mb-3" style={{ color: "#ef4444" }} />
+                  <h3 className="text-lg font-bold mb-2">Clear your cart?</h3>
+                  <p className="text-sm mb-6" style={{ color: "var(--muted)" }}>This action cannot be undone.</p>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => setConfirmClear(false)}
+                      className="flex-1 py-3 rounded-[11px] text-sm font-semibold cursor-pointer transition-all"
+                      style={{ border: "1px solid var(--line-2)", color: "var(--text)" }}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => { clearCart(); setConfirmClear(false); }}
+                      className="flex-1 py-3 rounded-[11px] text-sm font-semibold cursor-pointer transition-all"
+                      style={{ background: "#ef4444", color: "#fff" }}
+                    >
+                      Clear All
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
 
           {/* Summary */}
           <div className="lg:col-span-1">
@@ -241,8 +279,8 @@ export default function CartPage() {
               </Link>
               <Link
                 href="/shop"
-                className="block text-center text-sm mt-3 transition-colors hover:text-[var(--text)]"
-                style={{ color: "var(--muted)" }}
+                className="block text-center text-sm mt-3 transition-colors hover:text-[var(--accent)]"
+                  style={{ color: "var(--muted)" }}
               >
                 Continue Shopping
               </Link>
