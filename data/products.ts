@@ -218,7 +218,7 @@ const products: Product[] = [
       { label: "400 g", price: 29999, sku: "SOVWAX-400" },
     ],
     images: [
-      "https://images.unsplash.com/photo-1547327132-9bcc5bb8d26b?w=800&q=80",
+      "/placeholder.svg",
       "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&q=80",
     ],
     stock: 18,
@@ -252,7 +252,7 @@ const products: Product[] = [
     ],
     images: [
       "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80",
-      "https://images.unsplash.com/photo-1547327132-9bcc5bb8d26b?w=800&q=80",
+      "/placeholder.svg",
     ],
     stock: 22,
     inStock: true,
@@ -479,7 +479,7 @@ const products: Product[] = [
     ],
     images: [
       "https://images.unsplash.com/photo-1615906655593-ad0386982a0f?w=800&q=80",
-      "https://images.unsplash.com/photo-1547327132-9bcc5bb8d26b?w=800&q=80",
+      "/placeholder.svg",
     ],
     stock: 35,
     inStock: true,

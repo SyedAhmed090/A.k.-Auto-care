@@ -31,7 +31,7 @@ const categories: Category[] = [
     description:
       "Lock in that showroom shine with long-lasting carnauba waxes and synthetic polymer sealants.",
     image:
-      "https://images.unsplash.com/photo-1547327132-9bcc5bb8d26b?w=600&q=80",
+      "/placeholder.svg",
     accent: "#eaff7a",
   },
   {
