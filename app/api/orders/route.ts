@@ -45,6 +45,17 @@ export async function POST(req: NextRequest) {
     if (!parsed.success) return NextResponse.json({ error: "Invalid order data." }, { status: 400 });
     const data = parsed.data;
 
+    // Load reserved quantities from DB to calculate true available stock
+    const supabase = createAdminClient();
+    const productIds = data.items.map(i => i.productId);
+    const { data: reservedRows } = await supabase
+      .from("product_stock")
+      .select("product_id, reserved")
+      .in("product_id", productIds);
+    const reservedMap = new Map(
+      (reservedRows ?? []).map(r => [r.product_id as string, r.reserved as number])
+    );
+
     // Server-side price computation — never trust client prices
     const lineItems: {
       productId: string; productName: string; variantLabel: string;
@@ -61,7 +72,12 @@ export async function POST(req: NextRequest) {
       if (!variant) {
         return NextResponse.json({ error: `Variant ${item.variantSku} not found.` }, { status: 400 });
       }
-      const qty = Math.min(item.quantity, product.stock ?? 99);
+      const reserved = reservedMap.get(product.id) ?? 0;
+      const available = (product.stock ?? 99) - reserved;
+      if (available <= 0) {
+        return NextResponse.json({ error: `${product.name} is out of stock.` }, { status: 400 });
+      }
+      const qty = Math.min(item.quantity, available);
       lineItems.push({
         productId: product.id, productName: product.name,
         variantLabel: variant.label, variantSku: variant.sku,
@@ -77,7 +93,6 @@ export async function POST(req: NextRequest) {
     const promoCode = data.promoCode ? data.promoCode.toUpperCase() : null;
 
     if (promoCode) {
-      const supabase = createAdminClient();
       try {
         const { data: p, error } = await supabase
           .from("promo_codes")
@@ -115,7 +130,6 @@ export async function POST(req: NextRequest) {
     const shippingCost = selectedShipping?.price ?? 0;
     const total = parseFloat((afterDiscount + shippingCost).toFixed(2));
 
-    const supabase = createAdminClient();
     const { data: row, error } = await supabase
       .from("orders")
       .insert({
