@@ -5,6 +5,8 @@ import { getShippingOptions } from "@/lib/commerce";
 import { PROMOS } from "@/lib/promos";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rateLimit";
+import { checkCsrf } from "@/lib/csrf";
+import { buildOrderConfirmationHtml } from "@/lib/email";
 
 const itemSchema = z.object({
   productId:  z.string().max(20),
@@ -29,6 +31,9 @@ const orderSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  const csrfError = checkCsrf(req);
+  if (csrfError) return csrfError;
+
   const ip = getIP(req.headers);
   if (!checkRateLimit(`orders:${ip}`, 5, 60_000)) {
     return NextResponse.json({ error: "Too many requests. Please try again shortly." }, { status: 429 });
@@ -105,7 +110,7 @@ export async function POST(req: NextRequest) {
     }
 
     const afterDiscount = parseFloat((subtotal - discount).toFixed(2));
-    const shippingOptions = getShippingOptions(data.country, afterDiscount);
+    const shippingOptions = getShippingOptions(data.country, subtotal);
     const selectedShipping = shippingOptions.find(o => o.id === data.shippingMethod) ?? shippingOptions[0];
     const shippingCost = selectedShipping?.price ?? 0;
     const total = parseFloat((afterDiscount + shippingCost).toFixed(2));
@@ -130,11 +135,60 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Failed to save order." }, { status: 500 });
     }
 
-    // Increment promo uses in DB (best-effort)
+    // Atomic promo increment — requires 003_stock_functions.sql migration
     if (promoUsed) {
-      const { data: cur } = await supabase.from("promo_codes").select("uses").eq("id", promoUsed.id).single();
-      if (cur) {
-        await supabase.from("promo_codes").update({ uses: cur.uses + 1 }).eq("id", promoUsed.id);
+      try {
+        await supabase.rpc("increment_promo_uses", { promo_id: promoUsed.id });
+      } catch {
+        // RPC not yet migrated — fall back to non-atomic update
+        const { data: cur } = await supabase.from("promo_codes").select("uses").eq("id", promoUsed.id).single();
+        if (cur) await supabase.from("promo_codes").update({ uses: cur.uses + 1 }).eq("id", promoUsed.id);
+      }
+    }
+
+    // Reserve stock — requires 003_stock_functions.sql migration (best-effort)
+    try {
+      await Promise.all(
+        lineItems.map((item) =>
+          supabase.rpc("reserve_stock", { p_product_id: item.productId, qty: item.quantity })
+        )
+      );
+    } catch {
+      // Migration not yet run — stock tracking unavailable
+    }
+
+    // Send order confirmation email via Resend (requires RESEND_API_KEY in .env.local)
+    if (process.env.RESEND_API_KEY) {
+      try {
+        await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+          },
+          body: JSON.stringify({
+            from: process.env.CONTACT_EMAIL_FROM ?? "noreply@akautocare.pk",
+            to: data.email,
+            subject: `Order Confirmed — #${row.id.slice(0, 8).toUpperCase()}`,
+            html: buildOrderConfirmationHtml({
+              orderId: row.id,
+              firstName: data.firstName,
+              lastName: data.lastName,
+              email: data.email,
+              items: lineItems,
+              subtotal,
+              discount,
+              shipping: shippingCost,
+              total,
+              shippingMethod: selectedShipping?.label ?? "Standard",
+              paymentMethod: data.paymentMethod,
+              city: data.city,
+              address: data.address,
+            }),
+          }),
+        });
+      } catch {
+        // Non-fatal — order is saved, email is best-effort
       }
     }
 

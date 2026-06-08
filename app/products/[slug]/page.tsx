@@ -4,6 +4,8 @@ import { getProductBySlug, getRelatedProducts } from "@/data/products";
 import products from "@/data/products";
 import ProductPageClient from "./ProductPageClient";
 
+const BASE_URL = "https://www.akautocare.pk";
+
 export function generateStaticParams() {
   return products.map((p) => ({ slug: p.slug }));
 }
@@ -18,7 +20,8 @@ export async function generateMetadata({
   if (!product) return {};
   return {
     title: `${product.name} | A.K. Auto Care`,
-    description: product.tagline,
+    description: product.description.slice(0, 160),
+    alternates: { canonical: `/products/${product.slug}` },
     openGraph: {
       title: product.name,
       description: product.tagline,
@@ -42,5 +45,40 @@ export default async function ProductPage({
   const product = getProductBySlug(slug);
   if (!product) notFound();
   const related = getRelatedProducts(product);
-  return <ProductPageClient product={product} related={related} />;
+
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    image: product.images,
+    description: product.description,
+    brand: { "@type": "Brand", name: "A.K. Auto Care" },
+    offers: {
+      "@type": "Offer",
+      url: `${BASE_URL}/products/${product.slug}`,
+      priceCurrency: "PKR",
+      price: product.price,
+      availability: product.inStock
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      seller: { "@type": "Organization", name: "A.K. Auto Care" },
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: product.rating,
+      ratingCount: product.reviews,
+      bestRating: 5,
+      worstRating: 1,
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
+      <ProductPageClient product={product} related={related} />
+    </>
+  );
 }

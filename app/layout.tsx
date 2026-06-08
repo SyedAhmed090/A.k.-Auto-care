@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { Anton, Hanken_Grotesk, Space_Mono } from "next/font/google";
 import { Truck } from "lucide-react";
+import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import MiniCart from "@/components/layout/MiniCart";
 import WhatsAppButton from "@/components/ui/WhatsAppButton";
+import CookieConsent from "@/components/ui/CookieConsent";
 
 const anton = Anton({
   variable: "--font-anton",
@@ -25,7 +27,30 @@ const spaceMono = Space_Mono({
   weight: ["400", "700"],
 });
 
+const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+
+const orgSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "A.K. Auto Care",
+  url: "https://www.akautocare.pk",
+  logo: "https://www.akautocare.pk/logo.png",
+  contactPoint: {
+    "@type": "ContactPoint",
+    telephone: "+92-300-0000000",
+    contactType: "customer service",
+    areaServed: "PK",
+    availableLanguage: ["English", "Urdu"],
+  },
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Karachi",
+    addressCountry: "PK",
+  },
+};
+
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.akautocare.pk"),
   title: {
     default: "A.K. Auto Care — Precision Car Care",
     template: "%s | A.K. Auto Care",
@@ -33,6 +58,7 @@ export const metadata: Metadata = {
   description:
     "Pro-grade surface science. Prep, correct, coat, protect. Engineered car care products trusted by Pakistani detailers who refuse to settle.",
   keywords: ["car detailing Pakistan", "ceramic coating Karachi", "car wax Pakistan", "paint correction", "auto care"],
+  alternates: { canonical: "/" },
   openGraph: {
     title: "A.K. Auto Care — Precision Car Care",
     description: "Pro-grade surface science. Prep, correct, coat, protect.",
@@ -40,12 +66,30 @@ export const metadata: Metadata = {
     locale: "en_PK",
     siteName: "A.K. Auto Care",
   },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${anton.variable} ${hanken.variable} ${spaceMono.variable}`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
+        />
+      </head>
       <body className="min-h-screen flex flex-col">
+        {GA_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga4-init" strategy="afterInteractive">
+              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`}
+            </Script>
+          </>
+        )}
         {/* Announcement bar */}
         <div
           className="fixed top-0 left-0 right-0 z-[60] w-full text-center py-2 px-4 text-[.7rem] font-semibold tracking-[.08em] h-9 flex items-center justify-center"
@@ -58,6 +102,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="flex-1 pt-[114px]">{children}</main>
         <Footer />
         <WhatsAppButton />
+        <CookieConsent />
       </body>
     </html>
   );

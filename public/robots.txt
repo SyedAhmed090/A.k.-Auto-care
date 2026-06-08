@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Block admin and internal routes
+Disallow: /admin/
+Disallow: /api/
+Disallow: /checkout/
+Disallow: /order-confirmation/
+Disallow: /cart/
+
+Sitemap: https://www.akautocare.pk/sitemap.xml

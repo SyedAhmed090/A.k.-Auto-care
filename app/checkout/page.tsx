@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -62,6 +62,7 @@ export default function CheckoutPage() {
   const [shippingId, setShippingId] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const router = useRouter();
+  const submittingRef = useRef(false);
 
   const sub = subtotal();
   const discount = sub * promoDiscount;
@@ -70,7 +71,7 @@ export default function CheckoutPage() {
   const { register, handleSubmit, formState: { errors }, control } = useForm<FormData>({ resolver: zodResolver(schema) });
   const country = useWatch({ control, name: "country", defaultValue: "" });
 
-  const shippingOptions = getShippingOptions(country, afterDiscount);
+  const shippingOptions = getShippingOptions(country, sub);
   const resolvedShipping = shippingOptions.find((o) => o.id === shippingId) ?? shippingOptions[0];
   const shippingCost = resolvedShipping?.price ?? 0;
   const total = afterDiscount + shippingCost;
@@ -78,12 +79,14 @@ export default function CheckoutPage() {
 
   // Reset shipping selection when country (and therefore options) changes
   useEffect(() => {
-    const opts = getShippingOptions(country, afterDiscount);
+    const opts = getShippingOptions(country, sub);
     if (opts.length > 0) setShippingId(opts[0].id);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [country]);
 
   const onSubmit = async (data: FormData) => {
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setLoading(true);
     setSubmitError("");
     try {
@@ -100,7 +103,7 @@ export default function CheckoutPage() {
           province: data.province || null,
           postcode: data.postcode,
           country: data.country,
-          shippingMethod: resolvedShipping?.label ?? "Standard",
+          shippingMethod: resolvedShipping?.id ?? shippingOptions[0]?.id ?? "pk-standard",
           paymentMethod,
           items: items.map((i) => ({
             productId: i.product.id,
@@ -126,6 +129,7 @@ export default function CheckoutPage() {
     } catch {
       setSubmitError("Something went wrong placing your order. Please try again.");
       setLoading(false);
+      submittingRef.current = false;
     }
   };
 
