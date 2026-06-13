@@ -36,7 +36,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       .from("orders")
       .select("status, email, first_name, tracking_number, tracking_carrier, total")
       .eq("id", id)
-      .single();
+      .single() as any;
 
     const updates: Record<string, unknown> = { updated_at: new Date().toISOString() };
     if (parsed.data.status            !== undefined) updates.status            = parsed.data.status;

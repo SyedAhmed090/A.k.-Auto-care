@@ -31,7 +31,7 @@ function buildHtml(status: StatusKey, o: { first_name: string; id: string; track
 }
 
 export async function sendStatusEmail(
-  order: { id: string; email: string; first_name: string; tracking_number?: string | null; total: number },
+  order: { id: string; email: string; first_name: string; tracking_number?: string | null; tracking_carrier?: string | null; total: number },
   status: string
 ) {
   const key = process.env.RESEND_API_KEY;
