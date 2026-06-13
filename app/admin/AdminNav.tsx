@@ -1,13 +1,16 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, ShoppingBag, Tag, Package, LogOut } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, Tag, Package, Star, Boxes, Users, LogOut } from "lucide-react";
 
 const NAV = [
-  { href: "/admin",          label: "Dashboard", icon: LayoutDashboard, exact: true  },
-  { href: "/admin/orders",   label: "Orders",    icon: ShoppingBag,     exact: false },
-  { href: "/admin/products", label: "Products",  icon: Package,         exact: false },
-  { href: "/admin/promos",   label: "Promos",    icon: Tag,             exact: false },
+  { href: "/admin",             label: "Dashboard", icon: LayoutDashboard, exact: true  },
+  { href: "/admin/orders",      label: "Orders",    icon: ShoppingBag,     exact: false },
+  { href: "/admin/products",    label: "Products",  icon: Package,         exact: false },
+  { href: "/admin/inventory",   label: "Inventory", icon: Boxes,           exact: false },
+  { href: "/admin/promos",      label: "Promos",    icon: Tag,             exact: false },
+  { href: "/admin/reviews",     label: "Reviews",   icon: Star,            exact: false },
+  { href: "/admin/customers",   label: "Customers", icon: Users,           exact: false },
 ];
 
 export default function AdminNav() {

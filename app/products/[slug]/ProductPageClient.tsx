@@ -1,50 +1,86 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Zap, CheckCircle } from "lucide-react";
+import { Zap, CheckCircle, Truck, RotateCcw, Shield, MessageCircle, Share2, ChevronUp } from "lucide-react";
 import type { Product } from "@/data/products";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
 import StarRating from "@/components/ui/StarRating";
 import ProductCard from "@/components/product/ProductCard";
 import QuantityStepper from "@/components/ui/QuantityStepper";
+import ReviewsSection from "@/components/product/ReviewsSection";
+import { trackViewContent, trackAddToCart } from "@/components/analytics/MetaPixel";
+import { WHATSAPP_NUMBER } from "@/lib/constants";
 
 const TABS = ["Description", "How to Use", "Specs"] as const;
 type Tab = typeof TABS[number];
 
 const LOW_STOCK_THRESHOLD = 5;
 
-export default function ProductPageClient({ product, related }: { product: Product; related: Product[] }) {
-  const [activeImg, setActiveImg] = useState(0);
-  const [selectedVariant, setSelectedVariant] = useState(0);
-  const [qty, setQty] = useState(1);
-  const [tab, setTab] = useState<Tab>("Description");
-  const [added, setAdded] = useState(false);
-  const addItem = useCartStore((s) => s.addItem);
-  const router = useRouter();
+const TRUST = [
+  { icon: Truck,       label: "Free delivery", sub: "Orders over Rs 5,000" },
+  { icon: RotateCcw,   label: "30-day returns", sub: "No questions asked" },
+  { icon: Shield,      label: "100% Genuine",   sub: "Lab-tested formulas" },
+  { icon: MessageCircle, label: "WhatsApp support", sub: "Reply in minutes" },
+];
 
-  const variant = product.variants[selectedVariant];
-  const maxQty = product.stock ?? 99;
+export default function ProductPageClient({ product, related }: { product: Product; related: Product[] }) {
+  const [activeImg, setActiveImg]           = useState(0);
+  const [selectedVariant, setSelectedVariant] = useState(0);
+  const [qty, setQty]                       = useState(1);
+  const [tab, setTab]                       = useState<Tab>("Description");
+  const [added, setAdded]                   = useState(false);
+  const [stickyVisible, setStickyVisible]   = useState(false);
+  const ctaRef = useRef<HTMLDivElement>(null);
+
+  const addItem  = useCartStore((s) => s.addItem);
+  const router   = useRouter();
+  const variant  = product.variants[selectedVariant];
+  const maxQty   = product.stock ?? 99;
   const isLowStock = product.inStock && product.stock != null && product.stock <= LOW_STOCK_THRESHOLD;
+
+  useEffect(() => {
+    trackViewContent({ id: product.id, name: product.name, price: variant.price, categorySlug: product.categorySlug });
+  }, [product.id, product.name, product.categorySlug, variant.price]);
+
+  useEffect(() => {
+    if (!ctaRef.current) return;
+    const io = new IntersectionObserver(([e]) => setStickyVisible(!e.isIntersecting), { threshold: 0 });
+    io.observe(ctaRef.current);
+    return () => io.disconnect();
+  }, []);
 
   const handleAdd = () => {
     addItem(product, variant, qty);
+    trackAddToCart(product, variant, qty);
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };
 
-  const divider = { borderColor: "var(--line)" };
+  const handleBuyNow = () => {
+    addItem(product, variant, qty);
+    trackAddToCart(product, variant, qty);
+    router.push("/checkout");
+  };
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      await navigator.share({ title: product.name, url: window.location.href }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(window.location.href).catch(() => {});
+    }
+  };
+
+  const waMsg = encodeURIComponent(`Hi! I have a question about ${product.name}: `);
+  const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${waMsg}`;
 
   return (
     <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Breadcrumb */}
-        <div
-          className="flex items-center gap-2 text-xs mb-10"
-          style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}
-        >
+        <div className="flex items-center gap-2 text-xs mb-10" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
           <Link href="/" className="hover:text-[var(--text)] transition-colors">Home</Link>
           <span>/</span>
           <Link href="/shop" className="hover:text-[var(--text)] transition-colors">Shop</Link>
@@ -58,12 +94,18 @@ export default function ProductPageClient({ product, related }: { product: Produ
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
           {/* Gallery */}
-          <div className="space-y-3">
+          <div className="space-y-3 lg:sticky lg:top-28">
             <div
-              className="relative aspect-square rounded-[20px] overflow-hidden"
+              className="relative aspect-square rounded-[20px] overflow-hidden group"
               style={{ background: "radial-gradient(70% 70% at 50% 40%,#221e15,#0c0a07)", border: "1px solid var(--line)" }}
             >
-              <Image src={product.images[activeImg]} alt={product.name} fill className="object-cover opacity-85" priority onError={(e) => { e.currentTarget.src = "/placeholder.svg"; }} />
+              <Image
+                src={product.images[activeImg] || "/placeholder.svg"}
+                alt={product.name} fill
+                className="object-cover opacity-85 transition-transform duration-500 group-hover:scale-105"
+                priority
+                onError={(e) => { e.currentTarget.src = "/placeholder.svg"; }}
+              />
               {product.badge && (
                 <span
                   className="absolute top-4 left-4 text-[.6rem] font-bold px-2.5 py-1 rounded-full tracking-[.12em] uppercase"
@@ -72,6 +114,21 @@ export default function ProductPageClient({ product, related }: { product: Produ
                   {product.badge}
                 </span>
               )}
+              {isLowStock && (
+                <span
+                  className="absolute top-4 right-4 text-[.6rem] font-bold px-2.5 py-1 rounded-full tracking-[.1em] uppercase"
+                  style={{ background: "rgba(251,146,60,.15)", color: "#fb923c", border: "1px solid rgba(251,146,60,.3)", fontFamily: "var(--font-space-mono)" }}
+                >
+                  Only {product.stock} left
+                </span>
+              )}
+              <button
+                onClick={handleShare}
+                className="absolute bottom-4 right-4 w-9 h-9 rounded-full grid place-items-center transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
+                style={{ background: "rgba(12,11,8,.7)", backdropFilter: "blur(8px)", border: "1px solid var(--line-2)" }}
+              >
+                <Share2 className="w-4 h-4" style={{ color: "var(--muted)" }} />
+              </button>
             </div>
             {product.images.length > 1 && (
               <div className="flex flex-wrap items-center gap-2">
@@ -94,34 +151,31 @@ export default function ProductPageClient({ product, related }: { product: Produ
 
           {/* Info */}
           <div className="flex flex-col">
-            <span
-              className="text-[.72rem] tracking-[.14em] uppercase mb-2 block"
-              style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}
-            >
+            <span className="text-[.72rem] tracking-[.14em] uppercase mb-2 block" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
               {product.categorySlug.replace(/-/g, " ")}
             </span>
-            <h1
-              className="uppercase leading-[.98] tracking-[.01em] mb-3"
-              style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(2rem,4vw,3rem)" }}
-            >
+            <h1 className="uppercase leading-[.98] tracking-[.01em] mb-3" style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(2rem,4vw,3rem)" }}>
               {product.name}
             </h1>
             <p className="mb-4 text-[.95rem]" style={{ color: "var(--muted)" }}>{product.tagline}</p>
+
             <div className="flex items-center gap-3 mb-5">
               <StarRating rating={product.rating} reviews={product.reviews} size="md" />
+              {product.reviews > 0 && (
+                <a href="#reviews" className="text-xs transition-colors hover:text-[var(--accent)]" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
+                  ({product.reviews} reviews)
+                </a>
+              )}
             </div>
 
             {/* Price */}
-            <div
-              className="text-[2.4rem] mb-4"
-              style={{
-                fontFamily: "var(--font-hanken)",
-                fontWeight: 700,
-                color: "var(--text)",
-                display: "inline-block",
-              }}
-            >
-              {formatPrice(variant.price)}
+            <div className="flex items-baseline gap-3 mb-4">
+              <div className="text-[2.4rem]" style={{ fontFamily: "var(--font-hanken)", fontWeight: 700, color: "var(--text)" }}>
+                {formatPrice(variant.price)}
+              </div>
+              {product.variants.length > 1 && selectedVariant > 0 && (
+                <span className="text-sm" style={{ color: "var(--muted)" }}>for {variant.label}</span>
+              )}
             </div>
 
             {/* Stock */}
@@ -135,18 +189,12 @@ export default function ProductPageClient({ product, related }: { product: Produ
                   fontFamily: "var(--font-space-mono)",
                 }}
               >
-                <span
-                  className="w-1.5 h-1.5 rounded-full"
-                  style={{ background: product.inStock ? "#4ade80" : "#ef4444" }}
-                />
+                <span className="w-1.5 h-1.5 rounded-full" style={{ background: product.inStock ? "#4ade80" : "#ef4444" }} />
                 {product.inStock ? "In Stock — Ready to Ship" : "Out of Stock"}
               </div>
               {isLowStock && (
-                <span
-                  className="text-[.72rem] font-semibold"
-                  style={{ color: "#fb923c", fontFamily: "var(--font-space-mono)" }}
-                >
-                  Only {product.stock} left
+                <span className="text-[.72rem] font-semibold animate-pulse" style={{ color: "#fb923c", fontFamily: "var(--font-space-mono)" }}>
+                  Only {product.stock} left — order soon!
                 </span>
               )}
             </div>
@@ -154,10 +202,7 @@ export default function ProductPageClient({ product, related }: { product: Produ
             {/* Variants */}
             {product.variants.length > 1 && (
               <div className="mb-6">
-                <p
-                  className="text-[.72rem] tracking-[.14em] uppercase mb-3"
-                  style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
-                >
+                <p className="text-[.72rem] tracking-[.14em] uppercase mb-3" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
                   Size / Option
                 </p>
                 <div className="flex flex-wrap items-center gap-2">
@@ -182,17 +227,14 @@ export default function ProductPageClient({ product, related }: { product: Produ
 
             {/* Qty */}
             <div className="flex items-center gap-4 mb-7">
-              <p
-                className="text-[.72rem] tracking-[.14em] uppercase"
-                style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
-              >
+              <p className="text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
                 Qty
               </p>
               <QuantityStepper value={qty} onChange={setQty} max={maxQty} />
             </div>
 
             {/* CTAs */}
-            <div className="flex items-stretch gap-3 mb-8 flex-wrap">
+            <div ref={ctaRef} className="flex items-stretch gap-3 mb-6 flex-wrap">
               <button
                 onClick={handleAdd}
                 disabled={!product.inStock}
@@ -201,7 +243,7 @@ export default function ProductPageClient({ product, related }: { product: Produ
                 {added ? <><CheckCircle className="w-[18px] h-[18px]" /> Added!</> : "Add to Cart"}
               </button>
               <button
-                onClick={() => { addItem(product, variant, qty); router.push("/checkout"); }}
+                onClick={handleBuyNow}
                 disabled={!product.inStock}
                 className="btn-ghost flex-1 min-w-[140px] py-4 rounded-[13px] font-semibold flex items-center justify-center gap-2.5 transition-all cursor-pointer disabled:opacity-40 hover:-translate-y-0.5"
               >
@@ -209,13 +251,28 @@ export default function ProductPageClient({ product, related }: { product: Produ
               </button>
             </div>
 
-            {/* Trust */}
-            <div className="rounded-[14px] p-4 space-y-2" style={{ background: "var(--surface)", border: "1px solid var(--line)" }}>
-              {["Free delivery on orders over Rs 5,000", "30-day hassle-free returns", "Cash on Delivery available"].map((t) => (
-                <p key={t} className="flex items-center gap-2.5 text-xs" style={{ color: "var(--muted)" }}>
-                  <CheckCircle className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "var(--accent)" }} />
-                  {t}
-                </p>
+            {/* WhatsApp */}
+            <a
+              href={waUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2.5 mb-7 text-sm font-semibold transition-colors hover:text-[var(--accent)]"
+              style={{ color: "var(--muted)" }}
+            >
+              <MessageCircle className="w-4 h-4 flex-shrink-0" style={{ color: "#25d366" }} />
+              Ask about this product on WhatsApp
+            </a>
+
+            {/* Trust badges */}
+            <div className="grid grid-cols-2 gap-2.5">
+              {TRUST.map(({ icon: Icon, label, sub }) => (
+                <div key={label} className="flex items-start gap-3 rounded-[12px] px-4 py-3" style={{ background: "var(--surface)", border: "1px solid var(--line)" }}>
+                  <Icon className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "var(--accent)" }} />
+                  <div>
+                    <p className="text-[.78rem] font-semibold leading-tight">{label}</p>
+                    <p className="text-[.7rem] mt-0.5" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>{sub}</p>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
@@ -254,6 +311,9 @@ export default function ProductPageClient({ product, related }: { product: Produ
                       <td className="py-3.5" style={{ color: "var(--muted)" }}>{s.value}</td>
                     </tr>
                   ))}
+                  {!product.specs.length && (
+                    <tr><td className="py-4 text-sm" style={{ color: "var(--muted)" }}>No specs listed.</td></tr>
+                  )}
                 </tbody>
               </table>
             )}
@@ -263,10 +323,7 @@ export default function ProductPageClient({ product, related }: { product: Produ
         {/* Related */}
         {related.length > 0 && (
           <div className="mt-16" style={{ borderTop: "1px solid var(--line)", paddingTop: "60px" }}>
-            <h2
-              className="uppercase tracking-[.01em] mb-8"
-              style={{ fontFamily: "var(--font-anton)", fontSize: "2rem" }}
-            >
+            <h2 className="uppercase tracking-[.01em] mb-8" style={{ fontFamily: "var(--font-anton)", fontSize: "2rem" }}>
               You May Also Like
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -274,7 +331,35 @@ export default function ProductPageClient({ product, related }: { product: Produ
             </div>
           </div>
         )}
+
+        {/* Reviews */}
+        <div id="reviews" className="mt-16" style={{ borderTop: "1px solid var(--line)", paddingTop: "60px" }}>
+          <ReviewsSection productId={product.id} initialRating={product.rating} initialCount={product.reviews} />
+        </div>
       </div>
+
+      {/* Sticky mobile CTA */}
+      {stickyVisible && (
+        <div
+          className="fixed bottom-0 left-0 right-0 z-40 flex items-center gap-3 px-4 py-3 md:hidden"
+          style={{ background: "var(--surface)", borderTop: "1px solid var(--line-2)", backdropFilter: "blur(12px)" }}
+        >
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-semibold truncate">{product.name}</p>
+            <p className="text-[.78rem]" style={{ color: "var(--accent)", fontFamily: "var(--font-hanken)", fontWeight: 700 }}>
+              {formatPrice(variant.price)}
+            </p>
+          </div>
+          <button
+            onClick={handleAdd}
+            disabled={!product.inStock}
+            className="btn-accent px-5 py-3 rounded-[11px] font-semibold text-sm flex items-center gap-2 cursor-pointer disabled:opacity-40 flex-shrink-0"
+          >
+            {added ? <CheckCircle className="w-4 h-4" /> : null}
+            {added ? "Added!" : "Add to Cart"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

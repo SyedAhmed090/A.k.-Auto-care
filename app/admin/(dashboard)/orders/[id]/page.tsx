@@ -1,104 +1,390 @@
-import { createAdminClient } from "@/utils/supabase/admin";
-import { formatPrice } from "@/lib/utils";
-import { notFound } from "next/navigation";
+"use client";
+import { use, useState, useEffect } from "react";
 import Link from "next/link";
-import OrderActions from "./OrderActions";
+
+const STATUSES = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled", "refunded"] as const;
 
 const STATUS_COLORS: Record<string, string> = {
   pending: "#f59e0b", confirmed: "#3b82f6", processing: "#8b5cf6",
   shipped: "#06b6d4", delivered: "#4ade80", cancelled: "#ef4444", refunded: "#9ca3af",
 };
 
-async function getOrder(id: string) {
-  const supabase = createAdminClient();
-  const { data, error } = await supabase.from("orders").select("*").eq("id", id).single();
-  if (error || !data) return null;
-  return data;
+const CARRIERS = ["TCS", "Leopards", "PostEx", "DHL", "M&P", "Call Courier", "Trax", "Other"];
+
+function formatPrice(price: number) {
+  return `Rs ${Math.round(price).toLocaleString("en-PK")}`;
 }
 
-export default async function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const order = await getOrder(id);
-  if (!order) notFound();
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleString("en-PK", { dateStyle: "medium", timeStyle: "short" });
+}
+
+interface OrderItem {
+  productName: string;
+  variantLabel: string;
+  variantSku: string;
+  price: number;
+  quantity: number;
+  image?: string;
+}
+
+interface Order {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  province: string;
+  postcode: string;
+  country: string;
+  shipping_method: string;
+  payment_method: string;
+  items: OrderItem[];
+  subtotal: number;
+  discount: number;
+  shipping: number;
+  total: number;
+  promo_code?: string;
+  status: string;
+  tracking_number?: string;
+  tracking_carrier?: string;
+  notes?: string;
+  created_at: string;
+}
+
+const labelStyle: React.CSSProperties = {
+  display: "block",
+  fontFamily: "var(--font-space-mono)",
+  fontSize: ".65rem",
+  letterSpacing: ".12em",
+  textTransform: "uppercase",
+  color: "var(--muted)",
+  marginBottom: 6,
+};
+
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  padding: "10px 14px",
+  borderRadius: 10,
+  border: "1px solid var(--line-2)",
+  background: "var(--bg)",
+  color: "var(--text)",
+  fontFamily: "var(--font-hanken)",
+  fontSize: ".9rem",
+  outline: "none",
+};
+
+export default function AdminOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+
+  const [order, setOrder] = useState<Order | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
+
+  const [status, setStatus] = useState("");
+  const [tracking, setTracking] = useState("");
+  const [carrier, setCarrier] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [saveMsg, setSaveMsg] = useState<{ ok: boolean; text: string } | null>(null);
+
+  useEffect(() => {
+    fetch(`/api/admin/orders/${id}`)
+      .then((r) => r.json())
+      .then((d) => {
+        if (!d.order) { setNotFound(true); return; }
+        const o: Order = d.order;
+        setOrder(o);
+        setStatus(o.status);
+        setTracking(o.tracking_number ?? "");
+        setCarrier(o.tracking_carrier ?? "");
+      })
+      .catch(() => setNotFound(true))
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  const save = async () => {
+    if (!order) return;
+    setSaving(true);
+    setSaveMsg(null);
+    try {
+      const res = await fetch(`/api/admin/orders/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status, tracking_number: tracking, tracking_carrier: carrier }),
+      });
+      const d = await res.json();
+      if (!res.ok) {
+        setSaveMsg({ ok: false, text: d.error ?? "Failed to save." });
+      } else {
+        setOrder((prev) => prev ? { ...prev, status, tracking_number: tracking, tracking_carrier: carrier } : prev);
+        setSaveMsg({ ok: true, text: "Changes saved." });
+        setTimeout(() => setSaveMsg(null), 3000);
+      }
+    } catch {
+      setSaveMsg({ ok: false, text: "Network error." });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 300, color: "var(--muted)", fontFamily: "var(--font-space-mono)", fontSize: ".8rem" }}>
+        Loading…
+      </div>
+    );
+  }
+
+  if (notFound || !order) {
+    return (
+      <div style={{ padding: 40, textAlign: "center" }}>
+        <p style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>Order not found.</p>
+        <Link href="/admin/orders" style={{ color: "var(--accent)", fontFamily: "var(--font-space-mono)", fontSize: ".8rem" }}>← Back to Orders</Link>
+      </div>
+    );
+  }
 
   const displayId = `AK-${order.id.slice(0, 8).toUpperCase()}`;
 
   return (
-    <div className="max-w-4xl">
-      <div className="flex items-center gap-3 mb-6 flex-wrap">
-        <Link href="/admin/orders" className="text-sm" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>← Orders</Link>
+    <div style={{ maxWidth: 1100 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 28, flexWrap: "wrap" }}>
+        <Link
+          href="/admin/orders"
+          style={{ fontFamily: "var(--font-space-mono)", fontSize: ".75rem", letterSpacing: ".1em", textTransform: "uppercase", color: "var(--muted)", textDecoration: "none", display: "flex", alignItems: "center", gap: 5 }}
+        >
+          ← Orders
+        </Link>
         <span style={{ color: "var(--line-2)" }}>/</span>
-        <h1 className="text-[1.6rem] uppercase" style={{ fontFamily: "var(--font-anton)" }}>{displayId}</h1>
-        <span className="text-[.65rem] font-bold px-2.5 py-1 rounded-full uppercase" style={{ background: `${STATUS_COLORS[order.status] ?? "#9ca3af"}22`, color: STATUS_COLORS[order.status] ?? "#9ca3af", fontFamily: "var(--font-space-mono)" }}>
+        <h1 style={{ fontFamily: "var(--font-anton)", fontSize: "1.8rem", textTransform: "uppercase", margin: 0 }}>
+          Order #{order.id.slice(0, 8).toUpperCase()}
+        </h1>
+        <span style={{
+          fontFamily: "var(--font-space-mono)", fontSize: ".65rem", letterSpacing: ".1em", textTransform: "uppercase",
+          fontWeight: 700, padding: "5px 12px", borderRadius: 999,
+          background: `${STATUS_COLORS[order.status] ?? "#9ca3af"}22`,
+          color: STATUS_COLORS[order.status] ?? "#9ca3af",
+        }}>
           {order.status}
         </span>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <div className="lg:col-span-2 space-y-5">
-          <div className="rounded-[16px] overflow-hidden" style={{ border: "1px solid var(--line)", background: "var(--surface)" }}>
-            <h2 className="px-5 py-4 text-sm font-semibold uppercase border-b" style={{ borderColor: "var(--line)", fontFamily: "var(--font-space-mono)" }}>Items</h2>
-            <div className="divide-y" style={{ borderColor: "var(--line)" }}>
-              {(order.items ?? []).map((item: any, i: number) => (
-                <div key={i} className="flex items-center justify-between px-5 py-4">
-                  <div>
-                    <p className="text-sm font-semibold">{item.productName}</p>
-                    <p className="text-[.72rem] mt-0.5" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>{item.variantLabel} · SKU: {item.variantSku}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-semibold" style={{ fontFamily: "var(--font-hanken)" }}>{formatPrice(item.price * item.quantity)}</p>
-                    <p className="text-[.72rem]" style={{ color: "var(--muted)" }}>× {item.quantity} @ {formatPrice(item.price)}</p>
-                  </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: 20, alignItems: "start" }} className="order-detail-grid">
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+
+          <div style={{ borderRadius: 16, border: "1px solid var(--line)", background: "var(--surface)", overflow: "hidden" }}>
+            <h2 style={{ padding: "14px 20px", margin: 0, fontSize: ".75rem", fontFamily: "var(--font-space-mono)", letterSpacing: ".12em", textTransform: "uppercase", borderBottom: "1px solid var(--line)", color: "var(--muted)" }}>
+              Customer
+            </h2>
+            <div style={{ padding: 20, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px 24px" }}>
+              {[
+                { l: "Name", v: `${order.first_name} ${order.last_name}` },
+                { l: "Email", v: order.email },
+                { l: "Phone / WhatsApp", v: order.phone ?? "—" },
+                { l: "City", v: order.city },
+                { l: "Address", v: order.address },
+                { l: "Country", v: order.country },
+              ].map(({ l, v }) => (
+                <div key={l}>
+                  <p style={{ fontFamily: "var(--font-space-mono)", fontSize: ".62rem", letterSpacing: ".12em", textTransform: "uppercase", color: "var(--muted)", margin: "0 0 4px" }}>{l}</p>
+                  <p style={{ margin: 0, fontSize: ".9rem", fontWeight: 600 }}>{v}</p>
                 </div>
               ))}
             </div>
-            <div className="px-5 py-4 border-t space-y-2 text-sm" style={{ borderColor: "var(--line)" }}>
-              {[
-                { l: "Subtotal", v: formatPrice(order.subtotal) },
-                ...(order.discount > 0 ? [{ l: `Discount (${order.promo_code})`, v: `-${formatPrice(order.discount)}`, accent: true }] : []),
-                { l: `Shipping (${order.shipping_method})`, v: order.shipping === 0 ? "FREE" : formatPrice(order.shipping) },
-              ].map((row) => (
-                <div key={row.l} className="flex justify-between">
-                  <span style={{ color: "var(--muted)" }}>{row.l}</span>
-                  <span style={{ color: (row as any).accent ? "var(--accent)" : "var(--text)" }}>{row.v}</span>
+          </div>
+
+          <div style={{ borderRadius: 16, border: "1px solid var(--line)", background: "var(--surface)", overflow: "hidden" }}>
+            <h2 style={{ padding: "14px 20px", margin: 0, fontSize: ".75rem", fontFamily: "var(--font-space-mono)", letterSpacing: ".12em", textTransform: "uppercase", borderBottom: "1px solid var(--line)", color: "var(--muted)" }}>
+              Items
+            </h2>
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr style={{ borderBottom: "1px solid var(--line)" }}>
+                  {["Product", "Variant / SKU", "Qty", "Unit Price", "Total"].map((h) => (
+                    <th key={h} style={{ padding: "10px 16px", textAlign: h === "Product" ? "left" : "right", fontFamily: "var(--font-space-mono)", fontSize: ".62rem", letterSpacing: ".12em", textTransform: "uppercase", color: "var(--muted)", fontWeight: 600 }}>
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {(order.items ?? []).map((item, i) => (
+                  <tr key={i} style={{ borderBottom: i < order.items.length - 1 ? "1px solid var(--line)" : "none" }}>
+                    <td style={{ padding: "14px 16px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        {item.image && (
+                          <img src={item.image} alt={item.productName} style={{ width: 44, height: 44, borderRadius: 8, objectFit: "cover", border: "1px solid var(--line)", flexShrink: 0 }} />
+                        )}
+                        <span style={{ fontWeight: 600, fontSize: ".88rem" }}>{item.productName}</span>
+                      </div>
+                    </td>
+                    <td style={{ padding: "14px 16px", textAlign: "right" }}>
+                      <p style={{ margin: 0, fontSize: ".8rem", color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>{item.variantLabel}</p>
+                      <p style={{ margin: "2px 0 0", fontSize: ".72rem", color: "var(--muted-2)", fontFamily: "var(--font-space-mono)" }}>{item.variantSku}</p>
+                    </td>
+                    <td style={{ padding: "14px 16px", textAlign: "right", fontFamily: "var(--font-space-mono)", fontSize: ".85rem" }}>
+                      {item.quantity}
+                    </td>
+                    <td style={{ padding: "14px 16px", textAlign: "right", fontFamily: "var(--font-hanken)", fontSize: ".85rem", color: "var(--muted)" }}>
+                      {formatPrice(item.price)}
+                    </td>
+                    <td style={{ padding: "14px 16px", textAlign: "right", fontFamily: "var(--font-hanken)", fontSize: ".9rem", fontWeight: 600 }}>
+                      {formatPrice(item.price * item.quantity)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div style={{ padding: "16px 20px", borderTop: "1px solid var(--line)" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, maxWidth: 280, marginLeft: "auto" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: ".88rem" }}>
+                  <span style={{ color: "var(--muted)" }}>Subtotal</span>
+                  <span>{formatPrice(order.subtotal)}</span>
                 </div>
-              ))}
-              <div className="flex justify-between pt-2 font-bold border-t" style={{ borderColor: "var(--line)" }}>
-                <span>Total</span>
-                <span style={{ fontFamily: "var(--font-hanken)", fontSize: "1.2rem" }}>{formatPrice(order.total)}</span>
+                {order.discount > 0 && (
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: ".88rem" }}>
+                    <span style={{ color: "var(--muted)" }}>Discount {order.promo_code ? `(${order.promo_code})` : ""}</span>
+                    <span style={{ color: "var(--accent)" }}>-{formatPrice(order.discount)}</span>
+                  </div>
+                )}
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: ".88rem" }}>
+                  <span style={{ color: "var(--muted)" }}>Shipping ({order.shipping_method})</span>
+                  <span>{order.shipping === 0 ? "FREE" : formatPrice(order.shipping)}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, fontSize: "1.05rem", paddingTop: 10, borderTop: "1px solid var(--line)", marginTop: 2 }}>
+                  <span>Total</span>
+                  <span style={{ fontFamily: "var(--font-hanken)" }}>{formatPrice(order.total)}</span>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="rounded-[16px] p-5" style={{ border: "1px solid var(--line)", background: "var(--surface)" }}>
-            <h2 className="text-sm font-semibold uppercase mb-4 border-b pb-3" style={{ borderColor: "var(--line)", fontFamily: "var(--font-space-mono)" }}>Customer</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <span style={{ padding: "6px 14px", borderRadius: 999, border: "1px solid var(--line-2)", fontFamily: "var(--font-space-mono)", fontSize: ".68rem", letterSpacing: ".1em", textTransform: "uppercase", color: "var(--muted)" }}>
+              Payment: {order.payment_method?.toUpperCase() ?? "—"}
+            </span>
+            <span style={{ padding: "6px 14px", borderRadius: 999, border: "1px solid var(--line-2)", fontFamily: "var(--font-space-mono)", fontSize: ".68rem", letterSpacing: ".1em", textTransform: "uppercase", color: "var(--muted)" }}>
+              Shipping: {order.shipping_method}
+            </span>
+          </div>
+        </div>
+
+        <div style={{ position: "sticky", top: 20 }}>
+          <div style={{ borderRadius: 16, border: "1px solid var(--line)", background: "var(--surface)", padding: 20, display: "flex", flexDirection: "column", gap: 18 }}>
+            <h2 style={{ margin: 0, fontSize: ".75rem", fontFamily: "var(--font-space-mono)", letterSpacing: ".12em", textTransform: "uppercase", color: "var(--muted)", paddingBottom: 14, borderBottom: "1px solid var(--line)" }}>
+              Manage Order
+            </h2>
+
+            <div>
+              <p style={{ fontFamily: "var(--font-space-mono)", fontSize: ".62rem", letterSpacing: ".12em", textTransform: "uppercase", color: "var(--muted)", margin: "0 0 8px" }}>Current Status</p>
+              <span style={{
+                fontFamily: "var(--font-space-mono)", fontSize: ".7rem", letterSpacing: ".1em", textTransform: "uppercase",
+                fontWeight: 700, padding: "5px 12px", borderRadius: 999,
+                background: `${STATUS_COLORS[order.status] ?? "#9ca3af"}22`,
+                color: STATUS_COLORS[order.status] ?? "#9ca3af",
+              }}>
+                {order.status}
+              </span>
+            </div>
+
+            <div>
+              <label style={labelStyle}>Update Status</label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                style={{ ...inputStyle, appearance: "none", cursor: "pointer" }}
+              >
+                {STATUSES.map((s) => (
+                  <option key={s} value={s} style={{ background: "var(--surface)" }}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label style={labelStyle}>Tracking Number</label>
+              <input
+                type="text"
+                value={tracking}
+                onChange={(e) => setTracking(e.target.value)}
+                placeholder="e.g. TCS-123456789"
+                style={inputStyle}
+              />
+            </div>
+
+            <div>
+              <label style={labelStyle}>Tracking Carrier</label>
+              <select
+                value={carrier}
+                onChange={(e) => setCarrier(e.target.value)}
+                style={{ ...inputStyle, appearance: "none", cursor: "pointer" }}
+              >
+                <option value="">— Select carrier —</option>
+                {CARRIERS.map((c) => (
+                  <option key={c} value={c} style={{ background: "var(--surface)" }}>{c}</option>
+                ))}
+              </select>
+            </div>
+
+            {saveMsg && (
+              <div style={{ padding: "10px 14px", borderRadius: 10, fontSize: ".8rem", fontFamily: "var(--font-space-mono)", background: saveMsg.ok ? "#4ade8020" : "#ef444420", border: `1px solid ${saveMsg.ok ? "#4ade8040" : "#ef444440"}`, color: saveMsg.ok ? "#4ade80" : "#ef4444" }}>
+                {saveMsg.text}
+              </div>
+            )}
+
+            <button
+              onClick={save}
+              disabled={saving}
+              style={{
+                width: "100%", padding: "13px", borderRadius: 11, border: "none",
+                background: saving ? "var(--line-2)" : "var(--accent)",
+                color: "#0c0b08", fontFamily: "var(--font-hanken)", fontWeight: 700,
+                fontSize: ".95rem", cursor: saving ? "not-allowed" : "pointer", transition: "background .2s",
+              }}
+            >
+              {saving ? "Saving…" : "Save Changes"}
+            </button>
+
+            {order.phone && (
+              <a
+                href={`https://wa.me/${order.phone.replace(/\D/g, "")}?text=Hi ${order.first_name}, your A.K. Auto Care order ${displayId} is now ${status}.${tracking ? ` Tracking: ${tracking}` : ""}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                  width: "100%", padding: "12px", borderRadius: 11, textDecoration: "none",
+                  background: "#25D366", color: "#fff", fontFamily: "var(--font-hanken)", fontWeight: 700, fontSize: ".9rem",
+                }}
+              >
+                WhatsApp Customer
+              </a>
+            )}
+
+            <div style={{ paddingTop: 12, borderTop: "1px solid var(--line)", display: "flex", flexDirection: "column", gap: 6 }}>
               {[
-                { l: "Name", v: `${order.first_name} ${order.last_name}` },
-                { l: "Phone / WhatsApp", v: order.phone ?? "—" },
-                { l: "Email", v: order.email },
-                { l: "Payment", v: order.payment_method?.toUpperCase() ?? "—" },
+                { l: "Order ID", v: displayId },
+                { l: "Placed", v: formatDate(order.created_at) },
               ].map(({ l, v }) => (
-                <div key={l}>
-                  <p className="text-[.65rem] tracking-[.12em] uppercase mb-0.5" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>{l}</p>
-                  <p className="font-semibold">{v}</p>
+                <div key={l} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontFamily: "var(--font-space-mono)", fontSize: ".62rem", letterSpacing: ".1em", textTransform: "uppercase", color: "var(--muted)" }}>{l}</span>
+                  <span style={{ fontFamily: "var(--font-space-mono)", fontSize: ".75rem" }}>{v}</span>
                 </div>
               ))}
             </div>
           </div>
-
-          <div className="rounded-[16px] p-5" style={{ border: "1px solid var(--line)", background: "var(--surface)" }}>
-            <h2 className="text-sm font-semibold uppercase mb-4 border-b pb-3" style={{ borderColor: "var(--line)", fontFamily: "var(--font-space-mono)" }}>Delivery Address</h2>
-            <p className="text-sm">{order.address}</p>
-            <p className="text-sm">{order.city}, {order.postcode}</p>
-            <p className="text-sm">{order.country}</p>
-          </div>
-        </div>
-
-        <div>
-          <OrderActions order={order} />
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 900px) {
+          .order-detail-grid { grid-template-columns: 1fr !important; }
+        }
+        @media (max-width: 560px) {
+          table td, table th { padding: 10px 10px !important; }
+        }
+      `}</style>
     </div>
   );
 }

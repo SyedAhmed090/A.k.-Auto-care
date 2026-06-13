@@ -8,6 +8,7 @@ import Footer from "@/components/layout/Footer";
 import MiniCart from "@/components/layout/MiniCart";
 import WhatsAppButton from "@/components/ui/WhatsAppButton";
 import CookieConsent from "@/components/ui/CookieConsent";
+import MetaPixel from "@/components/analytics/MetaPixel";
 
 const anton = Anton({
   variable: "--font-anton",
@@ -28,6 +29,7 @@ const spaceMono = Space_Mono({
 });
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 
 const orgSchema = {
   "@context": "https://schema.org",
@@ -90,6 +92,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </Script>
           </>
         )}
+        {META_PIXEL_ID && <MetaPixel />}
         {/* Announcement bar */}
         <div
           className="fixed top-0 left-0 right-0 z-[60] w-full text-center py-2 px-4 text-[.7rem] font-semibold tracking-[.08em] h-9 flex items-center justify-center"

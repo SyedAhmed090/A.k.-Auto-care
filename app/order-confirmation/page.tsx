@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CheckCircle, Package, ArrowRight } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import { createAdminClient } from "@/utils/supabase/admin";
+import PurchasePixel from "@/components/analytics/PurchasePixel";
 
 export const metadata: Metadata = {
   title: "Order Confirmed",
@@ -41,6 +42,7 @@ export default async function OrderConfirmationPage({
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4" style={{ background: "var(--bg)" }}>
+      {order && <PurchasePixel orderId={order.id} value={order.total} />}
       <div className="max-w-md w-full text-center">
         <div
           className="w-20 h-20 rounded-full grid place-items-center mx-auto mb-6"

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight, ChevronRight } from "lucide-react";
+import { ArrowUpRight, ChevronRight, Truck, RotateCcw, Shield, MessageCircle } from "lucide-react";
 import type { Product } from "@/data/products";
 import categories from "@/data/categories";
 import ProductCard from "@/components/product/ProductCard";
@@ -197,6 +197,34 @@ export default function HomeClient({ featured }: { featured: Product[] }) {
           </div>
         </div>
       </section>
+
+      {/* ── TRUST BAR ── */}
+      <div style={{ borderBottom: "1px solid var(--line)", background: "var(--surface)" }}>
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4">
+            {[
+              { icon: Truck,         label: "Free Delivery",    sub: "Orders over Rs 5,000" },
+              { icon: RotateCcw,     label: "30-Day Returns",   sub: "Hassle-free policy" },
+              { icon: Shield,        label: "100% Genuine",     sub: "Lab-tested formulas" },
+              { icon: MessageCircle, label: "WhatsApp Support", sub: "Reply in minutes" },
+            ].map(({ icon: Icon, label, sub }, i) => (
+              <div
+                key={label}
+                className={`flex items-center gap-3 py-4 px-5${i % 2 === 0 ? " border-r" : ""}${i < 2 ? " border-b sm:border-b-0" : ""}${i < 3 && i % 2 !== 0 ? " sm:border-r" : ""}`}
+                style={{ borderColor: "var(--line)" }}
+              >
+                <div className="w-8 h-8 rounded-[8px] grid place-items-center flex-shrink-0" style={{ background: "rgba(232,160,32,.1)" }}>
+                  <Icon className="w-4 h-4" style={{ color: "var(--accent)" }} />
+                </div>
+                <div>
+                  <p className="text-[.78rem] font-semibold leading-tight">{label}</p>
+                  <p className="text-[.68rem] mt-0.5" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>{sub}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* ── MARQUEE ── */}
       <div className="overflow-hidden opacity-40" style={{ borderBottom: "1px solid var(--line)" }}>
