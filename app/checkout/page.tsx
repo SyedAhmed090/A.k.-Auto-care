@@ -11,6 +11,8 @@ import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
 import { getShippingOptions, gstAmount } from "@/lib/commerce";
 import { WHATSAPP_NUMBER, PAYMENT_DETAILS } from "@/lib/constants";
+import { trackInitiateCheckout } from "@/components/analytics/MetaPixel";
+import { saveCartToServer } from "@/lib/cart-session";
 
 const schema = z.object({
   email: z.string().email("Enter a valid email"),
@@ -67,9 +69,11 @@ export default function CheckoutPage() {
   const sub = subtotal();
   const discount = sub * promoDiscount;
   const afterDiscount = sub - discount;
+  const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
 
   const { register, handleSubmit, formState: { errors }, control } = useForm<FormData>({ resolver: zodResolver(schema) });
   const country = useWatch({ control, name: "country", defaultValue: "" });
+  const emailValue = useWatch({ control, name: "email", defaultValue: "" });
 
   const shippingOptions = getShippingOptions(country, sub);
   const resolvedShipping = shippingOptions.find((o) => o.id === shippingId) ?? shippingOptions[0];
@@ -83,6 +87,19 @@ export default function CheckoutPage() {
     if (opts.length > 0) setShippingId(opts[0].id);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [country]);
+
+  useEffect(() => {
+    trackInitiateCheckout(sub, itemCount);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) return;
+    const t = setTimeout(() => {
+      saveCartToServer(emailValue, items);
+    }, 600);
+    return () => clearTimeout(t);
+  }, [emailValue, items]);
 
   const onSubmit = async (data: FormData) => {
     if (submittingRef.current) return;
