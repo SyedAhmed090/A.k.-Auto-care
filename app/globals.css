@@ -2,17 +2,17 @@
 
 @layer base {
   :root {
-    --bg: #08090b;
-    --bg-2: #0d0f13;
-    --surface: #14171d;
-    --surface-2: #1a1e26;
-    --line: rgba(255,255,255,.08);
-    --line-2: rgba(255,255,255,.14);
-    --text: #f4f3ef;
-    --muted: #9296a0;
-    --muted-2: #5f636c;
-    --accent: #d8ff35;
-    --accent-press: #c2e823;
+    --bg: #0c0b08;
+    --bg-2: #131109;
+    --surface: #1c1916;
+    --surface-2: #242018;
+    --line: rgba(210,180,100,.07);
+    --line-2: rgba(210,180,100,.14);
+    --text: #f5f0e8;
+    --muted: #9c9380;
+    --muted-2: #6b6050;
+    --accent: #e8a020;
+    --accent-press: #d08c18;
     --r: 18px;
     --r-sm: 8px;
     --r-md: 12px;
@@ -24,7 +24,9 @@
   html { scroll-behavior: smooth; }
 
   body {
-    background: var(--bg);
+    background-color: var(--bg);
+    background-image: radial-gradient(circle at 1px 1px, rgba(210,180,100,.05) 1px, transparent 0);
+    background-size: 24px 24px;
     color: var(--text);
     font-family: var(--font-hanken), system-ui, sans-serif;
     font-size: 17px;
@@ -40,7 +42,7 @@
     inset: 0;
     z-index: 9999;
     pointer-events: none;
-    opacity: .02;
+    opacity: .035;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
@@ -105,7 +107,7 @@
 }
 .btn-accent:hover:not(:disabled) {
   background: var(--accent-press);
-  box-shadow: 0 14px 30px rgba(216,255,53,.22);
+  box-shadow: 0 14px 30px rgba(232,160,32,.28);
 }
 
 .btn-ghost {

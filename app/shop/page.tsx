@@ -177,7 +177,7 @@ export default function ShopPage() {
       {/* Mobile filter drawer */}
       {filtersOpen && (
         <>
-          <div className="fixed inset-0 z-50" style={{ background: "rgba(8,9,11,.8)" }} onClick={() => setFiltersOpen(false)} />
+          <div className="fixed inset-0 z-50" style={{ background: "rgba(12,11,8,.8)" }} onClick={() => setFiltersOpen(false)} />
           <div
             className="fixed bottom-0 left-0 right-0 z-[70] rounded-t-[20px] p-6 max-h-[80vh] overflow-y-auto"
             style={{ background: "var(--surface)", border: "1px solid var(--line-2)" }}

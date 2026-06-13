@@ -38,7 +38,7 @@ export default function MiniCart() {
       {isOpen && (
         <div
           className="fixed inset-0 z-[70]"
-          style={{ background: "rgba(8,9,11,.7)", backdropFilter: "blur(6px)" }}
+          style={{ background: "rgba(12,11,8,.7)", backdropFilter: "blur(6px)" }}
           onClick={closeCart}
         />
       )}

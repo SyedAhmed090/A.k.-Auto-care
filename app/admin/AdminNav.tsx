@@ -31,7 +31,7 @@ export default function AdminNav() {
           return (
             <Link key={href} href={href}
               className="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-sm font-semibold transition-all"
-              style={{ background: active ? "rgba(216,255,53,.1)" : "transparent", color: active ? "var(--accent)" : "var(--muted)" }}>
+              style={{ background: active ? "rgba(232,160,32,.1)" : "transparent", color: active ? "var(--accent)" : "var(--muted)" }}>
               <Icon className="w-4 h-4 flex-shrink-0" />
               {label}
             </Link>

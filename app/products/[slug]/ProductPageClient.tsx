@@ -61,7 +61,7 @@ export default function ProductPageClient({ product, related }: { product: Produ
           <div className="space-y-3">
             <div
               className="relative aspect-square rounded-[20px] overflow-hidden"
-              style={{ background: "radial-gradient(70% 70% at 50% 40%,#1a1e26,#0a0c10)", border: "1px solid var(--line)" }}
+              style={{ background: "radial-gradient(70% 70% at 50% 40%,#221e15,#0c0a07)", border: "1px solid var(--line)" }}
             >
               <Image src={product.images[activeImg]} alt={product.name} fill className="object-cover opacity-85" priority onError={(e) => { e.currentTarget.src = "/placeholder.svg"; }} />
               {product.badge && (
@@ -168,7 +168,7 @@ export default function ProductPageClient({ product, related }: { product: Produ
                       className="inline-flex items-center px-4 py-2.5 rounded-[11px] text-sm font-semibold transition-all cursor-pointer"
                       style={{
                         border: selectedVariant === i ? "1px solid var(--accent)" : "1px solid var(--line-2)",
-                        background: selectedVariant === i ? "rgba(216,255,53,.08)" : "var(--surface)",
+                        background: selectedVariant === i ? "rgba(232,160,32,.10)" : "var(--surface)",
                         color: selectedVariant === i ? "var(--accent)" : "var(--muted)",
                       }}
                     >

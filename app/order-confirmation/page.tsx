@@ -44,7 +44,7 @@ export default async function OrderConfirmationPage({
       <div className="max-w-md w-full text-center">
         <div
           className="w-20 h-20 rounded-full grid place-items-center mx-auto mb-6"
-          style={{ background: "rgba(216,255,53,.1)", border: "1px solid rgba(216,255,53,.2)" }}
+          style={{ background: "rgba(232,160,32,.1)", border: "1px solid rgba(232,160,32,.2)" }}
         >
           <CheckCircle className="w-9 h-9" style={{ color: "var(--accent)" }} />
         </div>

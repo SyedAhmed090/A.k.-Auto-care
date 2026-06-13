@@ -129,7 +129,7 @@ export default function CartPage() {
           {/* Clear cart confirmation */}
           {confirmClear && (
             <>
-              <div className="fixed inset-0 z-50" style={{ background: "rgba(8,9,11,.8)" }} onClick={() => setConfirmClear(false)} />
+              <div className="fixed inset-0 z-50" style={{ background: "rgba(12,11,8,.8)" }} onClick={() => setConfirmClear(false)} />
               <div
                 className="fixed inset-0 z-[60] flex items-center justify-center p-4"
                 onClick={() => setConfirmClear(false)}

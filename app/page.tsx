@@ -62,7 +62,7 @@ export default function HomePage() {
         {/* ── VIDEO BLOCK — video covers only this top portion, ending after the CTAs ── */}
         <div
           className="relative overflow-hidden min-h-[85vh] flex flex-col justify-end pt-[120px] sm:pt-[140px] lg:pt-[160px] pb-20"
-          style={{ background: "radial-gradient(120% 100% at 50% 40%, #1a1e26, var(--bg))" }}
+          style={{ background: "radial-gradient(120% 100% at 50% 40%, #221e15, var(--bg))" }}
         >
           {/* Background video — hidden on mobile for performance */}
           <video
@@ -80,7 +80,7 @@ export default function HomePage() {
             className="absolute inset-0 pointer-events-none"
             style={{
               zIndex: 1,
-              background: "linear-gradient(180deg, rgba(8,9,11,.65) 0%, rgba(8,9,11,.45) 40%, rgba(8,9,11,.80) 100%)",
+              background: "linear-gradient(180deg, rgba(12,11,8,.65) 0%, rgba(12,11,8,.45) 40%, rgba(12,11,8,.80) 100%)",
             }}
           />
 
@@ -90,7 +90,7 @@ export default function HomePage() {
             style={{
               zIndex: 1,
               width: "1100px", height: "700px",
-              background: "radial-gradient(ellipse at center, rgba(216,255,53,.08), transparent 60%)",
+              background: "radial-gradient(ellipse at center, rgba(232,160,32,.10), transparent 60%)",
               filter: "blur(20px)",
             }}
           />
@@ -195,7 +195,7 @@ export default function HomePage() {
           <div
             className="relative h-[330px] rounded-[26px] overflow-hidden"
             style={{
-              background: "radial-gradient(120% 90% at 30% 0%,rgba(216,255,53,.10),transparent 55%), linear-gradient(178deg,#2a2f38 0%,#11141a 26%,transparent 40%,#0a0d12 58%,#1d222b 100%), #0a0c10",
+              background: "radial-gradient(120% 90% at 30% 0%,rgba(232,160,32,.12),transparent 55%), linear-gradient(178deg,#2a251a 0%,#131009 26%,transparent 40%,#0c0a07 58%,#1f1b12 100%), #0c0a07",
               border: "1px solid var(--line-2)",
               boxShadow: "inset 0 1px 0 rgba(255,255,255,.14), 0 40px 80px rgba(0,0,0,.6)",
             }}
@@ -234,7 +234,7 @@ export default function HomePage() {
                     className="text-[.72rem] tracking-[.14em] uppercase px-3.5 py-1.5 rounded-full"
                     style={{
                       border: "1px solid var(--line-2)",
-                      background: "rgba(8,9,11,.4)",
+                      background: "rgba(12,11,8,.4)",
                       backdropFilter: "blur(6px)",
                       fontFamily: "var(--font-space-mono)",
                     }}
@@ -314,7 +314,7 @@ export default function HomePage() {
             <div
               className="reveal relative h-[540px] rounded-[24px] overflow-hidden grid place-items-center"
               style={{
-                background: "radial-gradient(80% 70% at 50% 35%,#1a1e26,#0a0c10 70%)",
+                background: "radial-gradient(80% 70% at 50% 35%,#221e15,#0c0a07 70%)",
                 border: "1px solid var(--line)",
               }}
             >
@@ -326,7 +326,7 @@ export default function HomePage() {
                   style={{
                     background: "linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.03))",
                     border: "1px solid rgba(255,255,255,.18)",
-                    boxShadow: "inset 0 1px 0 rgba(255,255,255,.28),0 40px 80px rgba(0,0,0,.6),0 0 80px rgba(216,255,53,.08)",
+                    boxShadow: "inset 0 1px 0 rgba(255,255,255,.28),0 40px 80px rgba(0,0,0,.6),0 0 80px rgba(232,160,32,.10)",
                   }}
                 >
                   <div
@@ -344,13 +344,13 @@ export default function HomePage() {
                 </div>
                 <div
                   className="w-16 h-3 mt-1 rounded-full opacity-20"
-                  style={{ background: "radial-gradient(ellipse,rgba(216,255,53,.7),transparent)" }}
+                  style={{ background: "radial-gradient(ellipse,rgba(232,160,32,.6),transparent)" }}
                 />
               </div>
               {/* Rings */}
               <div
                 className="absolute w-[380px] h-[380px] rounded-full pointer-events-none"
-                style={{ border: "1px solid var(--line-2)", boxShadow: "0 0 80px rgba(216,255,53,.06)" }}
+                style={{ border: "1px solid var(--line-2)", boxShadow: "0 0 80px rgba(232,160,32,.08)" }}
               />
               <div
                 className="absolute w-[520px] h-[520px] rounded-full pointer-events-none opacity-50"
@@ -359,7 +359,7 @@ export default function HomePage() {
               {/* Floating specs */}
               <div
                 className="absolute top-[60px] right-[34px] rounded-[12px] px-4 py-3 z-[3]"
-                style={{ background: "rgba(8,9,11,.7)", backdropFilter: "blur(8px)", border: "1px solid var(--line-2)" }}
+                style={{ background: "rgba(12,11,8,.7)", backdropFilter: "blur(8px)", border: "1px solid var(--line-2)" }}
               >
                 <div
                   className="text-[1.3rem]"
@@ -376,7 +376,7 @@ export default function HomePage() {
               </div>
               <div
                 className="absolute bottom-[70px] left-[30px] rounded-[12px] px-4 py-3 z-[3]"
-                style={{ background: "rgba(8,9,11,.7)", backdropFilter: "blur(8px)", border: "1px solid var(--line-2)" }}
+                style={{ background: "rgba(12,11,8,.7)", backdropFilter: "blur(8px)", border: "1px solid var(--line-2)" }}
               >
                 <div className="text-[1.3rem]" style={{ fontFamily: "var(--font-anton)", color: "var(--accent)" }}>110°</div>
                 <div className="text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
@@ -697,7 +697,7 @@ export default function HomePage() {
                 </div>
                 <div
                   className="absolute bottom-0 left-0 right-0 px-5 py-4"
-                  style={{ background: "linear-gradient(to top, rgba(8,9,11,.9), transparent)" }}
+                  style={{ background: "linear-gradient(to top, rgba(12,11,8,.9), transparent)" }}
                 >
                   <span className="text-[.78rem] font-semibold" style={{ fontFamily: "var(--font-space-mono)", color: "var(--accent)" }}>
                     {label}
@@ -775,7 +775,7 @@ export default function HomePage() {
           <div
             className="reveal rounded-[28px] py-14 px-6 sm:py-16 sm:px-12 lg:py-[72px] lg:px-[60px]"
             style={{
-              background: "radial-gradient(120% 120% at 80% 0%,rgba(216,255,53,.12),transparent 50%), linear-gradient(160deg,var(--surface),var(--bg-2))",
+              background: "radial-gradient(120% 120% at 80% 0%,rgba(232,160,32,.14),transparent 50%), linear-gradient(160deg,var(--surface),var(--bg-2))",
               border: "1px solid var(--line-2)",
             }}
           >
@@ -812,7 +812,7 @@ export default function HomePage() {
                       placeholder="your@email.com"
                       className="flex-1 min-w-[220px] px-5 py-4 rounded-[13px] text-[1rem] outline-none transition-all"
                       style={{
-                        background: "rgba(8,9,11,.6)",
+                        background: "rgba(12,11,8,.6)",
                         border: `1px solid ${nlState === "error" ? "#ef4444" : "var(--line-2)"}`,
                         color: "var(--text)",
                         fontFamily: "var(--font-hanken)",
