@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import products from "@/data/products";
+import { getProductsByIds } from "@/lib/products";
 import { getShippingOptions } from "@/lib/commerce";
 import { PROMOS } from "@/lib/promos";
 import { createAdminClient } from "@/utils/supabase/admin";
@@ -56,6 +56,8 @@ export async function POST(req: NextRequest) {
       (reservedRows ?? []).map(r => [r.product_id as string, r.reserved as number])
     );
 
+    const dbProducts = await getProductsByIds(productIds);
+
     // Server-side price computation — never trust client prices
     const lineItems: {
       productId: string; productName: string; variantLabel: string;
@@ -64,7 +66,7 @@ export async function POST(req: NextRequest) {
     let subtotal = 0;
 
     for (const item of data.items) {
-      const product = products.find(p => p.id === item.productId);
+      const product = dbProducts.find(p => p.id === item.productId);
       if (!product || !product.inStock) {
         return NextResponse.json({ error: `Product ${item.productId} is unavailable.` }, { status: 400 });
       }

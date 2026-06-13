@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getCategoryBySlug } from "@/data/categories";
 import categories from "@/data/categories";
-import { getProductsByCategory } from "@/data/products";
+import { getProductsByCategory } from "@/lib/products";
 import CategoryPageClient from "./CategoryPageClient";
 
 export function generateStaticParams() {
@@ -42,6 +42,6 @@ export default async function CategoryPage({
   const { slug } = await params;
   const category = getCategoryBySlug(slug);
   if (!category) notFound();
-  const products = getProductsByCategory(slug);
+  const products = await getProductsByCategory(slug);
   return <CategoryPageClient category={category} products={products} />;
 }

@@ -1,14 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getProductBySlug, getRelatedProducts } from "@/data/products";
-import products from "@/data/products";
+import { getProductBySlug, getRelatedProducts } from "@/lib/products";
 import ProductPageClient from "./ProductPageClient";
 
 const BASE_URL = "https://www.akautocare.pk";
-
-export function generateStaticParams() {
-  return products.map((p) => ({ slug: p.slug }));
-}
 
 export async function generateMetadata({
   params,
@@ -16,7 +11,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
   if (!product) return {};
   return {
     title: `${product.name} | A.K. Auto Care`,
@@ -42,9 +37,9 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
   if (!product) notFound();
-  const related = getRelatedProducts(product);
+  const related = await getRelatedProducts(product);
 
   const productSchema = {
     "@context": "https://schema.org",
