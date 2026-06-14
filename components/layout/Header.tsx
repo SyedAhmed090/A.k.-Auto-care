@@ -16,6 +16,7 @@ export default function Header() {
   const count = useCartStore((s) => s.itemCount());
   const openCart = useCartStore((s) => s.openCart);
   const wishlistCount = useWishlistStore((s) => s.items.length);
+  const [logoLoaded, setLogoLoaded] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -61,17 +62,29 @@ export default function Header() {
           <nav className="flex items-center justify-between h-[78px]">
             {/* Brand */}
             <Link href="/" className="flex items-center gap-3">
-              <div
-                className="w-[38px] h-[38px] rounded-[9px] grid place-items-center text-[.95rem] tracking-[.02em]"
-                style={{
-                  background: "linear-gradient(145deg,#23272f,#0c0e12)",
-                  border: "1px solid var(--line-2)",
-                  boxShadow: "inset 0 1px 0 rgba(255,255,255,.12), 0 6px 18px rgba(0,0,0,.5)",
-                  fontFamily: "var(--font-anton)",
-                }}
-              >
-                A<span style={{ color: "var(--accent)" }}>.</span>K
-              </div>
+              {/* Shield mark. Drop a transparent PNG/SVG at public/logo-mark.png and it
+                  reveals automatically; until then (or if it 404s) the CSS mark below shows.
+                  Plain <img> is intentional so a missing file degrades gracefully with no flash. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo-mark.png"
+                alt="A.K. Auto Care"
+                onLoad={() => setLogoLoaded(true)}
+                className={logoLoaded ? "w-[40px] h-[40px] object-contain" : "hidden"}
+              />
+              {!logoLoaded && (
+                <div
+                  className="w-[38px] h-[38px] rounded-[9px] grid place-items-center text-[.95rem] tracking-[.02em]"
+                  style={{
+                    background: "linear-gradient(145deg,#23272f,#0c0e12)",
+                    border: "1px solid var(--line-2)",
+                    boxShadow: "inset 0 1px 0 rgba(255,255,255,.12), 0 6px 18px rgba(0,0,0,.5)",
+                    fontFamily: "var(--font-anton)",
+                  }}
+                >
+                  A<span style={{ color: "var(--accent)" }}>.</span>K
+                </div>
+              )}
               <div style={{ fontFamily: "var(--font-anton)" }}>
                 <div className="text-[1.18rem] tracking-[.08em] leading-none text-[var(--text)]">
                   AUTO CARE
