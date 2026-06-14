@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
 
     const token = await makeToken(secret);
     const res = NextResponse.json({ ok: true });
+    res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
     res.cookies.set(cookieName(), token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
