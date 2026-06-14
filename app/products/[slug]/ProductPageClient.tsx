@@ -3,13 +3,14 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Zap, CheckCircle, Truck, RotateCcw, Shield, MessageCircle, Share2 } from "lucide-react";
+import { Zap, CheckCircle, Truck, RotateCcw, Shield, MessageCircle, Share2, ZoomIn, X, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import type { Product } from "@/data/products";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
 import StarRating from "@/components/ui/StarRating";
 import ProductCard from "@/components/product/ProductCard";
 import QuantityStepper from "@/components/ui/QuantityStepper";
+import WishlistButton from "@/components/ui/WishlistButton";
 import ReviewsSection from "@/components/product/ReviewsSection";
 import { trackViewContent, trackAddToCart } from "@/components/analytics/MetaPixel";
 import { WHATSAPP_NUMBER } from "@/lib/constants";
@@ -35,7 +36,12 @@ export default function ProductPageClient({ product, related }: { product: Produ
   const [stickyVisible, setStickyVisible]   = useState(false);
   const [mainImgError, setMainImgError]     = useState(false);
   const [thumbErrors, setThumbErrors]       = useState<Record<number, boolean>>({});
+  const [lightboxOpen, setLightboxOpen]     = useState(false);
   const ctaRef = useRef<HTMLDivElement>(null);
+
+  const imgCount = product.images.length;
+  const showPrev = () => setActiveImg((i) => (i - 1 + imgCount) % imgCount);
+  const showNext = () => setActiveImg((i) => (i + 1) % imgCount);
 
   const addItem  = useCartStore((s) => s.addItem);
   const router   = useRouter();
@@ -53,6 +59,23 @@ export default function ProductPageClient({ product, related }: { product: Produ
     io.observe(ctaRef.current);
     return () => io.disconnect();
   }, []);
+
+  // Keyboard controls for the lightbox
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLightboxOpen(false);
+      else if (e.key === "ArrowLeft") showPrev();
+      else if (e.key === "ArrowRight") showNext();
+    };
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lightboxOpen, imgCount]);
 
   const handleAdd = () => {
     addItem(product, variant, qty);
@@ -102,6 +125,12 @@ export default function ProductPageClient({ product, related }: { product: Produ
               className="relative aspect-square rounded-[20px] overflow-hidden group"
               style={{ background: "radial-gradient(70% 70% at 50% 40%,#221e15,#0c0a07)", border: "1px solid var(--line)" }}
             >
+              <button
+                type="button"
+                onClick={() => setLightboxOpen(true)}
+                aria-label="Zoom image"
+                className="absolute inset-0 z-[1] cursor-zoom-in"
+              />
               <Image
                 src={mainImgError ? "/placeholder.svg" : (product.images[activeImg] || "/placeholder.svg")}
                 alt={product.name} fill
@@ -109,6 +138,12 @@ export default function ProductPageClient({ product, related }: { product: Produ
                 priority
                 onError={() => setMainImgError(true)}
               />
+              <span
+                className="absolute bottom-4 left-4 z-[2] inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[.62rem] font-semibold opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+                style={{ background: "rgba(12,11,8,.7)", backdropFilter: "blur(8px)", border: "1px solid var(--line-2)", color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}
+              >
+                <ZoomIn className="w-3 h-3" /> Click to zoom
+              </span>
               {product.badge && (
                 <span
                   className="absolute top-4 left-4 text-[.6rem] font-bold px-2.5 py-1 rounded-full tracking-[.12em] uppercase"
@@ -128,7 +163,7 @@ export default function ProductPageClient({ product, related }: { product: Produ
               <button
                 onClick={handleShare}
                 aria-label="Share product"
-                className="absolute bottom-4 right-4 w-9 h-9 rounded-full grid place-items-center transition-all opacity-0 group-hover:opacity-100 focus-visible:opacity-100 cursor-pointer"
+                className="absolute bottom-4 right-4 z-[3] w-9 h-9 rounded-full grid place-items-center transition-all opacity-0 group-hover:opacity-100 focus-visible:opacity-100 cursor-pointer"
                 style={{ background: "rgba(12,11,8,.7)", backdropFilter: "blur(8px)", border: "1px solid var(--line-2)" }}
               >
                 <Share2 className="w-4 h-4" style={{ color: "var(--muted)" }} />
@@ -253,6 +288,9 @@ export default function ProductPageClient({ product, related }: { product: Produ
               >
                 <Zap className="w-[18px] h-[18px]" /> Buy Now
               </button>
+              <div className="self-stretch flex items-center">
+                <WishlistButton product={product} variant="inline" />
+              </div>
             </div>
 
             {/* WhatsApp */}
@@ -327,9 +365,18 @@ export default function ProductPageClient({ product, related }: { product: Produ
         {/* Related */}
         {related.length > 0 && (
           <div className="mt-16" style={{ borderTop: "1px solid var(--line)", paddingTop: "60px" }}>
-            <h2 className="uppercase tracking-[.01em] mb-8" style={{ fontFamily: "var(--font-anton)", fontSize: "2rem" }}>
-              You May Also Like
-            </h2>
+            <div className="flex items-end justify-between gap-4 mb-8 flex-wrap">
+              <h2 className="uppercase tracking-[.01em]" style={{ fontFamily: "var(--font-anton)", fontSize: "2rem" }}>
+                You May Also Like
+              </h2>
+              <Link
+                href={`/categories/${product.categorySlug}`}
+                className="inline-flex items-center gap-1.5 text-sm font-semibold transition-colors hover:text-[var(--accent)]"
+                style={{ color: "var(--muted)" }}
+              >
+                View all in {product.categorySlug.replace(/-/g, " ")} <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               {related.map((p) => <ProductCard key={p.id} product={p} />)}
             </div>
@@ -341,6 +388,64 @@ export default function ProductPageClient({ product, related }: { product: Produ
           <ReviewsSection productId={product.id} initialRating={product.rating} initialCount={product.reviews} />
         </div>
       </div>
+
+      {/* Image lightbox */}
+      {lightboxOpen && (
+        <div
+          className="fixed inset-0 z-[130] flex items-center justify-center p-4 sm:p-10"
+          style={{ background: "rgba(6,5,4,.94)", backdropFilter: "blur(8px)" }}
+          onClick={() => setLightboxOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${product.name} image viewer`}
+        >
+          <button
+            onClick={() => setLightboxOpen(false)}
+            aria-label="Close"
+            className="absolute top-5 right-5 w-11 h-11 rounded-full grid place-items-center cursor-pointer z-10"
+            style={{ background: "rgba(255,255,255,.06)", border: "1px solid var(--line-2)", color: "#fff" }}
+          >
+            <X className="w-5 h-5" />
+          </button>
+
+          <div className="relative w-full h-full max-w-4xl max-h-[80vh]" onClick={(e) => e.stopPropagation()}>
+            <Image
+              src={product.images[activeImg] || "/placeholder.svg"}
+              alt={`${product.name} — view ${activeImg + 1}`}
+              fill
+              className="object-contain"
+              sizes="90vw"
+            />
+          </div>
+
+          {imgCount > 1 && (
+            <>
+              <button
+                onClick={(e) => { e.stopPropagation(); showPrev(); }}
+                aria-label="Previous image"
+                className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full grid place-items-center cursor-pointer"
+                style={{ background: "rgba(255,255,255,.06)", border: "1px solid var(--line-2)", color: "#fff" }}
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); showNext(); }}
+                aria-label="Next image"
+                className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full grid place-items-center cursor-pointer"
+                style={{ background: "rgba(255,255,255,.06)", border: "1px solid var(--line-2)", color: "#fff" }}
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+              <div
+                className="absolute bottom-6 left-1/2 -translate-x-1/2 text-xs px-3 py-1.5 rounded-full"
+                style={{ background: "rgba(255,255,255,.06)", color: "#fff", fontFamily: "var(--font-space-mono)" }}
+              >
+                {activeImg + 1} / {imgCount}
+              </div>
+            </>
+          )}
+        </div>
+      )}
 
       {/* Sticky mobile CTA */}
       {stickyVisible && (

@@ -1,12 +1,13 @@
 import { MetadataRoute } from "next";
 import { getProducts } from "@/lib/products";
+import { getPosts } from "@/lib/blog";
 import categories from "@/data/categories";
 
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = "https://www.akautocare.pk";
-  const staticRoutes = ["/", "/shop", "/about", "/contact", "/policies/shipping-returns", "/policies/privacy", "/policies/terms"].map(
+  const staticRoutes = ["/", "/shop", "/about", "/contact", "/faq", "/blog", "/order-tracking", "/policies/shipping", "/policies/returns", "/policies/shipping-returns", "/policies/privacy", "/policies/terms"].map(
     (route) => ({ url: `${base}${route}`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: route === "/" ? 1 : 0.8 })
   );
   const products = await getProducts();
@@ -22,5 +23,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "weekly" as const,
     priority: 0.8,
   }));
-  return [...staticRoutes, ...productRoutes, ...categoryRoutes];
+  const blogRoutes = getPosts().map((p) => ({
+    url: `${base}/blog/${p.slug}`,
+    lastModified: new Date(p.date),
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+  return [...staticRoutes, ...productRoutes, ...categoryRoutes, ...blogRoutes];
 }

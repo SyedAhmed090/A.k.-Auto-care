@@ -171,3 +171,10 @@ label:focus-within {
 /* Danger hover — replaces JS onMouseEnter/Leave for destructive actions */
 .hover-danger { color: var(--muted-2); transition: color .15s; }
 .hover-danger:hover { color: #ef4444; }
+
+/* Print — clean receipt on the order-confirmation page */
+@media print {
+  header, footer, .no-print { display: none !important; }
+  body { background: #fff !important; color: #000 !important; }
+  main { padding-top: 0 !important; }
+}

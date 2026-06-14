@@ -7,6 +7,7 @@ import { Product } from "@/data/products";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
 import StarRating from "@/components/ui/StarRating";
+import WishlistButton from "@/components/ui/WishlistButton";
 
 const LOW_STOCK_THRESHOLD = 5;
 
@@ -52,9 +53,11 @@ export default function ProductCard({ product }: { product: Product }) {
             </span>
           )}
 
+          <WishlistButton product={product} />
+
           {isLowStock && (
             <span
-              className="absolute top-3.5 right-3.5 text-[.6rem] font-bold px-2.5 py-1 rounded-full tracking-[.12em] uppercase z-10"
+              className="absolute bottom-3.5 left-3.5 text-[.6rem] font-bold px-2.5 py-1 rounded-full tracking-[.12em] uppercase z-10"
               style={{ background: "#fb923c", color: "#000", fontFamily: "var(--font-space-mono)" }}
             >
               Only {product.stock} left

@@ -4,6 +4,7 @@ import { CheckCircle, Package, ArrowRight } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import { createAdminClient } from "@/utils/supabase/admin";
 import PurchasePixel from "@/components/analytics/PurchasePixel";
+import PrintReceiptButton from "@/components/ui/PrintReceiptButton";
 import type { OrderItem } from "@/types/order";
 
 export const metadata: Metadata = {
@@ -143,12 +144,13 @@ export default async function OrderConfirmationPage({
 
         <Link
           href="/shop"
-          className="w-full py-4 rounded-[13px] font-semibold flex items-center justify-center gap-2.5 transition-all hover:-translate-y-0.5"
+          className="no-print w-full py-4 rounded-[13px] font-semibold flex items-center justify-center gap-2.5 transition-all hover:-translate-y-0.5"
           style={{ background: "var(--accent)", color: "#000", display: "flex" }}
         >
           Continue Shopping <ArrowRight className="w-[18px] h-[18px]" />
         </Link>
-        <Link href="/" className="block mt-3 text-sm transition-colors hover:text-[var(--accent)]" style={{ color: "var(--muted)" }}>
+        {order && <PrintReceiptButton />}
+        <Link href="/" className="no-print block mt-3 text-sm transition-colors hover:text-[var(--accent)]" style={{ color: "var(--muted)" }}>
           Return to Home
         </Link>
       </div>

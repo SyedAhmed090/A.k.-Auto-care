@@ -1,6 +1,9 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { Phone, Mail } from "lucide-react";
+import SocialLinks from "@/components/ui/SocialLinks";
+import { WHATSAPP_NUMBER, WHATSAPP_DISPLAY, BUSINESS } from "@/lib/constants";
 
 export default function Footer() {
   const [nlEmail, setNlEmail] = useState("");
@@ -44,6 +47,15 @@ export default function Footer() {
             <p className="text-[.92rem] max-w-[280px]" style={{ color: "var(--muted)" }}>
               Engineered car care for people who notice the details. Prep. Correct. Coat. Protect.
             </p>
+            <div className="mt-5 space-y-2.5">
+              <a href={`tel:+${WHATSAPP_NUMBER}`} className="flex items-center gap-2.5 text-[.88rem] transition-colors hover:text-[var(--accent)]" style={{ color: "var(--muted)" }}>
+                <Phone className="w-4 h-4 flex-shrink-0" style={{ color: "var(--accent)" }} /> {WHATSAPP_DISPLAY}
+              </a>
+              <a href={`mailto:${BUSINESS.email}`} className="flex items-center gap-2.5 text-[.88rem] transition-colors hover:text-[var(--accent)]" style={{ color: "var(--muted)" }}>
+                <Mail className="w-4 h-4 flex-shrink-0" style={{ color: "var(--accent)" }} /> {BUSINESS.email}
+              </a>
+            </div>
+            <SocialLinks className="mt-5" />
           </div>
 
           {/* Shop */}
@@ -83,6 +95,7 @@ export default function Footer() {
             <ul className="flex flex-col gap-3">
               {[
                 { label: "About", href: "/about" },
+                { label: "Tips & Guides", href: "/blog" },
                 { label: "The Process", href: "/about#system" },
                 { label: "Contact", href: "/contact" },
               ].map((l) => (
@@ -105,6 +118,8 @@ export default function Footer() {
             </h5>
             <ul className="flex flex-col gap-3">
               {[
+                { label: "Track Order", href: "/order-tracking" },
+                { label: "FAQ", href: "/faq" },
                 { label: "Shipping & Returns", href: "/policies/shipping-returns" },
                 { label: "Privacy Policy", href: "/policies/privacy" },
                 { label: "Terms of Service", href: "/policies/terms" },
@@ -168,7 +183,13 @@ export default function Footer() {
           style={{ borderTop: "1px solid var(--line)", fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
         >
           <span>© {new Date().getFullYear()} A.K. Auto Care — All rights reserved</span>
-          <span className="sm:text-right">Privacy · Terms · Made with precision</span>
+          <span className="sm:text-right flex items-center gap-2">
+            <Link href="/policies/privacy" className="hover:text-[var(--accent)] transition-colors">Privacy</Link>
+            <span aria-hidden>·</span>
+            <Link href="/policies/terms" className="hover:text-[var(--accent)] transition-colors">Terms</Link>
+            <span aria-hidden>·</span>
+            <span>Made with precision</span>
+          </span>
         </div>
       </div>
     </footer>
