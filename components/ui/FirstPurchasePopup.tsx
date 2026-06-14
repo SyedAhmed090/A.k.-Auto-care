@@ -70,7 +70,7 @@ export default function FirstPurchasePopup() {
   return (
     <div
       className="fixed inset-0 z-[120] flex items-center justify-center p-4"
-      style={{ background: "rgba(8,7,5,.7)", backdropFilter: "blur(6px)" }}
+      style={{ background: "rgba(10, 11, 13,.7)", backdropFilter: "blur(6px)" }}
       onClick={dismiss}
       role="dialog"
       aria-modal="true"
@@ -93,7 +93,7 @@ export default function FirstPurchasePopup() {
         <div className="p-8 text-center">
           {state === "done" ? (
             <>
-              <div className="w-14 h-14 rounded-full grid place-items-center mx-auto mb-4" style={{ background: "rgba(232,160,32,.12)" }}>
+              <div className="w-14 h-14 rounded-full grid place-items-center mx-auto mb-4" style={{ background: "rgba(79, 168, 230,.12)" }}>
                 <Check className="w-7 h-7" style={{ color: "var(--accent)" }} />
               </div>
               <h2 className="text-2xl font-black mb-2 uppercase" style={{ fontFamily: "var(--font-anton)", color: "var(--text)" }}>
@@ -105,7 +105,7 @@ export default function FirstPurchasePopup() {
               <button
                 onClick={copyCode}
                 className="w-full flex items-center justify-center gap-2 py-3 rounded-[12px] font-bold tracking-[.18em] cursor-pointer"
-                style={{ background: "rgba(232,160,32,.1)", border: "1px dashed var(--accent)", color: "var(--accent)", fontFamily: "var(--font-space-mono)" }}
+                style={{ background: "rgba(79, 168, 230,.1)", border: "1px dashed var(--accent)", color: "var(--accent)", fontFamily: "var(--font-space-mono)" }}
               >
                 {PROMO_CODE} {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
               </button>

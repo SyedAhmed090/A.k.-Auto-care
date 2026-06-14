@@ -51,12 +51,12 @@ export default function WishlistClient() {
                   onClick={() => remove(item.id)}
                   aria-label={`Remove ${item.name} from wishlist`}
                   className="absolute top-3.5 right-3.5 z-20 w-9 h-9 rounded-full grid place-items-center transition-all hover:scale-110 cursor-pointer backdrop-blur-md"
-                  style={{ background: "rgba(12,11,8,.55)", border: "1px solid var(--line-2)" }}
+                  style={{ background: "rgba(10, 11, 13,.55)", border: "1px solid var(--line-2)" }}
                 >
                   <X className="w-[17px] h-[17px]" style={{ color: "#fff" }} />
                 </button>
                 <Link href={`/products/${item.slug}`} className="block">
-                  <div className="relative w-full overflow-hidden" style={{ aspectRatio: "4/3", background: "radial-gradient(70% 70% at 50% 40%,#221e15,#0c0a07)" }}>
+                  <div className="relative w-full overflow-hidden" style={{ aspectRatio: "4/3", background: "radial-gradient(70% 70% at 50% 40%,#16191f,#0a0b0d)" }}>
                     <Image src={item.image} alt={item.name} fill sizes="(max-width: 640px) 100vw, 25vw" className="object-cover transition-all duration-500 group-hover:scale-105" />
                   </div>
                   <div className="p-5 flex flex-col gap-1.5">

@@ -33,7 +33,7 @@ export default function ProductCard({ product }: { product: Product }) {
         {/* Thumbnail */}
         <div
           className="relative w-full overflow-hidden flex-shrink-0"
-          style={{ aspectRatio: "4/3", background: "radial-gradient(70% 70% at 50% 40%,#221e15,#0c0a07)" }}
+          style={{ aspectRatio: "4/3", background: "radial-gradient(70% 70% at 50% 40%,#16191f,#0a0b0d)" }}
         >
           <Image
             src={imgError ? "/placeholder.svg" : product.images[0]}
@@ -65,7 +65,7 @@ export default function ProductCard({ product }: { product: Product }) {
           )}
 
           {!product.inStock && (
-            <div className="absolute inset-0 flex items-center justify-center" style={{ background: "rgba(12,11,8,.7)" }}>
+            <div className="absolute inset-0 flex items-center justify-center" style={{ background: "rgba(10, 11, 13,.7)" }}>
               <span className="text-sm font-semibold" style={{ color: "var(--muted)" }}>Out of Stock</span>
             </div>
           )}

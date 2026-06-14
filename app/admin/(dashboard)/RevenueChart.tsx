@@ -61,12 +61,12 @@ export default function RevenueChart() {
         >
           <defs>
             <linearGradient id="rg" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#d8ff35" stopOpacity="0.22" />
-              <stop offset="100%" stopColor="#d8ff35" stopOpacity="0.02" />
+              <stop offset="0%" stopColor="#4fa8e6" stopOpacity="0.22" />
+              <stop offset="100%" stopColor="#4fa8e6" stopOpacity="0.02" />
             </linearGradient>
           </defs>
           <path d={area} fill="url(#rg)" />
-          <path d={line} fill="none" stroke="#d8ff35" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d={line} fill="none" stroke="#4fa8e6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 
           {/* hover targets */}
           {pts.map((p, i) => (
@@ -85,7 +85,7 @@ export default function RevenueChart() {
 
           {/* active dot */}
           {tipPt && (
-            <circle cx={tipPt.x} cy={tipPt.y} r="4" fill="#d8ff35" stroke="var(--bg)" strokeWidth="2" />
+            <circle cx={tipPt.x} cy={tipPt.y} r="4" fill="#4fa8e6" stroke="var(--bg)" strokeWidth="2" />
           )}
         </svg>
 

@@ -53,7 +53,7 @@ export default function Header() {
         className={cn(
           "fixed top-9 left-0 right-0 z-50 transition-all duration-300",
           scrolled
-            ? "border-b bg-[rgba(12,11,8,0.72)] backdrop-blur-[18px]"
+            ? "border-b bg-[rgba(10,11,13,0.72)] backdrop-blur-[18px]"
             : "border-b border-transparent"
         )}
         style={{ borderColor: scrolled ? "var(--line)" : "transparent" }}
@@ -193,7 +193,7 @@ export default function Header() {
           "fixed inset-0 z-[99] flex flex-col justify-center items-start gap-2 px-8 transition-transform duration-500",
           mobileOpen ? "translate-y-0" : "-translate-y-full"
         )}
-        style={{ background: "rgba(12,11,8,.97)", backdropFilter: "blur(20px)" }}
+        style={{ background: "rgba(10, 11, 13,.97)", backdropFilter: "blur(20px)" }}
       >
         <button
           onClick={() => setMobileOpen(false)}
@@ -222,7 +222,7 @@ export default function Header() {
       {searchOpen && (
         <div
           className="fixed inset-0 z-[70] flex items-start justify-center pt-24 px-4"
-          style={{ background: "rgba(12,11,8,.85)", backdropFilter: "blur(12px)" }}
+          style={{ background: "rgba(10, 11, 13,.85)", backdropFilter: "blur(12px)" }}
           onClick={() => setSearchOpen(false)}
         >
           <form

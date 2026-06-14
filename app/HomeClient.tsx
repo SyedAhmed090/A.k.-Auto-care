@@ -60,7 +60,7 @@ export default function HomeClient({ featured }: { featured: Product[] }) {
         {/* ── VIDEO BLOCK ── */}
         <div
           className="relative overflow-hidden min-h-[85vh] flex flex-col justify-end pt-[120px] sm:pt-[140px] lg:pt-[160px] pb-20"
-          style={{ background: "radial-gradient(120% 100% at 50% 40%, #221e15, var(--bg))" }}
+          style={{ background: "radial-gradient(120% 100% at 50% 40%, #16191f, var(--bg))" }}
         >
           <video
             autoPlay
@@ -76,7 +76,7 @@ export default function HomeClient({ featured }: { featured: Product[] }) {
             className="absolute inset-0 pointer-events-none"
             style={{
               zIndex: 1,
-              background: "linear-gradient(180deg, rgba(12,11,8,.65) 0%, rgba(12,11,8,.45) 40%, rgba(12,11,8,.80) 100%)",
+              background: "linear-gradient(180deg, rgba(10, 11, 13,.65) 0%, rgba(10, 11, 13,.45) 40%, rgba(10, 11, 13,.80) 100%)",
             }}
           />
           <div
@@ -84,7 +84,7 @@ export default function HomeClient({ featured }: { featured: Product[] }) {
             style={{
               zIndex: 1,
               width: "1100px", height: "700px",
-              background: "radial-gradient(ellipse at center, rgba(232,160,32,.10), transparent 60%)",
+              background: "radial-gradient(ellipse at center, rgba(79, 168, 230,.10), transparent 60%)",
               filter: "blur(20px)",
             }}
           />
@@ -145,7 +145,7 @@ export default function HomeClient({ featured }: { featured: Product[] }) {
           <div
             className="relative h-[330px] rounded-[26px] overflow-hidden"
             style={{
-              background: "radial-gradient(120% 90% at 30% 0%,rgba(232,160,32,.12),transparent 55%), linear-gradient(178deg,#2a251a 0%,#131009 26%,transparent 40%,#0c0a07 58%,#1f1b12 100%), #0c0a07",
+              background: "radial-gradient(120% 90% at 30% 0%,rgba(79, 168, 230,.12),transparent 55%), linear-gradient(178deg,#2a251a 0%,#131009 26%,transparent 40%,#0a0b0d 58%,#1f1b12 100%), #0a0b0d",
               border: "1px solid var(--line-2)",
               boxShadow: "inset 0 1px 0 rgba(255,255,255,.14), 0 40px 80px rgba(0,0,0,.6)",
             }}
@@ -166,7 +166,7 @@ export default function HomeClient({ featured }: { featured: Product[] }) {
               </div>
               <div className="flex gap-2.5 flex-wrap">
                 {["9H Hardness", "5-Yr Protection", "Streak-Free"].map((t) => (
-                  <span key={t} className="text-[.72rem] tracking-[.14em] uppercase px-3.5 py-1.5 rounded-full" style={{ border: "1px solid var(--line-2)", background: "rgba(12,11,8,.4)", backdropFilter: "blur(6px)", fontFamily: "var(--font-space-mono)" }}>
+                  <span key={t} className="text-[.72rem] tracking-[.14em] uppercase px-3.5 py-1.5 rounded-full" style={{ border: "1px solid var(--line-2)", background: "rgba(10, 11, 13,.4)", backdropFilter: "blur(6px)", fontFamily: "var(--font-space-mono)" }}>
                     {t}
                   </span>
                 ))}
@@ -214,7 +214,7 @@ export default function HomeClient({ featured }: { featured: Product[] }) {
                 className={`flex items-center gap-3 py-4 px-5${i % 2 === 0 ? " border-r" : ""}${i < 2 ? " border-b sm:border-b-0" : ""}${i < 3 && i % 2 !== 0 ? " sm:border-r" : ""}`}
                 style={{ borderColor: "var(--line)" }}
               >
-                <div className="w-8 h-8 rounded-[8px] grid place-items-center flex-shrink-0" style={{ background: "rgba(232,160,32,.1)" }}>
+                <div className="w-8 h-8 rounded-[8px] grid place-items-center flex-shrink-0" style={{ background: "rgba(79, 168, 230,.1)" }}>
                   <Icon className="w-4 h-4" style={{ color: "var(--accent)" }} />
                 </div>
                 <div>
@@ -245,7 +245,7 @@ export default function HomeClient({ featured }: { featured: Product[] }) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div
               className="reveal relative h-[540px] rounded-[24px] overflow-hidden grid place-items-center"
-              style={{ background: "radial-gradient(80% 70% at 50% 35%,#221e15,#0c0a07 70%)", border: "1px solid var(--line)" }}
+              style={{ background: "radial-gradient(80% 70% at 50% 35%,#16191f,#0a0b0d 70%)", border: "1px solid var(--line)" }}
             >
               <div className="relative z-[2] flex flex-col items-center">
                 <div
@@ -253,7 +253,7 @@ export default function HomeClient({ featured }: { featured: Product[] }) {
                   style={{
                     background: "linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.03))",
                     border: "1px solid rgba(255,255,255,.18)",
-                    boxShadow: "inset 0 1px 0 rgba(255,255,255,.28),0 40px 80px rgba(0,0,0,.6),0 0 80px rgba(232,160,32,.10)",
+                    boxShadow: "inset 0 1px 0 rgba(255,255,255,.28),0 40px 80px rgba(0,0,0,.6),0 0 80px rgba(79, 168, 230,.10)",
                   }}
                 >
                   <div className="absolute top-0 left-[22%] w-[14%] h-[55%] rounded-full pointer-events-none" style={{ background: "linear-gradient(180deg,rgba(255,255,255,.35),transparent)" }} />
@@ -262,15 +262,15 @@ export default function HomeClient({ featured }: { featured: Product[] }) {
                   <div className="w-8 h-[1px]" style={{ background: "var(--line-2)" }} />
                   <span className="text-[.5rem] tracking-[.16em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted-2)" }}>A.K. Auto Care</span>
                 </div>
-                <div className="w-16 h-3 mt-1 rounded-full opacity-20" style={{ background: "radial-gradient(ellipse,rgba(232,160,32,.6),transparent)" }} />
+                <div className="w-16 h-3 mt-1 rounded-full opacity-20" style={{ background: "radial-gradient(ellipse,rgba(79, 168, 230,.6),transparent)" }} />
               </div>
-              <div className="absolute w-[380px] h-[380px] rounded-full pointer-events-none" style={{ border: "1px solid var(--line-2)", boxShadow: "0 0 80px rgba(232,160,32,.08)" }} />
+              <div className="absolute w-[380px] h-[380px] rounded-full pointer-events-none" style={{ border: "1px solid var(--line-2)", boxShadow: "0 0 80px rgba(79, 168, 230,.08)" }} />
               <div className="absolute w-[520px] h-[520px] rounded-full pointer-events-none opacity-50" style={{ border: "1px solid var(--line-2)" }} />
-              <div className="absolute top-[60px] right-[34px] rounded-[12px] px-4 py-3 z-[3]" style={{ background: "rgba(12,11,8,.7)", backdropFilter: "blur(8px)", border: "1px solid var(--line-2)" }}>
+              <div className="absolute top-[60px] right-[34px] rounded-[12px] px-4 py-3 z-[3]" style={{ background: "rgba(10, 11, 13,.7)", backdropFilter: "blur(8px)", border: "1px solid var(--line-2)" }}>
                 <div className="text-[1.3rem]" style={{ fontFamily: "var(--font-anton)", color: "var(--text)" }}>9H</div>
                 <div className="text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Hardness</div>
               </div>
-              <div className="absolute bottom-[70px] left-[30px] rounded-[12px] px-4 py-3 z-[3]" style={{ background: "rgba(12,11,8,.7)", backdropFilter: "blur(8px)", border: "1px solid var(--line-2)" }}>
+              <div className="absolute bottom-[70px] left-[30px] rounded-[12px] px-4 py-3 z-[3]" style={{ background: "rgba(10, 11, 13,.7)", backdropFilter: "blur(8px)", border: "1px solid var(--line-2)" }}>
                 <div className="text-[1.3rem]" style={{ fontFamily: "var(--font-anton)", color: "var(--accent)" }}>110°</div>
                 <div className="text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Contact angle</div>
               </div>
@@ -487,7 +487,7 @@ export default function HomeClient({ featured }: { featured: Product[] }) {
                   </div>
                   <span className="text-[.72rem] tracking-[.12em] uppercase text-center" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>{label}<br />Photos coming soon</span>
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 px-5 py-4" style={{ background: "linear-gradient(to top, rgba(12,11,8,.9), transparent)" }}>
+                <div className="absolute bottom-0 left-0 right-0 px-5 py-4" style={{ background: "linear-gradient(to top, rgba(10, 11, 13,.9), transparent)" }}>
                   <span className="text-[.78rem] font-semibold" style={{ fontFamily: "var(--font-space-mono)", color: "var(--accent)" }}>{label}</span>
                 </div>
               </div>
@@ -534,7 +534,7 @@ export default function HomeClient({ featured }: { featured: Product[] }) {
           <div
             className="reveal rounded-[28px] py-14 px-6 sm:py-16 sm:px-12 lg:py-[72px] lg:px-[60px]"
             style={{
-              background: "radial-gradient(120% 120% at 80% 0%,rgba(232,160,32,.14),transparent 50%), linear-gradient(160deg,var(--surface),var(--bg-2))",
+              background: "radial-gradient(120% 120% at 80% 0%,rgba(79, 168, 230,.14),transparent 50%), linear-gradient(160deg,var(--surface),var(--bg-2))",
               border: "1px solid var(--line-2)",
             }}
           >
@@ -564,7 +564,7 @@ export default function HomeClient({ featured }: { featured: Product[] }) {
                       onKeyDown={(e) => e.key === "Enter" && handleNewsletter()}
                       placeholder="your@email.com"
                       className="flex-1 min-w-[220px] px-5 py-4 rounded-[13px] text-[1rem] outline-none transition-all"
-                      style={{ background: "rgba(12,11,8,.6)", border: `1px solid ${nlState === "error" ? "#ef4444" : "var(--line-2)"}`, color: "var(--text)", fontFamily: "var(--font-hanken)" }}
+                      style={{ background: "rgba(10, 11, 13,.6)", border: `1px solid ${nlState === "error" ? "#ef4444" : "var(--line-2)"}`, color: "var(--text)", fontFamily: "var(--font-hanken)" }}
                     />
                     <button
                       onClick={handleNewsletter}

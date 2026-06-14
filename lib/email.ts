@@ -98,12 +98,12 @@ export function buildOrderConfirmationHtml(d: OrderEmailData): string {
 <html><head><meta charset="utf-8"/></head>
 <body style="background:#111;color:#fff;font-family:sans-serif;margin:0;padding:24px">
   <div style="max-width:560px;margin:0 auto">
-    <div style="background:#d8ff35;padding:16px 24px;border-radius:12px 12px 0 0">
+    <div style="background:#4fa8e6;padding:16px 24px;border-radius:12px 12px 0 0">
       <h1 style="margin:0;color:#000;font-size:1.4rem">Order Confirmed ✓</h1>
     </div>
     <div style="background:#1a1a1a;padding:24px;border-radius:0 0 12px 12px">
       <p style="color:#aaa">Hi ${d.firstName}, thank you for your order!</p>
-      <p style="color:#aaa">Order ID: <strong style="color:#d8ff35">#${orderId}</strong></p>
+      <p style="color:#aaa">Order ID: <strong style="color:#4fa8e6">#${orderId}</strong></p>
       <table style="width:100%;border-collapse:collapse;margin:16px 0">
         <thead>
           <tr>
@@ -116,7 +116,7 @@ export function buildOrderConfirmationHtml(d: OrderEmailData): string {
       </table>
       <div style="text-align:right;padding-top:12px">
         <p style="color:#888;margin:4px 0">Subtotal: ${fmt(d.subtotal)}</p>
-        ${d.discount > 0 ? `<p style="color:#d8ff35;margin:4px 0">Discount: -${fmt(d.discount)}</p>` : ""}
+        ${d.discount > 0 ? `<p style="color:#4fa8e6;margin:4px 0">Discount: -${fmt(d.discount)}</p>` : ""}
         <p style="color:#888;margin:4px 0">Shipping: ${d.shipping === 0 ? "FREE" : fmt(d.shipping)}</p>
         <p style="color:#fff;font-size:1.2rem;font-weight:700;margin:8px 0">Total: ${fmt(d.total)}</p>
       </div>
@@ -125,7 +125,7 @@ export function buildOrderConfirmationHtml(d: OrderEmailData): string {
         Payment: <strong style="color:#fff">${d.paymentMethod.toUpperCase()}</strong><br/>
         Delivery to: ${d.address}, ${d.city}
       </p>
-      ${d.paymentMethod !== "cod" ? `<p style="color:#d8ff35;font-size:.85rem">Please send your payment screenshot to our WhatsApp to confirm your order.</p>` : ""}
+      ${d.paymentMethod !== "cod" ? `<p style="color:#4fa8e6;font-size:.85rem">Please send your payment screenshot to our WhatsApp to confirm your order.</p>` : ""}
       <p style="color:#555;font-size:.75rem;margin-top:24px">A.K. Auto Care · Karachi, Pakistan · hello@akautocare.pk</p>
     </div>
   </div>
