@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Anton, Hanken_Grotesk, Space_Mono, Noto_Nastaliq_Urdu } from "next/font/google";
+import { Anton, Hanken_Grotesk, Space_Mono } from "next/font/google";
 import { Truck } from "lucide-react";
 import Script from "next/script";
 import "./globals.css";
@@ -27,12 +27,6 @@ const hanken = Hanken_Grotesk({
 const spaceMono = Space_Mono({
   variable: "--font-space-mono",
   subsets: ["latin"],
-  weight: ["400", "700"],
-});
-
-const notoNastaliqUrdu = Noto_Nastaliq_Urdu({
-  variable: "--font-noto-nastaliq-urdu",
-  subsets: ["arabic"],
   weight: ["400", "700"],
 });
 
@@ -94,7 +88,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${anton.variable} ${hanken.variable} ${spaceMono.variable} ${notoNastaliqUrdu.variable}`}>
+    <html lang="en" className={`${anton.variable} ${hanken.variable} ${spaceMono.variable}`}>
       <head>
         <script
           type="application/ld+json"
