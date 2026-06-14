@@ -114,7 +114,7 @@ export default function ContactClient() {
                 className="flex flex-col items-center justify-center py-16 text-center rounded-[20px]"
                 style={{ background: "var(--surface)", border: "1px solid var(--line-2)" }}
               >
-                <div className="w-16 h-16 rounded-full grid place-items-center mb-4" style={{ background: "rgba(232,160,32,.1)" }}>
+                <div className="w-16 h-16 rounded-full grid place-items-center mb-4" style={{ background: "rgba(79, 168, 230,.1)" }}>
                   <CheckCircle className="w-8 h-8" style={{ color: "var(--accent)" }} />
                 </div>
                 <h3 className="text-[1.8rem] uppercase mb-2" style={{ fontFamily: "var(--font-anton)" }}>Message Sent!</h3>

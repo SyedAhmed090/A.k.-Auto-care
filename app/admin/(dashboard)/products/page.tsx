@@ -89,7 +89,7 @@ export default function AdminProductsPage() {
                     <div className="font-semibold" style={{ color: "var(--text)" }}>{p.name}</div>
                     <div className="text-xs mt-0.5" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
                       /{p.slug}
-                      {p.badge && <span className="ml-2 px-1.5 py-0.5 rounded-[4px] text-[.65rem]" style={{ background: "rgba(232,160,32,.15)", color: "var(--accent)" }}>{p.badge}</span>}
+                      {p.badge && <span className="ml-2 px-1.5 py-0.5 rounded-[4px] text-[.65rem]" style={{ background: "rgba(79, 168, 230,.15)", color: "var(--accent)" }}>{p.badge}</span>}
                     </div>
                   </td>
                   <td className="px-5 py-4 text-xs uppercase" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)", letterSpacing: ".08em" }}>
@@ -111,7 +111,7 @@ export default function AdminProductsPage() {
                         {p.in_stock ? "In Stock" : "Out of Stock"}
                       </span>
                       {p.featured && (
-                        <span className="text-[.7rem] px-2 py-0.5 rounded-full" style={{ background: "rgba(232,160,32,.1)", color: "var(--accent)" }}>
+                        <span className="text-[.7rem] px-2 py-0.5 rounded-full" style={{ background: "rgba(79, 168, 230,.1)", color: "var(--accent)" }}>
                           Featured
                         </span>
                       )}

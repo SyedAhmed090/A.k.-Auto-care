@@ -237,7 +237,7 @@ export default function CheckoutPage() {
                         className="flex items-center gap-3 p-4 rounded-[13px] cursor-pointer transition-all"
                         style={{
                           border: active ? "1px solid var(--accent)" : "1px solid var(--line-2)",
-                          background: active ? "rgba(232,160,32,.06)" : "var(--bg-2)",
+                          background: active ? "rgba(79, 168, 230,.06)" : "var(--bg-2)",
                         }}
                       >
                         <input
@@ -291,7 +291,7 @@ export default function CheckoutPage() {
                         className="flex items-center gap-3 p-4 rounded-[13px] cursor-pointer transition-all"
                         style={{
                           border: active ? "1px solid var(--accent)" : "1px solid var(--line-2)",
-                          background: active ? "rgba(232,160,32,.06)" : "var(--bg-2)",
+                          background: active ? "rgba(79, 168, 230,.06)" : "var(--bg-2)",
                         }}
                       >
                         <input type="radio" name="paymentMethod" value={method.id} checked={active} onChange={() => setPaymentMethod(method.id)} className="sr-only" />

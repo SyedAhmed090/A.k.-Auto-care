@@ -52,7 +52,7 @@ export default function RegisterPage() {
     return (
       <div className="min-h-[80vh] flex items-center justify-center px-4 py-16" style={{ background: "var(--bg)" }}>
         <div className="w-full max-w-md text-center">
-          <div className="w-14 h-14 rounded-full grid place-items-center mx-auto mb-4" style={{ background: "rgba(232,160,32,.12)" }}>
+          <div className="w-14 h-14 rounded-full grid place-items-center mx-auto mb-4" style={{ background: "rgba(79, 168, 230,.12)" }}>
             <CheckCircle className="w-7 h-7" style={{ color: "var(--accent)" }} />
           </div>
           <h1 className="text-2xl font-black uppercase mb-2" style={{ fontFamily: "var(--font-anton)", color: "var(--text)" }}>

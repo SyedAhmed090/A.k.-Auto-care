@@ -8,7 +8,7 @@ import Footer from "@/components/layout/Footer";
 import MiniCart from "@/components/layout/MiniCart";
 import WhatsAppButton from "@/components/ui/WhatsAppButton";
 import CookieConsent from "@/components/ui/CookieConsent";
-import FirstPurchasePopup from "@/components/ui/FirstPurchasePopup";
+// import FirstPurchasePopup from "@/components/ui/FirstPurchasePopup"; // disabled for now
 import MetaPixel from "@/components/analytics/MetaPixel";
 import { WHATSAPP_NUMBER, BUSINESS, SOCIAL_LINKS } from "@/lib/constants";
 
@@ -128,7 +128,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <WhatsAppButton />
         <CookieConsent />
-        <FirstPurchasePopup />
+        {/* First-purchase popup disabled for now — re-enable by uncommenting. */}
+        {/* <FirstPurchasePopup /> */}
       </body>
     </html>
   );

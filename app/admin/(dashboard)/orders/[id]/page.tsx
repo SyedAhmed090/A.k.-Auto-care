@@ -307,7 +307,7 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
               style={{
                 width: "100%", padding: "13px", borderRadius: 11, border: "none",
                 background: saving ? "var(--line-2)" : "var(--accent)",
-                color: "#0c0b08", fontFamily: "var(--font-hanken)", fontWeight: 700,
+                color: "#0a0b0d", fontFamily: "var(--font-hanken)", fontWeight: 700,
                 fontSize: ".95rem", cursor: saving ? "not-allowed" : "pointer", transition: "background .2s",
               }}
             >

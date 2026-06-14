@@ -2,17 +2,17 @@
 
 @layer base {
   :root {
-    --bg: #0c0b08;
-    --bg-2: #131109;
-    --surface: #1c1916;
-    --surface-2: #242018;
-    --line: rgba(210,180,100,.07);
-    --line-2: rgba(210,180,100,.14);
-    --text: #f5f0e8;
-    --muted: #b0aa97;
-    --muted-2: #9c9380;
-    --accent: #e8a020;
-    --accent-press: #d08c18;
+    --bg: #0a0b0d;
+    --bg-2: #0e1014;
+    --surface: #15181d;
+    --surface-2: #1c2026;
+    --line: rgba(150,180,215,.08);
+    --line-2: rgba(150,180,215,.16);
+    --text: #eef2f6;
+    --muted: #9aa6b4;
+    --muted-2: #7e8a98;
+    --accent: #4fa8e6;
+    --accent-press: #3d92cf;
     --r: 18px;
     --r-sm: 8px;
     --r-md: 12px;
@@ -27,7 +27,7 @@
 
   body {
     background-color: var(--bg);
-    background-image: radial-gradient(circle at 1px 1px, rgba(210,180,100,.05) 1px, transparent 0);
+    background-image: radial-gradient(circle at 1px 1px, rgba(150,180,215,.05) 1px, transparent 0);
     background-size: 24px 24px;
     color: var(--text);
     font-family: var(--font-hanken), system-ui, sans-serif;
@@ -128,7 +128,7 @@ label:focus-within {
 }
 .btn-accent:hover:not(:disabled) {
   background: var(--accent-press);
-  box-shadow: 0 14px 30px rgba(232,160,32,.28);
+  box-shadow: 0 14px 30px rgba(79, 168, 230,.28);
 }
 
 .btn-ghost {

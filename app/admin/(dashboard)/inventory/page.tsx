@@ -122,7 +122,7 @@ export default function InventoryPage() {
                 return (
                   <tr
                     key={p.id}
-                    style={{ borderBottom: "1px solid var(--line)", background: isDirty ? "rgba(232,160,32,.04)" : undefined }}
+                    style={{ borderBottom: "1px solid var(--line)", background: isDirty ? "rgba(79, 168, 230,.04)" : undefined }}
                     className="transition-colors hover:bg-white/[.02]"
                   >
                     <td className="px-5 py-4">

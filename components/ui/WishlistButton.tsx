@@ -39,7 +39,7 @@ export default function WishlistButton({
         className="w-12 h-12 rounded-[13px] grid place-items-center flex-shrink-0 transition-all cursor-pointer"
         style={{
           border: `1px solid ${active ? "var(--accent)" : "var(--line-2)"}`,
-          background: active ? "rgba(232,160,32,.08)" : "var(--surface)",
+          background: active ? "rgba(79, 168, 230,.08)" : "var(--surface)",
         }}
       >
         <Heart className="w-5 h-5" style={{ color: active ? "var(--accent)" : "var(--muted)", fill: active ? "var(--accent)" : "transparent" }} />
@@ -54,7 +54,7 @@ export default function WishlistButton({
       aria-pressed={active}
       aria-label={active ? "Remove from wishlist" : "Add to wishlist"}
       className="absolute top-3.5 right-3.5 z-20 w-9 h-9 rounded-full grid place-items-center transition-all cursor-pointer backdrop-blur-md hover:scale-110"
-      style={{ background: "rgba(12,11,8,.55)", border: "1px solid var(--line-2)" }}
+      style={{ background: "rgba(10, 11, 13,.55)", border: "1px solid var(--line-2)" }}
     >
       <Heart className="w-[17px] h-[17px]" style={{ color: active ? "var(--accent)" : "#fff", fill: active ? "var(--accent)" : "transparent" }} />
     </button>

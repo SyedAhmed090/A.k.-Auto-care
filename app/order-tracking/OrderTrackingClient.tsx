@@ -149,7 +149,7 @@ export default function OrderTrackingClient() {
                 borderRadius: 11,
                 border: "none",
                 background: loading ? "var(--line-2)" : "var(--accent)",
-                color: "#0c0b08",
+                color: "#0a0b0d",
                 fontFamily: "var(--font-hanken)",
                 fontWeight: 700,
                 fontSize: ".95rem",
@@ -215,7 +215,7 @@ export default function OrderTrackingClient() {
                               fontSize: isActive ? "1rem" : ".85rem",
                               position: "relative", zIndex: 1,
                               transition: "all .3s",
-                              color: isCompleted ? "#0c0b08" : "var(--muted)",
+                              color: isCompleted ? "#0a0b0d" : "var(--muted)",
                             }}>
                               {STATUS_ICONS[step]}
                             </div>
