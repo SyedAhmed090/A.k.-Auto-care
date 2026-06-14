@@ -1,26 +1,35 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-    const res = await fetch("/api/admin/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
-    if (res.ok) {
-      router.push("/admin/orders");
-    } else {
-      setError("Invalid password.");
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      if (res.ok) {
+        // Hard navigation so the browser makes a fresh request that carries the
+        // newly-set session cookie through middleware (a soft router.push can race the cookie).
+        window.location.assign("/admin/orders");
+        return;
+      }
+      let msg = "Invalid password.";
+      if (res.status === 429) msg = "Too many attempts. Please wait a few minutes.";
+      else if (res.status === 403) msg = "Request blocked (origin). Reload the page and try again.";
+      else if (res.status === 503) msg = "Admin is not configured (ADMIN_SECRET not set).";
+      setError(msg);
+      setLoading(false);
+    } catch {
+      setError("Network error. Please try again.");
       setLoading(false);
     }
   };
