@@ -15,6 +15,7 @@ export default function AdminLoginPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password }),
+        cache: "no-store",
       });
       if (res.ok) {
         // Hard navigation so the browser makes a fresh request that carries the

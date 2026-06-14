@@ -28,7 +28,8 @@ export async function middleware(req: NextRequest) {
   }
 
   const token = req.cookies.get(COOKIE)?.value;
-  const expected = await sha256Hex(`ak-admin:${secret}`);
+  const day = new Date().toISOString().slice(0, 10);
+  const expected = await sha256Hex(`ak-admin:${secret}:${day}`);
 
   if (token !== expected) {
     // API routes get a JSON 401; page routes get redirected to login
