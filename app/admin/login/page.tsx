@@ -1,8 +1,10 @@
 "use client";
 import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
+  const [show, setShow] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -18,8 +20,6 @@ export default function AdminLoginPage() {
         cache: "no-store",
       });
       if (res.ok) {
-        // Hard navigation so the browser makes a fresh request that carries the
-        // newly-set session cookie through middleware (a soft router.push can race the cookie).
         window.location.assign("/admin/orders");
         return;
       }
@@ -49,14 +49,25 @@ export default function AdminLoginPage() {
             <label className="block text-[.72rem] tracking-[.14em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
               Password
             </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoFocus
-              className="w-full px-4 py-3 rounded-[11px] outline-none text-sm"
-              style={{ background: "var(--bg)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }}
-            />
+            <div className="relative">
+              <input
+                type={show ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoFocus
+                className="w-full px-4 py-3 pr-11 rounded-[11px] outline-none text-sm"
+                style={{ background: "var(--bg)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }}
+              />
+              <button
+                type="button"
+                onClick={() => setShow(v => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded cursor-pointer"
+                style={{ color: "var(--muted)" }}
+                tabIndex={-1}
+              >
+                {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
           </div>
           {error && <p className="text-xs" style={{ color: "#ef4444" }}>{error}</p>}
           <button

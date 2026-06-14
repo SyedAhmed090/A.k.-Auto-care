@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { LayoutDashboard, ShoppingBag, Tag, Package, Star, Boxes, Users, LogOut } from "lucide-react";
 
 const NAV = [
@@ -15,11 +15,10 @@ const NAV = [
 
 export default function AdminNav() {
   const pathname = usePathname();
-  const router   = useRouter();
 
   const logout = async () => {
     await fetch("/api/admin/logout", { method: "POST" });
-    router.push("/admin/login");
+    window.location.assign("/admin/login");
   };
 
   return (
@@ -45,7 +44,7 @@ export default function AdminNav() {
 
       <div className="px-3 pb-4">
         <button onClick={logout}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-sm font-semibold w-full transition-all cursor-pointer"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-sm font-semibold w-full transition-all cursor-pointer hover:bg-red-500/10 hover:text-red-400"
           style={{ color: "var(--muted)" }}>
           <LogOut className="w-4 h-4 flex-shrink-0" />
           Log Out
