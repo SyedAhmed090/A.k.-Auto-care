@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { checkRateLimit, getIP } from "@/lib/rateLimit";
 import { checkCsrf } from "@/lib/csrf";
+import { createAdminClient } from "@/utils/supabase/admin";
 
 const RESEND_URL = "https://api.resend.com/emails";
 
@@ -28,6 +29,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "Invalid submission." }, { status: 400 });
     }
     const { name, email, subject, message } = parsed.data;
+
+    // Persist the message so an inquiry is never lost if the email is missed.
+    // Failure here must not block the user — log and continue to the email send.
+    try {
+      const sb = createAdminClient();
+      const { error } = await sb.from("contact_messages").insert({ name, email, subject, message });
+      if (error) throw error;
+    } catch (err) {
+      console.error("Contact message persist error:", err);
+    }
 
     const apiKey = process.env.RESEND_API_KEY;
     const from = process.env.CONTACT_EMAIL_FROM ?? "noreply@akautocare.pk";
