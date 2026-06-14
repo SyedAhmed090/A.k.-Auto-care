@@ -40,6 +40,7 @@ export default async function AccountPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/account/login");
 
+  const userEmail = user.email ?? "";
   const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle();
 
   // Orders are RLS-locked to service role, so read them with the admin client,
@@ -50,9 +51,9 @@ export default async function AccountPage() {
     const { data } = await admin
       .from("orders")
       .select("id, created_at, total, status, items")
-      .eq("email", user.email)
+      .eq("email", userEmail)
       .order("created_at", { ascending: false });
-    orders = (data as OrderRow[]) ?? [];
+    orders = (data as unknown as OrderRow[]) ?? [];
   } catch {
     orders = [];
   }
