@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Script from "next/script";
 import { captureUTM } from "@/lib/utm";
+import { gaEvent } from "@/lib/ga";
 
 declare global {
   interface Window {
@@ -66,6 +67,11 @@ export function trackViewContent(product: {
     currency: "PKR",
     content_type: "product",
   });
+  gaEvent("view_item", {
+    currency: "PKR",
+    value: product.price,
+    items: [{ item_id: product.id, item_name: product.name, item_category: product.categorySlug, price: product.price }],
+  });
 }
 
 export function trackAddToCart(
@@ -82,6 +88,11 @@ export function trackAddToCart(
     content_type: "product",
     num_items: qty,
   });
+  gaEvent("add_to_cart", {
+    currency: "PKR",
+    value: variant.price * qty,
+    items: [{ item_id: variant.sku, item_name: `${product.name} — ${variant.label}`, price: variant.price, quantity: qty }],
+  });
 }
 
 export function trackInitiateCheckout(subtotal: number, itemCount: number) {
@@ -91,6 +102,7 @@ export function trackInitiateCheckout(subtotal: number, itemCount: number) {
     currency: "PKR",
     num_items: itemCount,
   });
+  gaEvent("begin_checkout", { currency: "PKR", value: subtotal, num_items: itemCount });
 }
 
 export function trackPurchase(orderId: string, value: number, currency = "PKR") {
@@ -100,4 +112,5 @@ export function trackPurchase(orderId: string, value: number, currency = "PKR") 
     value,
     currency,
   });
+  gaEvent("purchase", { transaction_id: orderId, value, currency });
 }

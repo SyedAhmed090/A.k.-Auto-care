@@ -9,6 +9,7 @@ import MiniCart from "@/components/layout/MiniCart";
 import WhatsAppButton from "@/components/ui/WhatsAppButton";
 import CookieConsent from "@/components/ui/CookieConsent";
 import MetaPixel from "@/components/analytics/MetaPixel";
+import { WHATSAPP_NUMBER, BUSINESS, SOCIAL_LINKS } from "@/lib/constants";
 
 const anton = Anton({
   variable: "--font-anton",
@@ -39,22 +40,35 @@ const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 
 const orgSchema = {
   "@context": "https://schema.org",
-  "@type": "Organization",
+  "@type": "Store",
+  "@id": "https://www.akautocare.pk/#store",
   name: "A.K. Auto Care",
+  description:
+    "Pakistan's specialist in pre- and post-paint car care — primers, ceramic coatings, polishes, compounds, and paint protection.",
   url: "https://www.akautocare.pk",
   logo: "https://www.akautocare.pk/logo.png",
+  image: "https://www.akautocare.pk/logo.png",
+  telephone: `+${WHATSAPP_NUMBER}`,
+  email: BUSINESS.email,
+  priceRange: "₨₨",
+  currenciesAccepted: "PKR",
+  paymentAccepted: "Cash on Delivery, JazzCash, EasyPaisa, Bank Transfer",
+  areaServed: { "@type": "Country", name: "Pakistan" },
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: BUSINESS.address,
+    addressLocality: BUSINESS.city,
+    addressCountry: "PK",
+  },
+  openingHours: "Mo-Sa 10:00-20:00",
   contactPoint: {
     "@type": "ContactPoint",
-    telephone: "+92-300-0000000",
+    telephone: `+${WHATSAPP_NUMBER}`,
     contactType: "customer service",
     areaServed: "PK",
     availableLanguage: ["English", "Urdu"],
   },
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Karachi",
-    addressCountry: "PK",
-  },
+  ...(SOCIAL_LINKS.length > 0 ? { sameAs: SOCIAL_LINKS.map((s) => s.href) } : {}),
 };
 
 export const metadata: Metadata = {
