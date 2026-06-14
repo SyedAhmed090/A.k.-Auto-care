@@ -26,10 +26,10 @@ export async function GET() {
     }
 
     for (const row of data ?? []) {
-      const key = row.created_at.slice(0, 10);
+      const key = (row.created_at ?? "").slice(0, 10);
       if (!byDate[key]) continue;
       byDate[key].orders += 1;
-      if (!["cancelled", "refunded"].includes(row.status)) {
+      if (!["cancelled", "refunded"].includes(row.status ?? "")) {
         byDate[key].revenue += Number(row.total);
       }
     }

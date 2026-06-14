@@ -67,6 +67,7 @@ export default function HomeClient({ featured }: { featured: Product[] }) {
             muted
             loop
             playsInline
+            poster="/hero-poster.jpg"
             className="absolute inset-0 w-full h-full object-cover hidden md:block"
             style={{ zIndex: 0 }}
             src="/mixkit-close-up-of-a-man-polishing-a-newly-polished-car-47833-hd-ready.mp4"
