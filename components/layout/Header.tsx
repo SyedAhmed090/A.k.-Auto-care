@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Search, ShoppingCart, Heart, Menu, X } from "lucide-react";
+import { Search, ShoppingCart, Heart, User, Menu, X } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { useWishlistStore } from "@/store/wishlist";
 import { cn } from "@/lib/utils";
@@ -119,6 +119,15 @@ export default function Header() {
               </button>
 
               <Link
+                href="/account"
+                className="hidden sm:grid w-[42px] h-[42px] rounded-[11px] place-items-center transition-all cursor-pointer"
+                style={{ border: "1px solid var(--line)", background: "rgba(255,255,255,.02)", color: "var(--text)" }}
+                aria-label="My account"
+              >
+                <User className="w-[18px] h-[18px]" />
+              </Link>
+
+              <Link
                 href="/wishlist"
                 className="hidden sm:grid w-[42px] h-[42px] rounded-[11px] place-items-center transition-all cursor-pointer relative"
                 style={{ border: "1px solid var(--line)", background: "rgba(255,255,255,.02)", color: "var(--text)" }}
@@ -182,7 +191,7 @@ export default function Header() {
           <X className="w-5 h-5" />
         </button>
 
-        {[...navLinks, { href: "/wishlist", label: "Wishlist" }].map((l) => (
+        {[...navLinks, { href: "/wishlist", label: "Wishlist" }, { href: "/account", label: "My Account" }].map((l) => (
           <Link
             key={l.label}
             href={l.href}
