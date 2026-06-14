@@ -47,6 +47,10 @@ const inputStyle = {
 const labelCls = "block text-[.72rem] tracking-[.12em] uppercase mb-1.5 font-semibold";
 const labelStyle = { fontFamily: "var(--font-space-mono)", color: "var(--muted)" };
 
+const Req = () => <span style={{ color: "#ef4444" }}> *</span>;
+const FieldError = ({ msg }: { msg?: string }) =>
+  msg ? <p className="mt-1 text-[.68rem]" style={{ color: "#ef4444", fontFamily: "var(--font-space-mono)" }}>{msg}</p> : null;
+
 export default function ProductForm({
   defaultValues,
   productId,
@@ -123,41 +127,45 @@ export default function ProductForm({
         <h2 className="text-[.8rem] tracking-[.16em] uppercase font-bold" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Basic Info</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div>
-            <label className={labelCls} style={labelStyle}>Name *</label>
+            <label className={labelCls} style={labelStyle}>Name<Req /></label>
             <input
-              {...register("name", { required: true, onChange: (e) => { if (!isEdit) setValue("slug", slugify(e.target.value)); } })}
+              {...register("name", { required: "Name is required.", onChange: (e) => { if (!isEdit) setValue("slug", slugify(e.target.value)); } })}
               className={inputCls} style={{ ...inputStyle, borderColor: errors.name ? "#ef4444" : "var(--line-2)" }}
               placeholder="Product name"
             />
+            <FieldError msg={errors.name?.message} />
           </div>
           <div>
-            <label className={labelCls} style={labelStyle}>Slug *</label>
+            <label className={labelCls} style={labelStyle}>Slug<Req /></label>
             <input
-              {...register("slug", { required: true, pattern: /^[a-z0-9-]+$/ })}
+              {...register("slug", { required: "Slug is required.", pattern: { value: /^[a-z0-9-]+$/, message: "Use lowercase letters, numbers and hyphens only." } })}
               className={inputCls} style={{ ...inputStyle, borderColor: errors.slug ? "#ef4444" : "var(--line-2)" }}
               placeholder="auto-generated-slug"
             />
+            <FieldError msg={errors.slug?.message} />
           </div>
           <div>
-            <label className={labelCls} style={labelStyle}>Category *</label>
+            <label className={labelCls} style={labelStyle}>Category<Req /></label>
             <select
-              {...register("category_slug", { required: true })}
+              {...register("category_slug", { required: "Category is required." })}
               className={inputCls} style={{ ...inputStyle, cursor: "pointer" }}
             >
               {CATEGORIES.map((c) => <option key={c.slug} value={c.slug}>{c.label}</option>)}
             </select>
+            <FieldError msg={errors.category_slug?.message} />
           </div>
           <div>
             <label className={labelCls} style={labelStyle}>Badge (optional)</label>
             <input {...register("badge")} className={inputCls} style={inputStyle} placeholder='e.g. "Best Seller"' />
           </div>
           <div className="sm:col-span-2">
-            <label className={labelCls} style={labelStyle}>Tagline *</label>
+            <label className={labelCls} style={labelStyle}>Tagline<Req /></label>
             <input
-              {...register("tagline", { required: true })}
+              {...register("tagline", { required: "Tagline is required." })}
               className={inputCls} style={{ ...inputStyle, borderColor: errors.tagline ? "#ef4444" : "var(--line-2)" }}
               placeholder="Short compelling tagline"
             />
+            <FieldError msg={errors.tagline?.message} />
           </div>
         </div>
       </section>
@@ -167,12 +175,13 @@ export default function ProductForm({
         <h2 className="text-[.8rem] tracking-[.16em] uppercase font-bold" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Pricing & Stock</h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
           <div>
-            <label className={labelCls} style={labelStyle}>Base Price (Rs) *</label>
+            <label className={labelCls} style={labelStyle}>Base Price (Rs)<Req /></label>
             <input
               type="number" min={0}
-              {...register("price", { required: true, valueAsNumber: true })}
-              className={inputCls} style={inputStyle} placeholder="0"
+              {...register("price", { required: "Price is required.", valueAsNumber: true, min: { value: 0, message: "Must be 0 or more." } })}
+              className={inputCls} style={{ ...inputStyle, borderColor: errors.price ? "#ef4444" : "var(--line-2)" }} placeholder="0"
             />
+            <FieldError msg={errors.price?.message} />
           </div>
           <div>
             <label className={labelCls} style={labelStyle}>Stock Qty</label>
@@ -207,20 +216,22 @@ export default function ProductForm({
       <section className="rounded-[14px] p-6 space-y-5" style={{ border: "1px solid var(--line)", background: "var(--surface)" }}>
         <h2 className="text-[.8rem] tracking-[.16em] uppercase font-bold" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Content</h2>
         <div>
-          <label className={labelCls} style={labelStyle}>Description *</label>
+          <label className={labelCls} style={labelStyle}>Description<Req /></label>
           <textarea
-            {...register("description", { required: true })}
-            rows={5} className={inputCls} style={{ ...inputStyle, resize: "vertical" }}
+            {...register("description", { required: "Description is required." })}
+            rows={5} className={inputCls} style={{ ...inputStyle, resize: "vertical", borderColor: errors.description ? "#ef4444" : "var(--line-2)" }}
             placeholder="Full product description…"
           />
+          <FieldError msg={errors.description?.message} />
         </div>
         <div>
-          <label className={labelCls} style={labelStyle}>How to Use *</label>
+          <label className={labelCls} style={labelStyle}>How to Use<Req /></label>
           <textarea
-            {...register("how_to_use", { required: true })}
-            rows={4} className={inputCls} style={{ ...inputStyle, resize: "vertical" }}
+            {...register("how_to_use", { required: "Usage instructions are required." })}
+            rows={4} className={inputCls} style={{ ...inputStyle, resize: "vertical", borderColor: errors.how_to_use ? "#ef4444" : "var(--line-2)" }}
             placeholder="Application instructions…"
           />
+          <FieldError msg={errors.how_to_use?.message} />
         </div>
       </section>
 
@@ -280,20 +291,22 @@ export default function ProductForm({
         {variantFields.map((f, i) => (
           <div key={f.id} className="grid grid-cols-3 gap-3 items-start">
             <div>
-              <label className={labelCls} style={labelStyle}>Label</label>
-              <input {...register(`variants.${i}.label`, { required: true })} placeholder="e.g. 500ml" className={inputCls} style={inputStyle} />
+              <label className={labelCls} style={labelStyle}>Label<Req /></label>
+              <input {...register(`variants.${i}.label`, { required: "Required." })} placeholder="e.g. 500ml" className={inputCls} style={{ ...inputStyle, borderColor: errors.variants?.[i]?.label ? "#ef4444" : "var(--line-2)" }} />
+              <FieldError msg={errors.variants?.[i]?.label?.message} />
             </div>
             <div>
               <label className={labelCls} style={labelStyle}>Price (Rs)</label>
               <input type="number" min={0} {...register(`variants.${i}.price`, { valueAsNumber: true })} className={inputCls} style={inputStyle} />
             </div>
-            <div className="flex gap-2 items-end">
+            <div className="flex gap-2 items-start">
               <div className="flex-1">
-                <label className={labelCls} style={labelStyle}>SKU</label>
-                <input {...register(`variants.${i}.sku`, { required: true })} placeholder="PROD-001-500" className={inputCls} style={inputStyle} />
+                <label className={labelCls} style={labelStyle}>SKU<Req /></label>
+                <input {...register(`variants.${i}.sku`, { required: "Required." })} placeholder="PROD-001-500" className={inputCls} style={{ ...inputStyle, borderColor: errors.variants?.[i]?.sku ? "#ef4444" : "var(--line-2)" }} />
+                <FieldError msg={errors.variants?.[i]?.sku?.message} />
               </div>
               {variantFields.length > 1 && (
-                <button type="button" onClick={() => removeVariant(i)} className="mb-0.5 p-2.5 rounded-[8px] cursor-pointer transition-all hover:bg-red-500/10" style={{ color: "#ef4444" }}>
+                <button type="button" onClick={() => removeVariant(i)} className="mt-[1.55rem] p-2.5 rounded-[8px] cursor-pointer transition-all hover:bg-red-500/10" style={{ color: "#ef4444" }}>
                   <Trash2 className="w-4 h-4" />
                 </button>
               )}

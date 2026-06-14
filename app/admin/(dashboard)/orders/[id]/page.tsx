@@ -2,6 +2,9 @@
 import { use, useState, useEffect } from "react";
 import Link from "next/link";
 import type { Order } from "@/types/order";
+import ConfirmDialog from "@/app/admin/ConfirmDialog";
+
+const DESTRUCTIVE_STATUSES = ["cancelled", "refunded"];
 
 const STATUSES = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled", "refunded"] as const;
 
@@ -55,6 +58,7 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
   const [carrier, setCarrier] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [confirmStatus, setConfirmStatus] = useState(false);
 
   useEffect(() => {
     fetch(`/api/admin/orders/${id}`)
@@ -71,8 +75,19 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
       .finally(() => setLoading(false));
   }, [id]);
 
-  const save = async () => {
+  const save = () => {
     if (!order) return;
+    // Confirm before applying a destructive status change.
+    if (DESTRUCTIVE_STATUSES.includes(status) && status !== order.status) {
+      setConfirmStatus(true);
+      return;
+    }
+    doSave();
+  };
+
+  const doSave = async () => {
+    if (!order) return;
+    setConfirmStatus(false);
     setSaving(true);
     setSaveMsg(null);
     try {
@@ -344,7 +359,16 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
         </div>
       </div>
 
-
+      <ConfirmDialog
+        open={confirmStatus}
+        destructive
+        title={`Mark as ${status}?`}
+        message={`This will change the order status to "${status}". ${status === "refunded" ? "Make sure the refund has been processed." : "The customer may be notified."}`}
+        confirmLabel={`Yes, ${status}`}
+        loading={saving}
+        onConfirm={doSave}
+        onCancel={() => setConfirmStatus(false)}
+      />
     </div>
   );
 }

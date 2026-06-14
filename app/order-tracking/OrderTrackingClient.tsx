@@ -21,6 +21,22 @@ const STATUS_ICONS: Record<string, string> = {
   delivered: "📦",
 };
 
+// Delivery estimate tied to the chosen shipping method (mirrors lib/commerce options).
+const DELIVERY_ESTIMATES: Record<string, string> = {
+  "pk-standard": "Karachi 1–2 days, other cities 3–5 days",
+  "pk-express": "Karachi same/next day, other cities 2–3 days",
+  "intl-standard": "10–20 business days",
+  "intl-express": "5–7 business days",
+};
+
+// Friendly labels for the raw shipping_method id stored on the order.
+const SHIPPING_METHOD_LABELS: Record<string, string> = {
+  "pk-standard": "Standard Delivery",
+  "pk-express": "Express Delivery",
+  "intl-standard": "International Standard",
+  "intl-express": "International Express",
+};
+
 const STATUS_COLORS: Record<string, string> = {
   pending: "#f59e0b",
   confirmed: "#3b82f6",
@@ -207,7 +223,11 @@ export default function OrderTrackingClient() {
                                 transition: "background .3s",
                               }} />
                             )}
-                            <div style={{
+                            <div
+                              role="img"
+                              aria-label={`${STATUS_LABELS[step]} — ${isActive ? "current step" : isCompleted ? "completed" : "upcoming"}`}
+                              aria-current={isActive ? "step" : undefined}
+                              style={{
                               width: 36, height: 36, borderRadius: 999,
                               background: isCompleted ? "var(--accent)" : "var(--surface-2)",
                               border: `2px solid ${isCompleted ? "var(--accent)" : "var(--line-2)"}`,
@@ -236,7 +256,10 @@ export default function OrderTrackingClient() {
 
                   {order.status === "shipped" && (
                     <div style={{ marginTop: 20, padding: "12px 14px", borderRadius: 10, background: "#06b6d420", border: "1px solid #06b6d440", fontSize: ".82rem", color: "#06b6d4", fontFamily: "var(--font-hanken)" }}>
-                      Your order is on its way to {order.city}. Estimated delivery: 2–5 business days.
+                      Your order is on its way to {order.city}.
+                      {DELIVERY_ESTIMATES[order.shipping_method]
+                        ? ` Estimated delivery: ${DELIVERY_ESTIMATES[order.shipping_method]}.`
+                        : ""}
                     </div>
                   )}
                 </>
@@ -314,7 +337,9 @@ export default function OrderTrackingClient() {
                     </div>
                   )}
                   <div style={{ display: "flex", justifyContent: "space-between", fontSize: ".88rem" }}>
-                    <span style={{ color: "var(--muted)" }}>Shipping ({order.shipping_method})</span>
+                    <span style={{ color: "var(--muted)" }}>
+                      Shipping Method ({SHIPPING_METHOD_LABELS[order.shipping_method] ?? order.shipping_method})
+                    </span>
                     <span>{order.shipping === 0 ? "FREE" : formatPrice(order.shipping)}</span>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, fontSize: "1.05rem", paddingTop: 10, borderTop: "1px solid var(--line)", marginTop: 4 }}>

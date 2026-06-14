@@ -28,7 +28,7 @@ export default function ProductCard({ product }: { product: Product }) {
   return (
     <Link href={`/products/${product.slug}`} className="group block h-full">
       <article
-        className="product-card rounded-[var(--r)] overflow-hidden flex flex-col h-full transition-all duration-300"
+        className="product-card rounded-[var(--r)] overflow-hidden flex flex-col h-full transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl group-hover:shadow-black/30 group-hover:border-[var(--accent)]"
       >
         {/* Thumbnail */}
         <div
@@ -97,7 +97,7 @@ export default function ProductCard({ product }: { product: Product }) {
             <button
               onClick={handleAdd}
               disabled={!product.inStock}
-              className="btn-add-to-cart w-[42px] h-[42px] rounded-[11px] grid place-items-center transition-all duration-200 cursor-pointer disabled:opacity-40"
+              className="btn-add-to-cart w-[42px] h-[42px] rounded-[11px] grid place-items-center transition-all duration-200 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-2)]"
               aria-label={`Add ${product.name} to cart`}
               style={added ? { background: "var(--accent)", color: "#000", border: "1px solid var(--accent)" } : undefined}
             >

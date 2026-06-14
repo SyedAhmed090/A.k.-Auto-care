@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, Eye, EyeOff } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
 export default function RegisterPage() {
@@ -10,9 +10,30 @@ export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [show, setShow] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [needsConfirm, setNeedsConfirm] = useState(false);
+  const [resendState, setResendState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [resendError, setResendError] = useState("");
+
+  const resend = async () => {
+    setResendState("sending");
+    setResendError("");
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.resend({ type: "signup", email });
+      if (error) {
+        setResendError(error.message);
+        setResendState("error");
+        return;
+      }
+      setResendState("sent");
+    } catch {
+      setResendError("Could not resend the email. Please try again.");
+      setResendState("error");
+    }
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,9 +82,22 @@ export default function RegisterPage() {
           <p className="text-sm" style={{ color: "var(--muted)" }}>
             We&apos;ve sent a confirmation link to <strong style={{ color: "var(--text)" }}>{email}</strong>. Click it to activate your account, then sign in.
           </p>
-          <Link href="/account/login" className="inline-block mt-6 px-6 py-3 rounded-[13px] font-semibold" style={{ background: "var(--accent)", color: "#000" }}>
-            Go to Sign In
-          </Link>
+          <p className="text-xs mt-4" style={{ color: "var(--muted)" }}>
+            Didn&apos;t get it? Check your spam folder, or resend below.
+          </p>
+          {resendState === "error" && (
+            <p className="text-xs mt-3" style={{ color: "#ef4444" }}>{resendError}</p>
+          )}
+          <button onClick={resend} disabled={resendState === "sending" || resendState === "sent"}
+            className="inline-block mt-4 px-6 py-3 rounded-[13px] font-semibold cursor-pointer disabled:opacity-60"
+            style={{ background: "transparent", border: "1px solid var(--line-2)", color: "var(--text)" }}>
+            {resendState === "sending" ? "Sending…" : resendState === "sent" ? "Email sent ✓" : "Resend confirmation email"}
+          </button>
+          <div>
+            <Link href="/account/login" className="inline-block mt-6 px-6 py-3 rounded-[13px] font-semibold" style={{ background: "var(--accent)", color: "#000" }}>
+              Go to Sign In
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -81,22 +115,38 @@ export default function RegisterPage() {
 
         <form onSubmit={submit} className="rounded-[20px] p-7 space-y-4" style={{ background: "var(--surface)", border: "1px solid var(--line)" }}>
           <div>
-            <label className="block text-[.72rem] tracking-[.14em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Full Name</label>
+            <label className="block text-[.72rem] tracking-[.14em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+              Full Name <span style={{ color: "var(--accent)" }}>*</span>
+            </label>
             <input type="text" required value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="John Smith"
               className="w-full px-4 py-3 rounded-[11px] text-sm outline-none"
               style={{ background: "var(--bg)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }} />
           </div>
           <div>
-            <label className="block text-[.72rem] tracking-[.14em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Email</label>
+            <label className="block text-[.72rem] tracking-[.14em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+              Email <span style={{ color: "var(--accent)" }}>*</span>
+            </label>
             <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com"
               className="w-full px-4 py-3 rounded-[11px] text-sm outline-none"
               style={{ background: "var(--bg)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }} />
           </div>
           <div>
-            <label className="block text-[.72rem] tracking-[.14em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Password</label>
-            <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 8 characters"
-              className="w-full px-4 py-3 rounded-[11px] text-sm outline-none"
-              style={{ background: "var(--bg)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }} />
+            <label className="block text-[.72rem] tracking-[.14em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+              Password <span style={{ color: "var(--accent)" }}>*</span>
+            </label>
+            <div className="relative">
+              <input type={show ? "text" : "password"} required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 8 characters"
+                className="w-full px-4 py-3 pr-11 rounded-[11px] text-sm outline-none"
+                style={{ background: "var(--bg)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }} />
+              <button type="button" onClick={() => setShow(v => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded cursor-pointer"
+                style={{ color: "var(--muted)" }} tabIndex={-1}>
+                {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+            <p className="text-[.72rem] mt-1.5" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+              At least 8 characters
+            </p>
           </div>
           {error && <p className="text-sm px-4 py-2 rounded-[11px]" style={{ color: "#ef4444", background: "rgba(239,68,68,.08)", border: "1px solid rgba(239,68,68,.2)" }}>{error}</p>}
           <button type="submit" disabled={loading}

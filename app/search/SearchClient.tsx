@@ -1,7 +1,7 @@
 "use client";
 import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Search, X } from "lucide-react";
+import { Search, SearchX, X } from "lucide-react";
 import type { Product } from "@/data/products";
 import ProductCard from "@/components/product/ProductCard";
 import Link from "next/link";
@@ -77,7 +77,10 @@ function SearchResults({ allProducts }: { allProducts: Product[] }) {
         )}
 
         {query && results.length === 0 && (
-          <div className="text-center py-20">
+          <div className="flex flex-col items-center text-center py-20">
+            <div className="w-16 h-16 rounded-full grid place-items-center mb-5" style={{ background: "var(--surface)", border: "1px solid var(--line-2)" }}>
+              <SearchX className="w-7 h-7" style={{ color: "var(--muted)" }} />
+            </div>
             <p className="text-[2rem] uppercase mb-2" style={{ fontFamily: "var(--font-anton)" }}>No results</p>
             <p className="mb-6 text-sm" style={{ color: "var(--muted)" }}>Try different keywords or browse our categories.</p>
             <div className="flex flex-wrap justify-center gap-3">
@@ -108,6 +111,38 @@ function SearchResults({ allProducts }: { allProducts: Product[] }) {
   );
 }
 
+function SearchFallback() {
+  return (
+    <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
+      <div className="pt-14 pb-16" style={{ borderBottom: "1px solid var(--line)" }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-2.5 mb-4 text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+            <span className="w-7 h-[1px]" style={{ background: "var(--accent)" }} />
+            Search
+          </div>
+          <div className="relative w-full max-w-2xl">
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: "var(--muted)" }} />
+            <div
+              className="w-full pl-14 pr-14 py-4 rounded-[14px]"
+              style={{ background: "var(--surface)", border: "1px solid var(--line-2)", height: "60px" }}
+            />
+          </div>
+        </div>
+      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center py-20">
+          <Search className="w-12 h-12 mx-auto mb-4 opacity-20" />
+          <p style={{ color: "var(--muted)" }}>Loading search…</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function SearchClient({ allProducts }: { allProducts: Product[] }) {
-  return <Suspense><SearchResults allProducts={allProducts} /></Suspense>;
+  return (
+    <Suspense fallback={<SearchFallback />}>
+      <SearchResults allProducts={allProducts} />
+    </Suspense>
+  );
 }

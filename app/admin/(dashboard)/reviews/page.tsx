@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import { Star, CheckCircle, Trash2, MessageSquare } from "lucide-react";
+import { Star, CheckCircle, Trash2, MessageSquare, X } from "lucide-react";
+import ConfirmDialog from "@/app/admin/ConfirmDialog";
 
 type Review = {
   id: string;
@@ -52,6 +53,8 @@ export default function AdminReviewsPage() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<Tab>("pending");
   const [actionId, setActionId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
+  const [viewing, setViewing] = useState<Review | null>(null);
 
   const load = useCallback(async (tab: Tab) => {
     setLoading(true);
@@ -84,14 +87,16 @@ export default function AdminReviewsPage() {
     }
   };
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Delete review by "${name}"? This cannot be undone.`)) return;
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    const id = deleteTarget.id;
     setActionId(id);
     try {
       await fetch(`/api/admin/reviews/${id}`, { method: "DELETE" });
       await load(activeTab);
     } finally {
       setActionId(null);
+      setDeleteTarget(null);
     }
   };
 
@@ -212,7 +217,8 @@ export default function AdminReviewsPage() {
               {reviews.map((r) => (
                 <tr
                   key={r.id}
-                  style={{ borderBottom: "1px solid var(--line)" }}
+                  onClick={() => setViewing(r)}
+                  style={{ borderBottom: "1px solid var(--line)", cursor: "pointer" }}
                   className="transition-colors hover:bg-white/[.02]"
                 >
                   <td style={{ padding: "14px 20px" }}>
@@ -307,8 +313,31 @@ export default function AdminReviewsPage() {
                     </span>
                   </td>
                   <td style={{ padding: "14px 20px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", justifyContent: "flex-end" }}>
-                      {!r.approved && (
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", justifyContent: "flex-end" }} onClick={(e) => e.stopPropagation()}>
+                      {r.approved ? (
+                        <span
+                          title="Already approved"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "5px",
+                            padding: "6px 12px",
+                            borderRadius: "8px",
+                            border: "1px solid rgba(34,197,94,.25)",
+                            background: "rgba(34,197,94,.06)",
+                            color: "#22c55e",
+                            opacity: 0.6,
+                            cursor: "not-allowed",
+                            fontSize: ".75rem",
+                            fontFamily: "var(--font-space-mono)",
+                            letterSpacing: ".06em",
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          <CheckCircle style={{ width: "13px", height: "13px" }} />
+                          Approved
+                        </span>
+                      ) : (
                         <button
                           onClick={() => handleApprove(r.id)}
                           disabled={actionId === r.id}
@@ -335,7 +364,7 @@ export default function AdminReviewsPage() {
                         </button>
                       )}
                       <button
-                        onClick={() => handleDelete(r.id, r.user_name)}
+                        onClick={() => setDeleteTarget({ id: r.id, name: r.user_name })}
                         disabled={actionId === r.id}
                         title="Delete"
                         style={{
@@ -363,6 +392,77 @@ export default function AdminReviewsPage() {
           </table>
         </div>
       )}
+
+      {/* Full review modal */}
+      {viewing && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Review details"
+        >
+          <div
+            className="absolute inset-0"
+            style={{ background: "rgba(0,0,0,.6)", backdropFilter: "blur(2px)" }}
+            onClick={() => setViewing(null)}
+          />
+          <div
+            className="relative w-full max-w-lg rounded-[16px] overflow-hidden flex flex-col max-h-[85vh]"
+            style={{ background: "var(--surface)", border: "1px solid var(--line)", boxShadow: "0 24px 60px rgba(0,0,0,.45)" }}
+          >
+            <div className="flex items-start justify-between gap-3 p-5" style={{ borderBottom: "1px solid var(--line)" }}>
+              <div className="min-w-0">
+                <div className="text-[.62rem] uppercase tracking-[.12em]" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+                  {viewing.products?.name ?? viewing.product_id}
+                </div>
+                <h3 className="text-[1.05rem] font-bold mt-1" style={{ fontFamily: "var(--font-anton)" }}>{viewing.title}</h3>
+                <div className="flex items-center gap-2 mt-1.5">
+                  <StarDisplay rating={viewing.rating} />
+                  <span className="text-[.72rem]" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>{viewing.rating}/5</span>
+                </div>
+              </div>
+              <button
+                onClick={() => setViewing(null)}
+                aria-label="Close"
+                className="p-2 rounded-[8px] cursor-pointer transition-colors hover:bg-white/10 flex-shrink-0"
+                style={{ color: "var(--muted)" }}
+              >
+                <X style={{ width: 18, height: 18 }} />
+              </button>
+            </div>
+            <div className="p-5 overflow-y-auto">
+              <p className="text-sm whitespace-pre-wrap leading-relaxed" style={{ fontFamily: "var(--font-hanken)", color: "var(--text)" }}>
+                {viewing.body}
+              </p>
+            </div>
+            <div className="px-5 py-4 flex items-center justify-between gap-3" style={{ borderTop: "1px solid var(--line)" }}>
+              <div className="text-[.72rem]" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+                {viewing.user_name} · {viewing.user_email}
+              </div>
+              {!viewing.approved && (
+                <button
+                  onClick={() => { handleApprove(viewing.id); setViewing(null); }}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-[8px] text-[.75rem] font-semibold uppercase cursor-pointer transition-all"
+                  style={{ border: "1px solid rgba(34,197,94,.3)", background: "rgba(34,197,94,.08)", color: "#22c55e", fontFamily: "var(--font-space-mono)" }}
+                >
+                  <CheckCircle style={{ width: 13, height: 13 }} /> Approve
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        destructive
+        title="Delete Review"
+        message={`Delete review by "${deleteTarget?.name}"? This cannot be undone.`}
+        confirmLabel="Delete"
+        loading={!!deleteTarget && actionId === deleteTarget.id}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

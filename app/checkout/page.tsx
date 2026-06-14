@@ -39,15 +39,62 @@ const inputStyle = (err?: string) => ({
   outline: "none",
 });
 
-const Field = ({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) => (
+const Field = ({ label, error, required, children }: { label: string; error?: string; required?: boolean; children: React.ReactNode }) => (
   <div>
     <label className="block text-[.72rem] tracking-[.14em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
       {label}
+      {required && <span aria-hidden="true" style={{ color: "var(--accent)", marginLeft: "3px" }}>*</span>}
     </label>
     {children}
     {error && <p className="text-xs mt-1" style={{ color: "#ef4444" }}>{error}</p>}
   </div>
 );
+
+const CheckoutSteps = () => {
+  const steps = ["Cart", "Details", "Payment"];
+  const current = 1; // Checkout page = Details/Payment step; "Cart" is complete
+  return (
+    <nav aria-label="Checkout progress" className="mb-8">
+      <ol className="flex items-center gap-2 sm:gap-3">
+        {steps.map((step, i) => {
+          const isComplete = i < current;
+          const isCurrent = i === current;
+          const active = isComplete || isCurrent;
+          return (
+            <li key={step} className="flex items-center gap-2 sm:gap-3">
+              <div className="flex items-center gap-2" aria-current={isCurrent ? "step" : undefined}>
+                <span
+                  className="w-6 h-6 rounded-full grid place-items-center text-[.7rem] font-bold flex-shrink-0"
+                  style={{
+                    background: active ? "var(--accent)" : "var(--surface-2)",
+                    color: active ? "#000" : "var(--muted)",
+                    border: `1px solid ${active ? "var(--accent)" : "var(--line-2)"}`,
+                    fontFamily: "var(--font-space-mono)",
+                  }}
+                >
+                  {i + 1}
+                </span>
+                <span
+                  className="text-[.72rem] tracking-[.12em] uppercase"
+                  style={{
+                    fontFamily: "var(--font-space-mono)",
+                    color: isCurrent ? "var(--text)" : active ? "var(--accent)" : "var(--muted)",
+                    fontWeight: isCurrent ? 700 : 400,
+                  }}
+                >
+                  {step}
+                </span>
+              </div>
+              {i < steps.length - 1 && (
+                <span className="w-5 sm:w-8 h-px flex-shrink-0" style={{ background: i < current ? "var(--accent)" : "var(--line-2)" }} aria-hidden="true" />
+              )}
+            </li>
+          );
+        })}
+      </ol>
+    </nav>
+  );
+};
 
 const SectionCard = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <div className="w-full rounded-[20px] p-6 space-y-5" style={{ background: "var(--surface)", border: "1px solid var(--line)" }}>
@@ -66,6 +113,7 @@ export default function CheckoutPage() {
   const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
   const router = useRouter();
   const submittingRef = useRef(false);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const sub = subtotal();
   const discount = sub * promoDiscount;
@@ -151,6 +199,15 @@ export default function CheckoutPage() {
     }
   };
 
+  // On validation failure, scroll to and focus the first field with an error.
+  const onInvalid = () => {
+    const el = formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]');
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.focus({ preventScroll: true });
+    }
+  };
+
   if (items.length === 0) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center" style={{ background: "var(--bg)" }}>
@@ -169,48 +226,50 @@ export default function CheckoutPage() {
           ← Back to Cart
         </Link>
 
+        <CheckoutSteps />
+
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          <form onSubmit={handleSubmit(onSubmit)} className="lg:col-span-3 space-y-5">
+          <form ref={formRef} onSubmit={handleSubmit(onSubmit, onInvalid)} className="lg:col-span-3 space-y-5">
             <SectionCard title="Contact">
-              <Field label="Email" error={errors.email?.message}>
-                <input {...register("email")} type="email" placeholder="you@example.com" style={inputStyle(errors.email?.message)} />
+              <Field label="Email" error={errors.email?.message} required>
+                <input {...register("email")} type="email" placeholder="you@example.com" aria-invalid={!!errors.email} style={inputStyle(errors.email?.message)} />
               </Field>
-              <Field label="WhatsApp / Phone" error={errors.phone?.message}>
-                <input {...register("phone")} type="tel" placeholder="+92 300 0000000" style={inputStyle(errors.phone?.message)} />
+              <Field label="WhatsApp / Phone" error={errors.phone?.message} required>
+                <input {...register("phone")} type="tel" placeholder="+92 300 0000000" aria-invalid={!!errors.phone} style={inputStyle(errors.phone?.message)} />
               </Field>
             </SectionCard>
 
             <SectionCard title="Shipping Address">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Field label="First Name" error={errors.firstName?.message}>
-                  <input {...register("firstName")} placeholder="John" style={inputStyle(errors.firstName?.message)} />
+                <Field label="First Name" error={errors.firstName?.message} required>
+                  <input {...register("firstName")} placeholder="John" aria-invalid={!!errors.firstName} style={inputStyle(errors.firstName?.message)} />
                 </Field>
-                <Field label="Last Name" error={errors.lastName?.message}>
-                  <input {...register("lastName")} placeholder="Smith" style={inputStyle(errors.lastName?.message)} />
+                <Field label="Last Name" error={errors.lastName?.message} required>
+                  <input {...register("lastName")} placeholder="Smith" aria-invalid={!!errors.lastName} style={inputStyle(errors.lastName?.message)} />
                 </Field>
                 <div className="col-span-1 sm:col-span-2">
-                  <Field label="Address" error={errors.address?.message}>
-                    <input {...register("address")} placeholder="123 Main Street" style={inputStyle(errors.address?.message)} />
+                  <Field label="Address" error={errors.address?.message} required>
+                    <input {...register("address")} placeholder="123 Main Street" aria-invalid={!!errors.address} style={inputStyle(errors.address?.message)} />
                   </Field>
                 </div>
                 <div>
-                  <Field label="City" error={errors.city?.message}>
-                    <input {...register("city")} placeholder="Karachi" style={inputStyle(errors.city?.message)} />
+                  <Field label="City" error={errors.city?.message} required>
+                    <input {...register("city")} placeholder="Karachi" aria-invalid={!!errors.city} style={inputStyle(errors.city?.message)} />
                   </Field>
                 </div>
                 <div>
                   <Field label="Province / State" error={errors.province?.message}>
-                    <input {...register("province")} placeholder="Sindh" style={inputStyle(errors.province?.message)} />
+                    <input {...register("province")} placeholder="Sindh" aria-invalid={!!errors.province} style={inputStyle(errors.province?.message)} />
                   </Field>
                 </div>
                 <div>
-                  <Field label="Postcode" error={errors.postcode?.message}>
-                    <input {...register("postcode")} placeholder="75400" style={inputStyle(errors.postcode?.message)} />
+                  <Field label="Postcode" error={errors.postcode?.message} required>
+                    <input {...register("postcode")} placeholder="75400" aria-invalid={!!errors.postcode} style={inputStyle(errors.postcode?.message)} />
                   </Field>
                 </div>
                 <div className="col-span-1 sm:col-span-2">
-                  <Field label="Country" error={errors.country?.message}>
-                    <select {...register("country")} style={{ ...inputStyle(errors.country?.message), cursor: "pointer" }}>
+                  <Field label="Country" error={errors.country?.message} required>
+                    <select {...register("country")} aria-invalid={!!errors.country} style={{ ...inputStyle(errors.country?.message), cursor: "pointer" }}>
                       <option value="">Select country…</option>
                       <option value="PK">Pakistan</option>
                       <option value="GB">United Kingdom</option>
@@ -308,9 +367,28 @@ export default function CheckoutPage() {
                   })}
               </div>
               {paymentMethod !== "cod" && (
-                <p className="text-[.75rem] px-1 mt-1" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
-                  After placing your order, send your payment screenshot to our WhatsApp (+92 {WHATSAPP_NUMBER.slice(1, 4)} {WHATSAPP_NUMBER.slice(4)}). Your order will be confirmed once payment is verified.
-                </p>
+                <div
+                  className="rounded-[13px] p-4 flex gap-3"
+                  style={{ background: "rgba(79, 168, 230,.08)", border: "1px solid rgba(79, 168, 230,.25)" }}
+                >
+                  <Smartphone className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "var(--accent)" }} />
+                  <div className="space-y-1.5">
+                    <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>
+                      How to complete payment
+                    </p>
+                    <ol className="text-[.82rem] space-y-1 list-decimal pl-4" style={{ color: "var(--muted)", fontFamily: "var(--font-hanken)" }}>
+                      <li>Place your order using the button below.</li>
+                      <li>
+                        Send the payment screenshot to our WhatsApp{" "}
+                        <span className="font-semibold" style={{ color: "var(--accent)", fontFamily: "var(--font-space-mono)" }}>
+                          +92 {WHATSAPP_NUMBER.slice(1, 4)} {WHATSAPP_NUMBER.slice(4)}
+                        </span>
+                        .
+                      </li>
+                      <li>Your order is confirmed once we verify the payment.</li>
+                    </ol>
+                  </div>
+                </div>
               )}
             </SectionCard>
 

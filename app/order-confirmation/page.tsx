@@ -12,6 +12,26 @@ export const metadata: Metadata = {
   robots: "noindex",
 };
 
+// Human-readable status labels (mirrors the order-tracking page)
+const STATUS_LABELS: Record<string, string> = {
+  pending: "Pending",
+  confirmed: "Confirmed",
+  processing: "Processing",
+  shipped: "Shipped",
+  delivered: "Delivered",
+  cancelled: "Cancelled",
+  refunded: "Refunded",
+};
+
+// Delivery estimate tied to the chosen shipping method (mirrors lib/commerce shipping options).
+// No fabricated range — falls back to honest neutral copy when the method is unknown.
+const DELIVERY_ESTIMATES: Record<string, string> = {
+  "pk-standard": "Karachi 1–2 days · other cities 3–5 days",
+  "pk-express": "Karachi same/next day · other cities 2–3 days",
+  "intl-standard": "10–20 business days",
+  "intl-express": "5–7 business days",
+};
+
 async function getOrder(id: string) {
   try {
     const supabase = createAdminClient();
@@ -41,6 +61,12 @@ export default async function OrderConfirmationPage({
         const [local, domain] = order.email.split("@");
         return `${local[0]}***@${domain}`;
       })()
+    : null;
+
+  // Reflect real order data rather than hardcoded values.
+  const statusLabel = order?.status ? STATUS_LABELS[order.status] ?? order.status : null;
+  const deliveryEstimate = order?.shipping_method
+    ? DELIVERY_ESTIMATES[order.shipping_method] ?? null
     : null;
 
   return (
@@ -97,8 +123,8 @@ export default async function OrderConfirmationPage({
               { label: "Order Number", value: displayId, mono: true },
               { label: "Total", value: total },
               ...(redactedEmail ? [{ label: "Email", value: redactedEmail }] : []),
-              { label: "Estimated Delivery", value: "3–5 business days" },
-              { label: "Status", value: "Processing", accent: true },
+              ...(deliveryEstimate ? [{ label: "Estimated Delivery", value: deliveryEstimate }] : []),
+              { label: "Status", value: statusLabel ?? "Order received", accent: true },
             ])().map((row) => (
               <div key={row.label} className="flex items-center justify-between py-3" style={{ borderBottom: "1px solid var(--line)" }}>
                 <span style={{ color: "var(--muted)" }}>{row.label}</span>
@@ -139,6 +165,10 @@ export default async function OrderConfirmationPage({
               ))}
             </div>
           )}
+
+          <p className="text-[.82rem] mt-5 pt-4" style={{ color: "var(--muted)", borderTop: "1px solid var(--line)" }}>
+            A confirmation email is on its way{redactedEmail ? ` to ${redactedEmail}` : ""}.
+          </p>
         </div>
         )}
 

@@ -122,7 +122,7 @@ export default function MiniCart() {
                         <button
                           onClick={() => removeItem(item.product.id, item.variant.sku)}
                           aria-label={`Remove ${item.product.name} from cart`}
-                          className="flex items-center justify-center w-6 h-6 rounded cursor-pointer hover-danger"
+                          className="flex items-center justify-center w-6 h-6 rounded cursor-pointer hover-danger transition-colors hover:bg-[rgba(239,68,68,0.12)]"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { X } from "lucide-react";
 
 export default function CookieConsent() {
   const [visible, setVisible] = useState(false);
@@ -14,6 +15,9 @@ export default function CookieConsent() {
     setVisible(false);
   };
 
+  // Dismiss without choosing ("decide later") — hide for the session only, don't persist.
+  const dismiss = () => setVisible(false);
+
   if (!visible) return null;
 
   return (
@@ -21,7 +25,15 @@ export default function CookieConsent() {
       className="fixed bottom-0 left-0 right-0 z-[100] px-4 py-4 sm:py-5"
       style={{ background: "var(--surface)", borderTop: "1px solid var(--line)" }}
     >
-      <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-4">
+      <button
+        onClick={dismiss}
+        aria-label="Dismiss — decide later"
+        className="absolute top-2 right-2 sm:top-3 sm:right-3 w-8 h-8 grid place-items-center rounded-lg transition-colors hover:bg-white/5 cursor-pointer"
+        style={{ color: "var(--muted)" }}
+      >
+        <X className="w-4 h-4" />
+      </button>
+      <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-4 pr-8 sm:pr-10">
         <p className="text-sm flex-1" style={{ color: "var(--muted)", fontFamily: "var(--font-hanken)" }}>
           We use essential cookies for cart functionality and optional analytics cookies to improve your
           experience.{" "}

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import { Users, X, Search } from "lucide-react";
+import Link from "next/link";
+import { Users, X, Search, Loader2 } from "lucide-react";
 
 type Customer = {
   email: string;
@@ -233,7 +234,9 @@ export default function CustomersPage() {
                 Recent Orders
               </h3>
               {drawerLoading ? (
-                <p className="text-sm" style={{ color: "var(--muted)" }}>Loading orders…</p>
+                <p className="text-sm flex items-center gap-2" style={{ color: "var(--muted)" }}>
+                  <Loader2 className="w-4 h-4 animate-spin" /> Loading orders…
+                </p>
               ) : drawerOrders.length === 0 ? (
                 <p className="text-sm" style={{ color: "var(--muted)" }}>No orders found.</p>
               ) : (
@@ -241,9 +244,10 @@ export default function CustomersPage() {
                   {drawerOrders.map((o) => {
                     const sc = statusStyle(o.status);
                     return (
-                      <div
+                      <Link
                         key={o.id}
-                        className="flex items-center justify-between px-4 py-3 rounded-[10px]"
+                        href={`/admin/orders/${o.id}`}
+                        className="flex items-center justify-between px-4 py-3 rounded-[10px] transition-colors hover:bg-white/[.04] cursor-pointer"
                         style={{ background: "var(--surface)", border: "1px solid var(--line)" }}
                       >
                         <div>
@@ -265,7 +269,7 @@ export default function CustomersPage() {
                             {o.status}
                           </span>
                         </div>
-                      </div>
+                      </Link>
                     );
                   })}
                 </div>

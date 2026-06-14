@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { LogOut } from "lucide-react";
+import { LogOut, CheckCircle } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
 interface ProfileData {
@@ -49,7 +49,7 @@ export default function AccountClient({
         return;
       }
       setState("saved");
-      setTimeout(() => setState("idle"), 2500);
+      setTimeout(() => setState("idle"), 5000);
     } catch {
       setError("Could not save. Please try again.");
       setState("error");
@@ -77,8 +77,8 @@ export default function AccountClient({
 
       <div className="space-y-3">
         <div>
-          <label className={lbl} style={lblStyle}>Full Name</label>
-          <input className={field} style={fieldStyle} value={profile.full_name} onChange={(e) => update("full_name", e.target.value)} />
+          <label className={lbl} style={lblStyle}>Full Name <span style={{ color: "var(--accent)" }}>*</span></label>
+          <input className={field} style={fieldStyle} required value={profile.full_name} onChange={(e) => update("full_name", e.target.value)} />
         </div>
         <div>
           <label className={lbl} style={lblStyle}>Phone</label>
@@ -109,6 +109,14 @@ export default function AccountClient({
       </div>
 
       {state === "error" && <p className="text-xs mt-3" style={{ color: "#ef4444" }}>{error}</p>}
+
+      {state === "saved" && (
+        <div className="mt-4 flex items-center gap-2 px-4 py-3 rounded-[11px] text-sm"
+          style={{ color: "#4ade80", background: "rgba(74,222,128,.08)", border: "1px solid rgba(74,222,128,.22)" }}>
+          <CheckCircle className="w-4 h-4 shrink-0" />
+          Your details have been saved.
+        </div>
+      )}
 
       <button onClick={save} disabled={state === "saving"}
         className="w-full mt-5 py-3 rounded-[12px] font-semibold cursor-pointer disabled:opacity-60"

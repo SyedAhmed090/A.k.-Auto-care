@@ -1,6 +1,8 @@
 "use client";
 import { useState, useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { PackageX, X } from "lucide-react";
 import type { Category } from "@/data/categories";
 import type { Product } from "@/data/products";
 import { filterAndSort } from "@/lib/commerce";
@@ -22,6 +24,9 @@ export default function CategoryPageClient({ category, products }: { category: C
     () => filterAndSort([...products], { priceMax, inStockOnly, sort }),
     [products, priceMax, inStockOnly, sort]
   );
+
+  const activeFilterCount = (inStockOnly ? 1 : 0) + (priceMax < 100000 ? 1 : 0);
+  const clearFilters = () => { setInStockOnly(false); setPriceMax(100000); };
 
   return (
     <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
@@ -58,6 +63,15 @@ export default function CategoryPageClient({ category, products }: { category: C
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 text-xs mb-8" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
+          <Link href="/" className="hover:text-[var(--text)] transition-colors">Home</Link>
+          <span>/</span>
+          <Link href="/shop" className="hover:text-[var(--text)] transition-colors">Shop</Link>
+          <span>/</span>
+          <span style={{ color: "var(--text)" }} className="truncate max-w-[200px]">{category.name}</span>
+        </div>
+
         {/* Toolbar */}
         <div className="flex items-center justify-between mb-8 flex-wrap gap-y-3 gap-x-4">
           <p className="text-sm" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
@@ -102,8 +116,33 @@ export default function CategoryPageClient({ category, products }: { category: C
         </div>
 
         {filtered.length === 0 ? (
-          <div className="text-center py-24">
-            <p className="text-lg" style={{ color: "var(--muted)" }}>No products match your filters.</p>
+          <div className="flex flex-col items-center justify-center text-center py-24">
+            <div className="w-16 h-16 rounded-full grid place-items-center mb-5" style={{ background: "var(--surface)", border: "1px solid var(--line-2)" }}>
+              <PackageX className="w-7 h-7" style={{ color: "var(--muted)" }} />
+            </div>
+            <p className="text-lg font-medium mb-2" style={{ color: "var(--text)" }}>No products match your filters.</p>
+            <p className="text-sm mb-6" style={{ color: "var(--muted)" }}>
+              {activeFilterCount > 0
+                ? "Try widening your price range or turning off “In Stock.”"
+                : "Check back soon — new products are added regularly."}
+            </p>
+            {activeFilterCount > 0 ? (
+              <button
+                onClick={clearFilters}
+                className="inline-flex items-center gap-1.5 px-6 py-3 rounded-[13px] font-semibold transition-all cursor-pointer hover:-translate-y-0.5"
+                style={{ background: "var(--accent)", color: "#000" }}
+              >
+                <X className="w-4 h-4" /> Clear filters
+              </button>
+            ) : (
+              <Link
+                href="/shop"
+                className="inline-flex items-center px-6 py-3 rounded-[13px] font-semibold transition-all hover:-translate-y-0.5"
+                style={{ background: "var(--accent)", color: "#000" }}
+              >
+                Browse all products
+              </Link>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">

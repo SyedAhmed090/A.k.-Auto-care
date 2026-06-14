@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { X, Check, Copy } from "lucide-react";
 
@@ -14,6 +14,8 @@ export default function FirstPurchasePopup() {
   const [state, setState] = useState<"idle" | "submitting" | "done" | "error">("idle");
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const hidden = pathname?.startsWith("/admin") || pathname?.startsWith("/checkout");
 
@@ -29,6 +31,32 @@ export default function FirstPurchasePopup() {
     setOpen(false);
     try { localStorage.setItem(STORAGE_KEY, "1"); } catch { /* ignore */ }
   };
+
+  // Scroll-lock, Escape-to-close, and initial focus while the popup is open.
+  useEffect(() => {
+    if (!open || hidden) return;
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        dismiss();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+
+    // Focus the email input on the offer step, else the close button.
+    const focusTarget = inputRef.current ?? closeRef.current;
+    focusTarget?.focus();
+
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, hidden, state]);
 
   const submit = async () => {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -82,9 +110,10 @@ export default function FirstPurchasePopup() {
         onClick={(e) => e.stopPropagation()}
       >
         <button
+          ref={closeRef}
           onClick={dismiss}
           aria-label="Close"
-          className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full grid place-items-center cursor-pointer"
+          className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full grid place-items-center cursor-pointer outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
           style={{ background: "rgba(255,255,255,.04)", border: "1px solid var(--line-2)", color: "var(--text)" }}
         >
           <X className="w-4 h-4" />
@@ -104,12 +133,12 @@ export default function FirstPurchasePopup() {
               </p>
               <button
                 onClick={copyCode}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-[12px] font-bold tracking-[.18em] cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-[12px] font-bold tracking-[.18em] cursor-pointer outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
                 style={{ background: "rgba(79, 168, 230,.1)", border: "1px dashed var(--accent)", color: "var(--accent)", fontFamily: "var(--font-space-mono)" }}
               >
                 {PROMO_CODE} {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
               </button>
-              <button onClick={dismiss} className="mt-5 text-sm cursor-pointer" style={{ color: "var(--muted)" }}>
+              <button onClick={dismiss} className="mt-5 text-sm cursor-pointer rounded outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]" style={{ color: "var(--muted)" }}>
                 Continue shopping
               </button>
             </>
@@ -125,24 +154,25 @@ export default function FirstPurchasePopup() {
                 Join our list for detailing tips, drops &amp; deals — and an instant discount code.
               </p>
               <input
+                ref={inputRef}
                 type="email"
                 value={email}
-                onChange={(e) => { setEmail(e.target.value); if (state === "error") setState("idle"); }}
+                onChange={(e) => { setEmail(e.target.value); if (state === "error") { setState("idle"); setError(""); } }}
                 onKeyDown={(e) => e.key === "Enter" && submit()}
                 placeholder="your@email.com"
-                className="w-full px-4 py-3 rounded-[12px] text-sm outline-none mb-3"
+                className="w-full px-4 py-3 rounded-[12px] text-sm outline-none mb-3 transition-all focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
                 style={{ background: "var(--bg)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }}
               />
               {state === "error" && <p className="text-xs mb-3" style={{ color: "#ef4444" }}>{error}</p>}
               <button
                 onClick={submit}
                 disabled={state === "submitting"}
-                className="w-full py-3.5 rounded-[12px] font-semibold cursor-pointer disabled:opacity-60"
+                className="w-full py-3.5 rounded-[12px] font-semibold cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface)]"
                 style={{ background: "var(--accent)", color: "#000" }}
               >
                 {state === "submitting" ? "…" : "Reveal My Code"}
               </button>
-              <button onClick={dismiss} className="mt-4 text-xs cursor-pointer" style={{ color: "var(--muted)" }}>
+              <button onClick={dismiss} className="mt-4 text-xs cursor-pointer rounded outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]" style={{ color: "var(--muted)" }}>
                 No thanks, I&apos;ll pay full price
               </button>
             </>

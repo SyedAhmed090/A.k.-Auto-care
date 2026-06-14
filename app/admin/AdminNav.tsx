@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, ShoppingBag, Tag, Package, Star, Boxes, Users, LogOut } from "lucide-react";
+import { useState, useEffect } from "react";
+import { LayoutDashboard, ShoppingBag, Tag, Package, Star, Boxes, Users, LogOut, Menu, X } from "lucide-react";
 
 const NAV = [
   { href: "/admin",             label: "Dashboard", icon: LayoutDashboard, exact: true  },
@@ -15,20 +16,43 @@ const NAV = [
 
 export default function AdminNav() {
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+
+  // Close the drawer whenever the route changes (mobile navigation).
+  useEffect(() => { setOpen(false); }, [pathname]);
+
+  // Lock body scroll while the mobile drawer is open.
+  useEffect(() => {
+    if (open) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => { document.body.style.overflow = prev; };
+    }
+  }, [open]);
 
   const logout = async () => {
     await fetch("/api/admin/logout", { method: "POST" });
     window.location.assign("/admin/login");
   };
 
-  return (
-    <aside className="w-56 flex-shrink-0 flex flex-col border-r" style={{ background: "var(--surface)", borderColor: "var(--line)" }}>
-      <div className="px-5 py-6 border-b" style={{ borderColor: "var(--line)" }}>
-        <p className="text-[.65rem] tracking-[.18em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>A.K. Auto Care</p>
-        <p className="text-[1.1rem] font-bold uppercase mt-0.5" style={{ fontFamily: "var(--font-anton)" }}>Admin</p>
+  const sidebar = (
+    <>
+      <div className="px-5 py-6 border-b flex items-center justify-between" style={{ borderColor: "var(--line)" }}>
+        <div>
+          <p className="text-[.65rem] tracking-[.18em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>A.K. Auto Care</p>
+          <p className="text-[1.1rem] font-bold uppercase mt-0.5" style={{ fontFamily: "var(--font-anton)" }}>Admin</p>
+        </div>
+        <button
+          onClick={() => setOpen(false)}
+          aria-label="Close menu"
+          className="lg:hidden p-2 -mr-2 rounded-[8px] cursor-pointer transition-all hover:bg-white/10"
+          style={{ color: "var(--muted)" }}
+        >
+          <X className="w-5 h-5" />
+        </button>
       </div>
 
-      <nav className="flex-1 px-3 py-4 space-y-1">
+      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         {NAV.map(({ href, label, icon: Icon, exact }) => {
           const active = exact ? pathname === href : pathname.startsWith(href);
           return (
@@ -50,6 +74,49 @@ export default function AdminNav() {
           Log Out
         </button>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Mobile top bar (< lg) */}
+      <div className="lg:hidden sticky top-0 z-40 flex items-center gap-3 px-4 py-3 border-b"
+        style={{ background: "var(--surface)", borderColor: "var(--line)" }}>
+        <button
+          onClick={() => setOpen(true)}
+          aria-label="Open menu"
+          aria-expanded={open}
+          className="p-2 -ml-2 rounded-[8px] cursor-pointer transition-all hover:bg-white/10"
+          style={{ color: "var(--text)" }}
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+        <p className="text-[1rem] font-bold uppercase" style={{ fontFamily: "var(--font-anton)" }}>Admin</p>
+      </div>
+
+      {/* Desktop fixed sidebar (>= lg) */}
+      <aside className="hidden lg:flex w-56 flex-shrink-0 flex-col border-r" style={{ background: "var(--surface)", borderColor: "var(--line)" }}>
+        {sidebar}
+      </aside>
+
+      {/* Mobile off-canvas drawer (< lg) */}
+      <div className={`lg:hidden fixed inset-0 z-50 ${open ? "" : "pointer-events-none"}`} aria-hidden={!open}>
+        <div
+          className="absolute inset-0 transition-opacity duration-300"
+          style={{ background: "rgba(0,0,0,.6)", opacity: open ? 1 : 0 }}
+          onClick={() => setOpen(false)}
+        />
+        <aside
+          className="absolute inset-y-0 left-0 w-64 max-w-[80%] flex flex-col border-r transition-transform duration-300"
+          style={{
+            background: "var(--surface)",
+            borderColor: "var(--line)",
+            transform: open ? "translateX(0)" : "translateX(-100%)",
+          }}
+        >
+          {sidebar}
+        </aside>
+      </div>
+    </>
   );
 }

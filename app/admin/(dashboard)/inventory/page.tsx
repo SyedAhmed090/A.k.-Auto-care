@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import { Package } from "lucide-react";
+import { Package, CheckCircle } from "lucide-react";
 
 type Variant = { id: string; sku: string; label: string; price: number };
 type Product = {
@@ -51,6 +51,13 @@ export default function InventoryPage() {
 
   useEffect(() => { load(); }, [load]);
 
+  // Auto-dismiss the saved confirmation.
+  useEffect(() => {
+    if (!saved) return;
+    const t = setTimeout(() => setSaved(false), 3000);
+    return () => clearTimeout(t);
+  }, [saved]);
+
   const markDirty = (id: string, patch: Partial<RowState>) => {
     setRows((prev) => ({ ...prev, [id]: { ...prev[id], ...patch } }));
     setDirty((prev) => new Set(prev).add(id));
@@ -79,9 +86,9 @@ export default function InventoryPage() {
         </div>
         <div className="flex items-center gap-3">
           {saved && (
-            <span className="text-xs font-semibold px-3 py-1.5 rounded-[8px]"
-              style={{ background: "rgba(34,197,94,.12)", color: "#22c55e", fontFamily: "var(--font-space-mono)" }}>
-              Saved
+            <span className="flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-[10px] uppercase tracking-[.06em]"
+              style={{ background: "rgba(34,197,94,.18)", color: "#22c55e", border: "1px solid rgba(34,197,94,.4)", fontFamily: "var(--font-space-mono)" }}>
+              <CheckCircle className="w-4 h-4" /> Saved
             </span>
           )}
           <button
@@ -122,11 +129,23 @@ export default function InventoryPage() {
                 return (
                   <tr
                     key={p.id}
-                    style={{ borderBottom: "1px solid var(--line)", background: isDirty ? "rgba(79, 168, 230,.04)" : undefined }}
-                    className="transition-colors hover:bg-white/[.02]"
+                    style={{
+                      borderBottom: "1px solid var(--line)",
+                      background: isDirty ? "rgba(79, 168, 230,.12)" : undefined,
+                      boxShadow: isDirty ? "inset 3px 0 0 0 var(--accent)" : undefined,
+                    }}
+                    className={isDirty ? "" : "transition-colors hover:bg-white/[.02]"}
                   >
                     <td className="px-5 py-4">
-                      <div className="font-semibold" style={{ color: "var(--text)" }}>{p.name}</div>
+                      <div className="font-semibold flex items-center gap-2" style={{ color: "var(--text)" }}>
+                        {p.name}
+                        {isDirty && (
+                          <span className="text-[.55rem] font-bold px-1.5 py-0.5 rounded-[4px] uppercase tracking-[.08em]"
+                            style={{ background: "rgba(79, 168, 230,.18)", color: "var(--accent)", fontFamily: "var(--font-space-mono)" }}>
+                            Unsaved
+                          </span>
+                        )}
+                      </div>
                       <div className="text-xs mt-0.5" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>/{p.slug}</div>
                     </td>
                     <td className="px-5 py-4 text-xs uppercase" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)", letterSpacing: ".08em" }}>

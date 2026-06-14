@@ -284,11 +284,22 @@ function CartPageInner() {
                       />
                       <button
                         onClick={handlePromo}
-                        disabled={promoLoading}
-                        className="flex-shrink-0 px-4 py-2.5 rounded-[11px] text-sm font-bold cursor-pointer transition-all disabled:opacity-50 hover:bg-[var(--surface-2)]"
+                        disabled={promoLoading || !promoInput.trim()}
+                        aria-busy={promoLoading}
+                        className="flex-shrink-0 px-4 py-2.5 rounded-[11px] text-sm font-bold cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--surface-2)]"
                         style={{ background: "var(--surface-2)", color: "var(--text)", border: "1px solid var(--line-2)" }}
                       >
-                        {promoLoading ? "…" : "Apply"}
+                        {promoLoading ? (
+                          <span className="flex items-center gap-1.5">
+                            <svg className="animate-spin w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" className="opacity-25" />
+                              <path d="M4 12a8 8 0 018-8" stroke="currentColor" strokeWidth="4" className="opacity-75" />
+                            </svg>
+                            Applying
+                          </span>
+                        ) : (
+                          "Apply"
+                        )}
                       </button>
                     </div>
                     {promoMsg && (

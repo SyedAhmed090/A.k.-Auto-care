@@ -32,7 +32,10 @@ export default function WishlistClient() {
             <div className="w-16 h-16 rounded-full grid place-items-center mb-5" style={{ background: "var(--surface)", border: "1px solid var(--line-2)" }}>
               <Heart className="w-7 h-7" style={{ color: "var(--muted)" }} />
             </div>
-            <h2 className="text-2xl font-black mb-2" style={{ fontFamily: "var(--font-anton)", color: "var(--text)" }}>
+            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: "var(--accent)", fontFamily: "var(--font-space-mono)" }}>
+              Nothing Saved Yet
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-black mb-2" style={{ fontFamily: "var(--font-anton)", color: "var(--text)" }}>
               Your wishlist is empty
             </h2>
             <p className="text-sm mb-6" style={{ color: "var(--muted)" }}>
@@ -45,15 +48,17 @@ export default function WishlistClient() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {items.map((item) => (
-              <div key={item.id} className="relative group rounded-[var(--r)] overflow-hidden flex flex-col h-full product-card">
+              <div key={item.id} className="relative group rounded-[var(--r)] overflow-hidden flex flex-col h-full product-card transition-all duration-300 hover:-translate-y-1">
                 <button
                   type="button"
                   onClick={() => remove(item.id)}
                   aria-label={`Remove ${item.name} from wishlist`}
-                  className="absolute top-3.5 right-3.5 z-20 w-9 h-9 rounded-full grid place-items-center transition-all hover:scale-110 cursor-pointer backdrop-blur-md"
-                  style={{ background: "rgba(10, 11, 13,.55)", border: "1px solid var(--line-2)" }}
+                  className="absolute top-3.5 right-3.5 z-20 w-9 h-9 rounded-full grid place-items-center transition-all hover:scale-110 cursor-pointer backdrop-blur-md hover:border-[var(--accent)]"
+                  style={{ background: "var(--surface)", border: "1px solid var(--line-2)", color: "var(--text)" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "var(--accent)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text)")}
                 >
-                  <X className="w-[17px] h-[17px]" style={{ color: "#fff" }} />
+                  <X className="w-[17px] h-[17px]" />
                 </button>
                 <Link href={`/products/${item.slug}`} className="block">
                   <div className="relative w-full overflow-hidden" style={{ aspectRatio: "4/3", background: "radial-gradient(70% 70% at 50% 40%,#16191f,#0a0b0d)" }}>

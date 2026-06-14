@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Plus, Trash2, ToggleLeft, ToggleRight } from "lucide-react";
+import ConfirmDialog from "@/app/admin/ConfirmDialog";
 
 type Promo = {
   id: string; code: string; discount: number; min_spend: number;
@@ -17,6 +18,9 @@ export default function PromosPage() {
   const [saving, setSaving]   = useState(false);
   const [error, setError]     = useState("");
   const [form, setForm]       = useState({ code: "", discount: "", minSpend: "", maxUses: "", expiresAt: "" });
+  const [fieldErrors, setFieldErrors] = useState<{ code?: string; discount?: string }>({});
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const load = async () => {
     const r = await fetch("/api/admin/promos");
@@ -29,8 +33,21 @@ export default function PromosPage() {
 
   const create = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSaving(true);
     setError("");
+
+    // Inline field validation
+    const errs: { code?: string; discount?: string } = {};
+    if (!form.code.trim()) errs.code = "Code is required.";
+    const disc = parseFloat(form.discount);
+    if (form.discount === "" || isNaN(disc)) {
+      errs.discount = "Discount is required.";
+    } else if (disc <= 0 || disc > 100) {
+      errs.discount = "Enter a value between 1 and 100.";
+    }
+    setFieldErrors(errs);
+    if (Object.keys(errs).length) return;
+
+    setSaving(true);
     const r = await fetch("/api/admin/promos", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -44,6 +61,7 @@ export default function PromosPage() {
     });
     if (r.ok) {
       setForm({ code: "", discount: "", minSpend: "", maxUses: "", expiresAt: "" });
+      setFieldErrors({});
       load();
     } else {
       const d = await r.json();
@@ -61,9 +79,12 @@ export default function PromosPage() {
     load();
   };
 
-  const del = async (id: string) => {
-    if (!confirm("Delete this promo code?")) return;
-    await fetch(`/api/admin/promos/${id}`, { method: "DELETE" });
+  const confirmDelete = async () => {
+    if (!deleteId) return;
+    setDeleting(true);
+    await fetch(`/api/admin/promos/${deleteId}`, { method: "DELETE" });
+    setDeleting(false);
+    setDeleteId(null);
     load();
   };
 
@@ -76,32 +97,44 @@ export default function PromosPage() {
         <h2 className="text-sm font-semibold uppercase mb-4 pb-3 border-b" style={{ fontFamily: "var(--font-space-mono)", borderColor: "var(--line)" }}>
           Create New Code
         </h2>
-        <form onSubmit={create} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 items-end">
-          {[
-            { label: "Code *",        key: "code",      type: "text",   placeholder: "SAVE10",     transform: (v: string) => v.toUpperCase() },
-            { label: "Discount % *",  key: "discount",  type: "number", placeholder: "10" },
-            { label: "Min Spend (Rs)",key: "minSpend",  type: "number", placeholder: "0" },
-            { label: "Max Uses",      key: "maxUses",   type: "number", placeholder: "Unlimited" },
-            { label: "Expires",       key: "expiresAt", type: "date",   placeholder: "" },
-          ].map(({ label, key, type, placeholder, transform }) => (
-            <div key={key}>
-              <label className="block text-[.62rem] tracking-[.1em] uppercase mb-1.5"
-                style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>{label}</label>
-              <input
-                required={label.includes("*")}
-                type={type}
-                min={type === "number" ? "0" : undefined}
-                max={key === "discount" ? "100" : undefined}
-                value={form[key as keyof typeof form]}
-                onChange={e => setForm(f => ({ ...f, [key]: transform ? transform(e.target.value) : e.target.value }))}
-                className={inputCls}
-                style={inputSty}
-                placeholder={placeholder}
-              />
-            </div>
-          ))}
+        <form onSubmit={create} noValidate className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 items-start">
+          {([
+            { label: "Code",        key: "code",      type: "text",   placeholder: "SAVE10",     required: true,  transform: (v: string) => v.toUpperCase() },
+            { label: "Discount %",  key: "discount",  type: "number", placeholder: "e.g. 10 for 10% off", required: true,  help: "e.g. 10 for 10% off (1–100)" },
+            { label: "Min Spend (Rs)",key: "minSpend",type: "number", placeholder: "0",          required: false },
+            { label: "Max Uses",    key: "maxUses",   type: "number", placeholder: "Unlimited",  required: false },
+            { label: "Expires",     key: "expiresAt", type: "date",   placeholder: "",           required: false },
+          ] as { label: string; key: string; type: string; placeholder: string; required: boolean; transform?: (v: string) => string; help?: string }[]).map(({ label, key, type, placeholder, required, transform, help }) => {
+            const err = fieldErrors[key as keyof typeof fieldErrors];
+            return (
+              <div key={key}>
+                <label className="block text-[.62rem] tracking-[.1em] uppercase mb-1.5"
+                  style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+                  {label}{required && <span style={{ color: "#ef4444" }}> *</span>}
+                </label>
+                <input
+                  type={type}
+                  min={type === "number" ? "0" : undefined}
+                  max={key === "discount" ? "100" : undefined}
+                  value={form[key as keyof typeof form]}
+                  onChange={e => {
+                    const v = transform ? transform(e.target.value) : e.target.value;
+                    setForm(f => ({ ...f, [key]: v }));
+                    if (err) setFieldErrors(fe => ({ ...fe, [key]: undefined }));
+                  }}
+                  className={inputCls}
+                  style={{ ...inputSty, borderColor: err ? "#ef4444" : "var(--line-2)" }}
+                  placeholder={placeholder}
+                  aria-invalid={!!err}
+                />
+                {err
+                  ? <p className="mt-1 text-[.62rem]" style={{ color: "#ef4444", fontFamily: "var(--font-space-mono)" }}>{err}</p>
+                  : help && <p className="mt-1 text-[.6rem]" style={{ color: "var(--muted-2)", fontFamily: "var(--font-space-mono)" }}>{help}</p>}
+              </div>
+            );
+          })}
           <button type="submit" disabled={saving}
-            className="flex items-center justify-center gap-2 py-2 rounded-[10px] text-sm font-semibold btn-accent cursor-pointer disabled:opacity-50">
+            className="flex items-center justify-center gap-2 py-2 rounded-[10px] text-sm font-semibold btn-accent cursor-pointer disabled:opacity-50 self-start mt-[1.7rem]">
             <Plus className="w-4 h-4" />{saving ? "Creating…" : "Create"}
           </button>
         </form>
@@ -151,7 +184,7 @@ export default function PromosPage() {
                           style={{ color: p.active ? "#4ade80" : "var(--muted)" }}>
                           {p.active ? <ToggleRight className="w-5 h-5" /> : <ToggleLeft className="w-5 h-5" />}
                         </button>
-                        <button onClick={() => del(p.id)} className="cursor-pointer transition-opacity hover:opacity-70" style={{ color: "#ef4444" }}>
+                        <button onClick={() => setDeleteId(p.id)} className="cursor-pointer transition-opacity hover:opacity-70" style={{ color: "#ef4444" }}>
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
@@ -163,6 +196,17 @@ export default function PromosPage() {
           </div>
         )}
       </div>
+
+      <ConfirmDialog
+        open={!!deleteId}
+        destructive
+        title="Delete Promo Code"
+        message="Delete this promo code? This cannot be undone."
+        confirmLabel="Delete"
+        loading={deleting}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteId(null)}
+      />
     </div>
   );
 }

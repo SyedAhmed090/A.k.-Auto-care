@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Plus, Edit, Trash2, Package } from "lucide-react";
+import ConfirmDialog from "@/app/admin/ConfirmDialog";
 
 type Variant = { id: string; label: string; price: number; sku: string };
 type Product = {
@@ -15,6 +16,7 @@ export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmTarget, setConfirmTarget] = useState<{ id: string; name: string } | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -26,11 +28,13 @@ export default function AdminProductsPage() {
 
   useEffect(() => { load(); }, []);
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
+  const confirmDelete = async () => {
+    if (!confirmTarget) return;
+    const id = confirmTarget.id;
     setDeletingId(id);
     await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
     setDeletingId(null);
+    setConfirmTarget(null);
     await load();
   };
 
@@ -127,7 +131,7 @@ export default function AdminProductsPage() {
                         <Edit className="w-4 h-4" />
                       </Link>
                       <button
-                        onClick={() => handleDelete(p.id, p.name)}
+                        onClick={() => setConfirmTarget({ id: p.id, name: p.name })}
                         disabled={deletingId === p.id}
                         className="p-2 rounded-[8px] transition-all hover:bg-red-500/10 cursor-pointer disabled:opacity-40"
                         style={{ color: "#ef4444" }}
@@ -142,6 +146,17 @@ export default function AdminProductsPage() {
           </table>
         </div>
       )}
+
+      <ConfirmDialog
+        open={!!confirmTarget}
+        destructive
+        title="Delete Product"
+        message={`Delete "${confirmTarget?.name}"? This cannot be undone.`}
+        confirmLabel="Delete"
+        loading={!!deletingId}
+        onConfirm={confirmDelete}
+        onCancel={() => setConfirmTarget(null)}
+      />
     </div>
   );
 }

@@ -11,7 +11,8 @@ export default function QuantityStepper({
       <button
         onClick={() => onChange(Math.max(min, value - 1))}
         disabled={value <= min}
-        className="w-8 h-8 flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer disabled:opacity-40 hover:bg-white/5"
+        aria-label="Decrease quantity"
+        className="w-8 h-8 flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed hover:bg-white/5 outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent)]"
         style={{ color: "var(--muted)" }}
       >
         <Minus className="w-3 h-3" />
@@ -22,7 +23,8 @@ export default function QuantityStepper({
       <button
         onClick={() => onChange(Math.min(max, value + 1))}
         disabled={value >= max}
-        className="w-8 h-8 flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer disabled:opacity-40 hover:bg-white/5"
+        aria-label="Increase quantity"
+        className="w-8 h-8 flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed hover:bg-white/5 outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent)]"
         style={{ color: "var(--muted)" }}
       >
         <Plus className="w-3 h-3" />

@@ -18,7 +18,7 @@ function renderInline(text: string, keyBase: string): React.ReactNode[] {
     else if (m[5] !== undefined && m[6] !== undefined) {
       const external = /^https?:\/\//.test(m[6]);
       nodes.push(
-        <a key={`${keyBase}-${i}`} href={m[6]} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="underline transition-colors hover:text-[var(--accent)]" style={{ color: "var(--accent)" }}>
+        <a key={`${keyBase}-${i}`} href={m[6]} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="underline underline-offset-2 transition-all hover:brightness-125 hover:decoration-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:rounded-sm" style={{ color: "var(--accent)" }}>
           {m[5]}
         </a>
       );
@@ -39,9 +39,9 @@ export default function Markdown({ content }: { content: string }) {
     const line = lines[i].trim();
 
     if (line.startsWith("## ")) {
-      elements.push(<h2 key={i} className="text-2xl font-black mt-10 mb-3" style={{ color: "var(--text)", fontFamily: "var(--font-anton)" }}>{line.slice(3)}</h2>);
+      elements.push(<h2 key={i} className="text-xl sm:text-2xl font-black mt-8 sm:mt-10 mb-3" style={{ color: "var(--text)", fontFamily: "var(--font-anton)" }}>{line.slice(3)}</h2>);
     } else if (line.startsWith("### ")) {
-      elements.push(<h3 key={i} className="text-lg font-bold mt-6 mb-2" style={{ color: "var(--text)" }}>{line.slice(4)}</h3>);
+      elements.push(<h3 key={i} className="text-base sm:text-lg font-bold mt-6 mb-2" style={{ color: "var(--text)" }}>{line.slice(4)}</h3>);
     } else if (line.startsWith("> ")) {
       elements.push(
         <blockquote key={i} className="border-l-2 pl-4 my-5 italic" style={{ borderColor: "var(--accent)", color: "var(--muted)" }}>

@@ -1,7 +1,7 @@
 "use client";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect, useCallback, useTransition } from "react";
-import { Search, Download } from "lucide-react";
+import { Search, Download, CheckCircle } from "lucide-react";
 import Link from "next/link";
 
 const STATUSES = ["all","pending","confirmed","processing","shipped","delivered","cancelled","refunded"];
@@ -33,6 +33,14 @@ export default function OrdersClient({ orders, total, page, totalPages, filters 
   const [selected, setSelected]    = useState<Set<string>>(new Set());
   const [bulkStatus, setBulkStatus] = useState("");
   const [bulkLoading, setBulkLoading] = useState(false);
+  const [toast, setToast] = useState("");
+
+  // Auto-dismiss the success toast.
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(""), 3000);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   const pushParams = useCallback((updates: Record<string, string>) => {
     const p = new URLSearchParams(window.location.search);
@@ -63,15 +71,22 @@ export default function OrdersClient({ orders, total, page, totalPages, filters 
   const handleBulk = async () => {
     if (!bulkStatus || !selected.size) return;
     setBulkLoading(true);
-    await fetch("/api/admin/orders/bulk", {
+    const count = selected.size;
+    const newStatus = bulkStatus;
+    const res = await fetch("/api/admin/orders/bulk", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids: [...selected], status: bulkStatus }),
     });
     setBulkLoading(false);
-    setSelected(new Set());
-    setBulkStatus("");
-    startTransition(() => router.refresh());
+    if (res.ok) {
+      setSelected(new Set());
+      setBulkStatus("");
+      setToast(`${count} order${count > 1 ? "s" : ""} updated to "${newStatus}".`);
+      startTransition(() => router.refresh());
+    } else {
+      setToast("Failed to update orders. Please try again.");
+    }
   };
 
   const handleExport = () => {
@@ -186,7 +201,8 @@ export default function OrdersClient({ orders, total, page, totalPages, filters 
               </thead>
               <tbody>
                 {orders.map(o => (
-                  <tr key={o.id} className="border-t hover:bg-white/[.015] transition-colors" style={{ borderColor: "var(--line)" }}>
+                  <tr key={o.id} className="border-t hover:bg-white/[.015] transition-colors"
+                    style={{ borderColor: "var(--line)", background: selected.has(o.id) ? "rgba(79, 168, 230,.08)" : undefined }}>
                     <td className="px-4 py-3.5">
                       <input type="checkbox" checked={selected.has(o.id)} onChange={() => toggleOne(o.id)}
                         className="cursor-pointer w-4 h-4" style={{ accentColor: "var(--accent)" }} />
@@ -249,6 +265,16 @@ export default function OrdersClient({ orders, total, page, totalPages, filters 
               Next →
             </button>
           )}
+        </div>
+      )}
+
+      {/* Bulk action toast */}
+      {toast && (
+        <div className="fixed bottom-6 right-6 z-[100] flex items-center gap-2.5 px-4 py-3 rounded-[12px] shadow-lg"
+          style={{ background: "var(--surface)", border: "1px solid #4ade8055", boxShadow: "0 12px 30px rgba(0,0,0,.4)" }}
+          role="status">
+          <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color: "#4ade80" }} />
+          <span className="text-sm font-semibold" style={{ fontFamily: "var(--font-space-mono)", color: "var(--text)" }}>{toast}</span>
         </div>
       )}
     </div>

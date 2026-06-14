@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Search, ShoppingCart, Heart, User, Menu, X } from "lucide-react";
@@ -19,8 +19,36 @@ export default function Header() {
   const [logoLoaded, setLogoLoaded] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { setMounted(true); }, []);
+
+  // Escape-to-close for the mobile menu and search overlay
+  useEffect(() => {
+    if (!mobileOpen && !searchOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMobileOpen(false);
+        setSearchOpen(false);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mobileOpen, searchOpen]);
+
+  // Focus the search input when the overlay opens
+  useEffect(() => {
+    if (searchOpen) searchInputRef.current?.focus();
+  }, [searchOpen]);
+
+  // Move focus into the mobile menu so it's keyboard navigable on open
+  useEffect(() => {
+    if (mobileOpen) {
+      const first = mobileMenuRef.current?.querySelector<HTMLElement>("a, button");
+      first?.focus();
+    }
+  }, [mobileOpen]);
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 30);
@@ -147,14 +175,18 @@ export default function Header() {
                 aria-label="Wishlist"
               >
                 <Heart className="w-[18px] h-[18px]" />
-                {mounted && wishlistCount > 0 && (
-                  <span
-                    className="absolute -top-[7px] -right-[7px] min-w-[19px] h-[19px] rounded-full grid place-items-center px-[5px] text-[.62rem] font-bold"
-                    style={{ background: "var(--accent)", color: "#000", fontFamily: "var(--font-space-mono)" }}
-                  >
-                    {wishlistCount > 9 ? "9+" : wishlistCount}
-                  </span>
-                )}
+                <span
+                  aria-hidden={!mounted || wishlistCount === 0}
+                  className="absolute -top-[7px] -right-[7px] min-w-[19px] h-[19px] rounded-full grid place-items-center px-[5px] text-[.62rem] font-bold transition-opacity duration-200"
+                  style={{
+                    background: "var(--accent)",
+                    color: "#000",
+                    fontFamily: "var(--font-space-mono)",
+                    opacity: mounted && wishlistCount > 0 ? 1 : 0,
+                  }}
+                >
+                  {wishlistCount > 9 ? "9+" : wishlistCount}
+                </span>
               </Link>
 
               <button
@@ -164,14 +196,18 @@ export default function Header() {
                 aria-label="Cart"
               >
                 <ShoppingCart className="w-[18px] h-[18px]" />
-                {mounted && count > 0 && (
-                  <span
-                    className="absolute -top-[7px] -right-[7px] min-w-[19px] h-[19px] rounded-full grid place-items-center px-[5px] text-[.62rem] font-bold"
-                    style={{ background: "var(--accent)", color: "#000", fontFamily: "var(--font-space-mono)" }}
-                  >
-                    {count > 9 ? "9+" : count}
-                  </span>
-                )}
+                <span
+                  aria-hidden={!mounted || count === 0}
+                  className="absolute -top-[7px] -right-[7px] min-w-[19px] h-[19px] rounded-full grid place-items-center px-[5px] text-[.62rem] font-bold transition-opacity duration-200"
+                  style={{
+                    background: "var(--accent)",
+                    color: "#000",
+                    fontFamily: "var(--font-space-mono)",
+                    opacity: mounted && count > 0 ? 1 : 0,
+                  }}
+                >
+                  {count > 9 ? "9+" : count}
+                </span>
               </button>
 
               <button
@@ -189,6 +225,11 @@ export default function Header() {
 
       {/* Mobile menu */}
       <div
+        ref={mobileMenuRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menu"
+        aria-hidden={!mobileOpen}
         className={cn(
           "fixed inset-0 z-[99] flex flex-col justify-center items-start gap-2 px-8 transition-transform duration-500",
           mobileOpen ? "translate-y-0" : "-translate-y-full"
@@ -233,7 +274,7 @@ export default function Header() {
             <div className="relative">
               <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: "var(--muted)" }} />
               <input
-                autoFocus
+                ref={searchInputRef}
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}

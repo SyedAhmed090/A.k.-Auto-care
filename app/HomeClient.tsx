@@ -454,43 +454,6 @@ export default function HomeClient({ featured }: { featured: Product[] }) {
         </div>
       </section>
 
-      {/* ── RESULTS ── */}
-      <section style={{ borderTop: "1px solid var(--line)" }} className="py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between gap-6 mb-12 flex-wrap reveal">
-            <div>
-              <div className="flex items-center gap-2.5 mb-4 text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
-                <span className="w-7 h-[1px]" style={{ background: "var(--accent)" }} />
-                The Difference
-              </div>
-              <h2 className="uppercase leading-[.96] tracking-[.01em]" style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(2rem,4.5vw,3.5rem)" }}>
-                Before &amp; After
-              </h2>
-            </div>
-            <p className="max-w-[340px] text-[.92rem]" style={{ color: "var(--muted)" }}>Real results, real cars. No filters — just chemistry doing its job.</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {["Paint Correction", "Ceramic Coat", "Full Detail"].map((label) => (
-              <div key={label} className="reveal rounded-[16px] overflow-hidden relative" style={{ border: "1px solid var(--line)", background: "var(--surface)", aspectRatio: "4/3" }}>
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                  <div className="w-12 h-12 rounded-full grid place-items-center" style={{ border: "1px solid var(--line-2)", background: "rgba(255,255,255,.04)" }}>
-                    <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none" style={{ color: "var(--muted)" }}>
-                      <rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" strokeWidth="1.5" />
-                      <circle cx="7.5" cy="8.5" r="1.5" stroke="currentColor" strokeWidth="1.5" />
-                      <path d="M2 13l4-3 3 2.5 3-4 4 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </div>
-                  <span className="text-[.72rem] tracking-[.12em] uppercase text-center" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>{label}<br />Photos coming soon</span>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 px-5 py-4" style={{ background: "linear-gradient(to top, rgba(10, 11, 13,.9), transparent)" }}>
-                  <span className="text-[.78rem] font-semibold" style={{ fontFamily: "var(--font-space-mono)", color: "var(--accent)" }}>{label}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ── PROCESS ── */}
       <section style={{ borderTop: "1px solid var(--line)", background: "var(--bg-2)" }} className="py-[120px]">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">

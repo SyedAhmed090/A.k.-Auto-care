@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Phone, Mail } from "lucide-react";
 import SocialLinks from "@/components/ui/SocialLinks";
@@ -9,6 +9,16 @@ export default function Footer() {
   const [nlEmail, setNlEmail] = useState("");
   const [nlState, setNlState] = useState<"idle" | "submitting" | "ok" | "error">("idle");
   const [nlError, setNlError] = useState("");
+
+  // Auto-clear the success message so the signup form returns after a few seconds
+  useEffect(() => {
+    if (nlState !== "ok") return;
+    const t = setTimeout(() => {
+      setNlState("idle");
+      setNlEmail("");
+    }, 5000);
+    return () => clearTimeout(t);
+  }, [nlState]);
 
   const handleNewsletter = async () => {
     if (!nlEmail.trim() || nlState === "submitting") return;

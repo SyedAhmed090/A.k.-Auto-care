@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import { Star } from "lucide-react";
+import { Star, X } from "lucide-react";
 import StarRating from "@/components/ui/StarRating";
 
 type Review = {
@@ -34,6 +34,7 @@ function StarSelector({ value, onChange }: { value: number; onChange: (v: number
             onClick={() => onChange(s)}
             onMouseEnter={() => setHovered(s)}
             onMouseLeave={() => setHovered(0)}
+            className="rounded outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
             style={{ background: "none", border: "none", cursor: "pointer", padding: "2px" }}
           >
             <Star
@@ -121,6 +122,13 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
 
   useEffect(() => { fetchReviews(); }, [fetchReviews]);
 
+  // Auto-dismiss the success message so it doesn't linger indefinitely.
+  useEffect(() => {
+    if (!submitted) return;
+    const t = setTimeout(() => setSubmitted(false), 6000);
+    return () => clearTimeout(t);
+  }, [submitted]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError("");
@@ -180,6 +188,17 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
     fontSize: ".9rem",
     outline: "none",
     boxSizing: "border-box",
+    transition: "border-color .15s, box-shadow .15s",
+  };
+
+  // Accessible focus ring for the inline-styled inputs/textarea.
+  const onFieldFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    e.currentTarget.style.borderColor = "var(--accent)";
+    e.currentTarget.style.boxShadow = "0 0 0 2px var(--accent)";
+  };
+  const onFieldBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    e.currentTarget.style.borderColor = "var(--line)";
+    e.currentTarget.style.boxShadow = "none";
   };
 
   return (
@@ -287,6 +306,7 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
 
       {submitted && (
         <div
+          role="status"
           style={{
             marginBottom: "24px",
             padding: "14px 18px",
@@ -296,15 +316,29 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
             color: "#22c55e",
             fontSize: ".88rem",
             fontFamily: "var(--font-hanken)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "12px",
           }}
         >
-          Thank you — your review has been submitted and is pending approval.
+          <span>Thank you — your review has been submitted and is pending approval.</span>
+          <button
+            type="button"
+            onClick={() => setSubmitted(false)}
+            aria-label="Dismiss notification"
+            className="rounded outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22c55e]"
+            style={{ background: "none", border: "none", color: "#22c55e", cursor: "pointer", padding: "2px", flexShrink: 0, display: "grid", placeItems: "center" }}
+          >
+            <X style={{ width: "16px", height: "16px" }} />
+          </button>
         </div>
       )}
 
       {!showForm && (
         <button
           onClick={() => setShowForm(true)}
+          className="rounded-[12px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]"
           style={{
             marginBottom: "36px",
             padding: "11px 28px",
@@ -357,6 +391,8 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
             <label style={labelStyle}>Your Name</label>
             <input
               style={inputStyle}
+              onFocus={onFieldFocus}
+              onBlur={onFieldBlur}
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -369,6 +405,8 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
             <label style={labelStyle}>Email (optional, for verified purchase badge)</label>
             <input
               style={inputStyle}
+              onFocus={onFieldFocus}
+              onBlur={onFieldBlur}
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -381,6 +419,8 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
             <label style={labelStyle}>Review Title</label>
             <input
               style={inputStyle}
+              onFocus={onFieldFocus}
+              onBlur={onFieldBlur}
               type="text"
               value={titleVal}
               onChange={(e) => setTitleVal(e.target.value)}
@@ -392,7 +432,9 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
           <div>
             <label style={labelStyle}>Your Review</label>
             <textarea
-              style={{ ...inputStyle, minHeight: "110px", resize: "vertical" }}
+              style={{ ...inputStyle, minHeight: "110px", maxHeight: "320px", resize: "vertical" }}
+              onFocus={onFieldFocus}
+              onBlur={onFieldBlur}
               value={bodyVal}
               onChange={(e) => setBodyVal(e.target.value)}
               placeholder="Tell others what you think about this product…"
@@ -410,6 +452,7 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
             <button
               type="submit"
               disabled={submitting}
+              className="rounded-[12px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface)]"
               style={{
                 padding: "11px 28px",
                 borderRadius: "12px",
@@ -428,6 +471,7 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
             <button
               type="button"
               onClick={() => { setShowForm(false); setFormError(""); }}
+              className="rounded-[12px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface)]"
               style={{
                 padding: "11px 20px",
                 borderRadius: "12px",
@@ -478,6 +522,7 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
           {!showForm && (
             <button
               onClick={() => setShowForm(true)}
+              className="rounded-[10px] outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface)]"
               style={{
                 padding: "9px 22px",
                 borderRadius: "10px",

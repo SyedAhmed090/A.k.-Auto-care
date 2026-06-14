@@ -36,7 +36,7 @@ export default function WishlistButton({
         onClick={onClick}
         aria-pressed={active}
         aria-label={active ? "Remove from wishlist" : "Add to wishlist"}
-        className="w-12 h-12 rounded-[13px] grid place-items-center flex-shrink-0 transition-all cursor-pointer"
+        className="w-12 h-12 rounded-[13px] grid place-items-center flex-shrink-0 transition-all cursor-pointer outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]"
         style={{
           border: `1px solid ${active ? "var(--accent)" : "var(--line-2)"}`,
           background: active ? "rgba(79, 168, 230,.08)" : "var(--surface)",
@@ -53,7 +53,7 @@ export default function WishlistButton({
       onClick={onClick}
       aria-pressed={active}
       aria-label={active ? "Remove from wishlist" : "Add to wishlist"}
-      className="absolute top-3.5 right-3.5 z-20 w-9 h-9 rounded-full grid place-items-center transition-all cursor-pointer backdrop-blur-md hover:scale-110"
+      className="absolute top-3.5 right-3.5 z-20 w-9 h-9 rounded-full grid place-items-center transition-all cursor-pointer backdrop-blur-md hover:scale-110 outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]"
       style={{ background: "rgba(10, 11, 13,.55)", border: "1px solid var(--line-2)" }}
     >
       <Heart className="w-[17px] h-[17px]" style={{ color: active ? "var(--accent)" : "#fff", fill: active ? "var(--accent)" : "transparent" }} />

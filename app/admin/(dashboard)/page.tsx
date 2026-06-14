@@ -39,10 +39,11 @@ async function getRecentOrders() {
 export default async function AdminDashboard() {
   const [stats, recent] = await Promise.all([getStats(), getRecentOrders()]);
 
+  const hasPending = stats.pendingOrders > 0;
   const cards = [
     { label: "Total Orders",  value: stats.totalOrders.toString(),                       sub: "all time" },
     { label: "Revenue",       value: `Rs ${stats.totalRevenue.toLocaleString("en-PK")}`, sub: "excl. cancelled/refunded" },
-    { label: "Pending",       value: stats.pendingOrders.toString(),                      sub: "need action", accent: true },
+    { label: "Pending",       value: stats.pendingOrders.toString(),                      sub: hasPending ? "needs action" : "all clear", warn: hasPending },
     { label: "Today",         value: stats.todayOrders.toString(),                        sub: "new orders" },
   ];
 
@@ -53,10 +54,16 @@ export default async function AdminDashboard() {
       {/* Stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {cards.map(c => (
-          <div key={c.label} className="rounded-[16px] p-5" style={{ background: "var(--surface)", border: "1px solid var(--line)" }}>
-            <p className="text-[.68rem] tracking-[.14em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>{c.label}</p>
-            <p className="text-[2rem] font-bold leading-none" style={{ fontFamily: "var(--font-hanken)", color: c.accent ? "var(--accent)" : "var(--text)" }}>{c.value}</p>
-            <p className="text-[.72rem] mt-1" style={{ color: "var(--muted-2)", fontFamily: "var(--font-space-mono)" }}>{c.sub}</p>
+          <div key={c.label} className="rounded-[16px] p-5" style={{
+            background: c.warn ? "rgba(245,158,11,.08)" : "var(--surface)",
+            border: `1px solid ${c.warn ? "rgba(245,158,11,.4)" : "var(--line)"}`,
+          }}>
+            <p className="text-[.68rem] tracking-[.14em] uppercase mb-2 flex items-center gap-1.5" style={{ fontFamily: "var(--font-space-mono)", color: c.warn ? "#f59e0b" : "var(--muted)" }}>
+              {c.warn && <span className="w-1.5 h-1.5 rounded-full inline-block animate-pulse" style={{ background: "#f59e0b" }} />}
+              {c.label}
+            </p>
+            <p className="text-[2rem] font-bold leading-none" style={{ fontFamily: "var(--font-hanken)", color: c.warn ? "#f59e0b" : "var(--text)" }}>{c.value}</p>
+            <p className="text-[.72rem] mt-1" style={{ color: c.warn ? "#f59e0b" : "var(--muted-2)", fontFamily: "var(--font-space-mono)" }}>{c.sub}</p>
           </div>
         ))}
       </div>
@@ -72,7 +79,12 @@ export default async function AdminDashboard() {
         </div>
         <div>
           {recent.length === 0 && (
-            <p className="px-5 py-8 text-sm text-center" style={{ color: "var(--muted)" }}>No orders yet.</p>
+            <div className="px-5 py-10 text-center">
+              <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>No orders yet</p>
+              <p className="text-[.78rem] mt-1" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
+                New customer orders will appear here as they come in.
+              </p>
+            </div>
           )}
           {recent.map((o: any) => (
             <Link key={o.id} href={`/admin/orders/${o.id}`}

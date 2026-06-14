@@ -1,7 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import { SlidersHorizontal, X } from "lucide-react";
+import { SlidersHorizontal, X, PackageX } from "lucide-react";
 import type { Product } from "@/data/products";
 import { filterAndSort } from "@/lib/commerce";
 import ProductCard from "@/components/product/ProductCard";
@@ -91,6 +91,9 @@ export default function ShopClient({ allProducts }: { allProducts: Product[] }) 
     [allProducts, priceMax, inStockOnly, sort]
   );
 
+  const activeFilterCount = (inStockOnly ? 1 : 0) + (priceMax < 100000 ? 1 : 0);
+  const clearFilters = () => { setInStockOnly(false); setPriceMax(100000); };
+
   const paginated = filtered.slice(0, page * PER_PAGE);
 
   const selectStyle = {
@@ -145,6 +148,14 @@ export default function ShopClient({ allProducts }: { allProducts: Product[] }) 
                 style={{ border: "1px solid var(--line-2)", color: "var(--text)", background: "var(--surface)" }}
               >
                 <SlidersHorizontal className="w-4 h-4" /> Filters
+                {activeFilterCount > 0 && (
+                  <span
+                    className="grid place-items-center w-5 h-5 rounded-full text-[.65rem] font-bold leading-none"
+                    style={{ background: "var(--accent)", color: "#000", fontFamily: "var(--font-space-mono)" }}
+                  >
+                    {activeFilterCount}
+                  </span>
+                )}
               </button>
               <div className="flex items-center gap-2 ml-auto">
                 <select
@@ -163,8 +174,21 @@ export default function ShopClient({ allProducts }: { allProducts: Product[] }) 
             </div>
 
             {filtered.length === 0 && (
-              <div className="text-center py-24">
-                <p className="text-lg font-medium" style={{ color: "var(--muted)" }}>No products match your filters.</p>
+              <div className="flex flex-col items-center justify-center text-center py-24">
+                <div className="w-16 h-16 rounded-full grid place-items-center mb-5" style={{ background: "var(--surface)", border: "1px solid var(--line-2)" }}>
+                  <PackageX className="w-7 h-7" style={{ color: "var(--muted)" }} />
+                </div>
+                <p className="text-lg font-medium mb-2" style={{ color: "var(--text)" }}>No products match your filters.</p>
+                <p className="text-sm mb-6" style={{ color: "var(--muted)" }}>Try widening your price range or turning off &ldquo;In Stock Only.&rdquo;</p>
+                {activeFilterCount > 0 && (
+                  <button
+                    onClick={clearFilters}
+                    className="inline-flex items-center gap-1.5 px-6 py-3 rounded-[13px] font-semibold transition-all cursor-pointer hover:-translate-y-0.5"
+                    style={{ background: "var(--accent)", color: "#000" }}
+                  >
+                    <X className="w-4 h-4" /> Clear all filters
+                  </button>
+                )}
               </div>
             )}
 
