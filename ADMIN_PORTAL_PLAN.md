@@ -76,10 +76,13 @@ Existing admin API routes live under `app/api/admin/**`. Business config is hard
 
 ### 5. Settings page (the big one)
 - **Goal:** Edit business-critical configuration without a code change + redeploy.
-- **Why:** Shipping rates, free-shipping threshold, GST %, payment account details, store
-  info, hours, WhatsApp number, and social links are **hardcoded** in `lib/constants.ts` and
-  `lib/commerce.ts`. Every change currently needs a developer. This is the single biggest
-  day-to-day limitation, especially for pricing/shipping.
+- **Why:** Config splits two ways today, and **both require a redeploy to change**:
+  - *Truly hardcoded constants* — GST % and shipping rates/thresholds live as literals in
+    `lib/commerce.ts`.
+  - *Env-var-backed* — WhatsApp number, JazzCash/EasyPaisa details, and social URLs read from
+    `process.env.* ?? <fallback>` in `lib/constants.ts`. Editable via env, but still a redeploy.
+  Either way there's no in-app way to change them, so a DB-backed Settings page is the right
+  call. This is the single biggest day-to-day limitation, especially for pricing/shipping.
 - **Build:**
   - **Database:** new `settings` table as key/value JSON (`key text primary key,
     value jsonb, updated_at`). Seed it with the current hardcoded values so nothing changes
@@ -110,7 +113,7 @@ Existing admin API routes live under `app/api/admin/**`. Business config is hard
     already in the stack, so this is the natural choice — no new vendor.)
   - **API:** `POST /api/admin/upload` — accepts a file, uploads to the bucket, returns the
     public URL. Validate type/size; generate a unique path.
-  - **Admin UI:** in `ProductForm.tsx`, replace/augment the "Images (URLs)" section with a
+  - **Admin UI:** in `app/admin/(dashboard)/products/ProductForm.tsx`, replace/augment the "Images (URLs)" section with a
     file picker + drag-drop that uploads and shows thumbnails; keep the URL field as a fallback.
     Allow reordering and delete.
   - **Storefront:** none (still renders image URLs).
@@ -211,15 +214,11 @@ Existing admin API routes live under `app/api/admin/**`. Business config is hard
 - **Effort:** S–M
 - **Dependencies:** confirm how `profiles.id` (auth user) maps to order email.
 
-### 14. Surface the order `notes` field properly
-- **Goal:** Make sure internal order notes are visible on the order detail screen.
-- **Why:** `orders.notes` is captured and editable, but it was flagged as possibly not shown
-  in the order detail UI. Quick to confirm/fix.
-- **Build:**
-  - **Admin UI:** verify the notes field renders on `orders/[id]/page.tsx`; if not, add it.
-  - Everything else already exists.
-- **Effort:** S
-- **Dependencies:** none. (Verify before building — may already be partly done.)
+### 14. Order `notes` field — ✅ ALREADY SHIPPED (no work)
+- **Status:** Done. The notes field is fully rendered and editable on the order detail screen
+  (`app/admin/(dashboard)/orders/[id]/OrderActions.tsx:61`). Verified against the code — nothing
+  to build. Kept here only so the 14-item list stays complete.
+- **Effort:** none.
 
 ### 13. Email template management
 - **Goal:** Edit and test-send transactional emails from admin.
@@ -270,7 +269,7 @@ Existing admin API routes live under `app/api/admin/**`. Business config is hard
 | 2 | #5 Settings page | 2 | L | Removes developer dependency; test pricing |
 | 3 | #7 Image upload, #6 Bulk product tools | 2 | M | Daily-friction removers |
 | 4 | #9 Dashboard, #10 Sales export, #8 Low-stock alerts | 3 | S–M | Reporting |
-| 5 | #4 Profiles, #14 Order notes, #11 LTV/segments | 3–4 | S–M | Finish surfacing data |
+| 5 | #4 Profiles, #11 LTV/segments | 3–4 | S–M | Finish surfacing data (#14 already shipped) |
 | 6 | #13 Email templates | 4 | L | Refactors send path |
 | 7 | #12 Staff/roles/audit log | 5 | L | Do before adding staff; isolate it |
 
