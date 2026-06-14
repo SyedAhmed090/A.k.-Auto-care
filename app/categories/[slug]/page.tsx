@@ -5,6 +5,8 @@ import categories from "@/data/categories";
 import { getProductsByCategory } from "@/lib/products";
 import CategoryPageClient from "./CategoryPageClient";
 
+const BASE_URL = "https://www.akautocare.pk";
+
 export function generateStaticParams() {
   return categories.map((c) => ({ slug: c.slug }));
 }
@@ -18,18 +20,38 @@ export async function generateMetadata({
   const category = getCategoryBySlug(slug);
   if (!category) return {};
   return {
-    title: `${category.name} | A.K. Auto Care`,
+    title: category.name,
     description: category.description,
     openGraph: {
-      title: `${category.name} | A.K. Auto Care`,
+      title: category.name,
       description: category.description,
-      images: category.image ? [{ url: category.image }] : [],
+      images: category.image
+        ? [
+            {
+              url: category.image.startsWith("http")
+                ? category.image
+                : `${BASE_URL}${category.image}`,
+              width: 1200,
+              height: 630,
+              alt: category.name,
+            },
+          ]
+        : [],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${category.name} | A.K. Auto Care`,
+      title: category.name,
       description: category.description,
-      images: category.image ? [category.image] : [],
+      images: category.image
+        ? [
+            {
+              url: category.image.startsWith("http")
+                ? category.image
+                : `${BASE_URL}${category.image}`,
+              alt: category.name,
+            },
+          ]
+        : [],
     },
   };
 }

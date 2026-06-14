@@ -9,8 +9,8 @@
     --line: rgba(210,180,100,.07);
     --line-2: rgba(210,180,100,.14);
     --text: #f5f0e8;
-    --muted: #9c9380;
-    --muted-2: #6b6050;
+    --muted: #b0aa97;
+    --muted-2: #9c9380;
     --accent: #e8a020;
     --accent-press: #d08c18;
     --r: 18px;
@@ -19,6 +19,8 @@
     --r-lg: 16px;
     --r-xl: 24px;
     --ease: cubic-bezier(.22,1,.36,1);
+    /* Layout offsets — announcement bar (h-9 = 36px) + header nav (h-[78px] = 78px) = 114px */
+    --header-offset: 114px;
   }
 
   html { scroll-behavior: smooth; }
@@ -78,6 +80,18 @@
   transform: none;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* ── Marquee ── */
 @keyframes marquee-scroll { to { transform: translateX(-50%); } }
 .marquee-track { animation: marquee-scroll 28s linear infinite; }
@@ -93,6 +107,13 @@
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+/* Keyboard focus for labels wrapping sr-only radio/checkbox inputs */
+label:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 13px;
 }
 
 /* ── Scrollbar ── */

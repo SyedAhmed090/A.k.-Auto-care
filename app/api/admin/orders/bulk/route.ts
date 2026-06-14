@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/utils/supabase/admin";
+import { checkCsrf } from "@/lib/csrf";
+import { requireAdmin } from "@/lib/adminAuth";
 
 const ORDER_STATUSES = ["pending","confirmed","processing","shipped","delivered","cancelled","refunded"] as const;
 
@@ -10,6 +12,12 @@ const schema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  const authError = await requireAdmin();
+  if (authError) return authError;
+
+  const csrfError = checkCsrf(req);
+  if (csrfError) return csrfError;
+
   try {
     const parsed = schema.safeParse(await req.json());
     if (!parsed.success) return NextResponse.json({ error: "Invalid data." }, { status: 400 });

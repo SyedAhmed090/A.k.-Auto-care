@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { checkRateLimit, getIP } from "@/lib/rateLimit";
+import { checkCsrf } from "@/lib/csrf";
 
 const RESEND_URL = "https://api.resend.com/emails";
 
@@ -12,6 +13,9 @@ const schema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  const csrfError = checkCsrf(req);
+  if (csrfError) return csrfError;
+
   const ip = getIP(req.headers);
   if (!checkRateLimit(`contact:${ip}`, 3, 10 * 60_000)) {
     return NextResponse.json({ ok: false, error: "Too many submissions. Please try again later." }, { status: 429 });

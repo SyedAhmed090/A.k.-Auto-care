@@ -12,6 +12,7 @@ const LOW_STOCK_THRESHOLD = 5;
 
 export default function ProductCard({ product }: { product: Product }) {
   const [added, setAdded] = useState(false);
+  const [imgError, setImgError] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
 
   const handleAdd = (e: React.MouseEvent) => {
@@ -34,12 +35,12 @@ export default function ProductCard({ product }: { product: Product }) {
           style={{ aspectRatio: "4/3", background: "radial-gradient(70% 70% at 50% 40%,#221e15,#0c0a07)" }}
         >
           <Image
-            src={product.images[0]}
+            src={imgError ? "/placeholder.svg" : product.images[0]}
             alt={product.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             className="object-cover w-full h-full transition-all duration-500 group-hover:scale-105"
-            onError={(e) => { e.currentTarget.src = "/placeholder.svg"; }}
+            onError={() => setImgError(true)}
           />
 
           {product.badge && (

@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Zap, CheckCircle, Truck, RotateCcw, Shield, MessageCircle, Share2, ChevronUp } from "lucide-react";
+import { Zap, CheckCircle, Truck, RotateCcw, Shield, MessageCircle, Share2 } from "lucide-react";
 import type { Product } from "@/data/products";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
@@ -33,6 +33,8 @@ export default function ProductPageClient({ product, related }: { product: Produ
   const [tab, setTab]                       = useState<Tab>("Description");
   const [added, setAdded]                   = useState(false);
   const [stickyVisible, setStickyVisible]   = useState(false);
+  const [mainImgError, setMainImgError]     = useState(false);
+  const [thumbErrors, setThumbErrors]       = useState<Record<number, boolean>>({});
   const ctaRef = useRef<HTMLDivElement>(null);
 
   const addItem  = useCartStore((s) => s.addItem);
@@ -62,6 +64,7 @@ export default function ProductPageClient({ product, related }: { product: Produ
   const handleBuyNow = () => {
     addItem(product, variant, qty);
     trackAddToCart(product, variant, qty);
+    useCartStore.getState().closeCart();
     router.push("/checkout");
   };
 
@@ -100,11 +103,11 @@ export default function ProductPageClient({ product, related }: { product: Produ
               style={{ background: "radial-gradient(70% 70% at 50% 40%,#221e15,#0c0a07)", border: "1px solid var(--line)" }}
             >
               <Image
-                src={product.images[activeImg] || "/placeholder.svg"}
+                src={mainImgError ? "/placeholder.svg" : (product.images[activeImg] || "/placeholder.svg")}
                 alt={product.name} fill
                 className="object-cover opacity-85 transition-transform duration-500 group-hover:scale-105"
                 priority
-                onError={(e) => { e.currentTarget.src = "/placeholder.svg"; }}
+                onError={() => setMainImgError(true)}
               />
               {product.badge && (
                 <span
@@ -124,7 +127,8 @@ export default function ProductPageClient({ product, related }: { product: Produ
               )}
               <button
                 onClick={handleShare}
-                className="absolute bottom-4 right-4 w-9 h-9 rounded-full grid place-items-center transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
+                aria-label="Share product"
+                className="absolute bottom-4 right-4 w-9 h-9 rounded-full grid place-items-center transition-all opacity-0 group-hover:opacity-100 focus-visible:opacity-100 cursor-pointer"
                 style={{ background: "rgba(12,11,8,.7)", backdropFilter: "blur(8px)", border: "1px solid var(--line-2)" }}
               >
                 <Share2 className="w-4 h-4" style={{ color: "var(--muted)" }} />
@@ -142,7 +146,7 @@ export default function ProductPageClient({ product, related }: { product: Produ
                       background: "var(--surface)",
                     }}
                   >
-                    <Image src={img} alt={`View ${i + 1}`} fill className="object-cover opacity-75" onError={(e) => { e.currentTarget.src = "/placeholder.svg"; }} />
+                    <Image src={thumbErrors[i] ? "/placeholder.svg" : img} alt={`View ${i + 1}`} fill className="object-cover opacity-75" onError={() => setThumbErrors((prev) => ({ ...prev, [i]: true }))} />
                   </button>
                 ))}
               </div>
@@ -341,7 +345,7 @@ export default function ProductPageClient({ product, related }: { product: Produ
       {/* Sticky mobile CTA */}
       {stickyVisible && (
         <div
-          className="fixed bottom-0 left-0 right-0 z-40 flex items-center gap-3 px-4 py-3 md:hidden"
+          className="fixed bottom-0 left-0 right-0 z-[55] flex items-center gap-3 px-4 py-3 md:hidden"
           style={{ background: "var(--surface)", borderTop: "1px solid var(--line-2)", backdropFilter: "blur(12px)" }}
         >
           <div className="flex-1 min-w-0">

@@ -21,6 +21,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "upload.wikimedia.org" },
+      { protocol: "https", hostname: "*.supabase.co" },
     ],
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 31536000,

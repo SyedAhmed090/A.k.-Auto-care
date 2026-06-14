@@ -105,7 +105,7 @@ export default function HomeClient({ featured }: { featured: Product[] }) {
               </span>
             </div>
 
-            <p className="reveal text-[1.15rem] mb-5" style={{ fontFamily: "serif", color: "var(--accent)", direction: "rtl" }}>
+            <p lang="ur" className="reveal text-[1.15rem] mb-5" style={{ fontFamily: "var(--font-noto-nastaliq-urdu), 'Noto Nastaliq Urdu', serif", color: "var(--accent)", direction: "rtl" }}>
               پاکستان کا بہترین کار کیئر برانڈ
             </p>
 

@@ -2,9 +2,11 @@ import { MetadataRoute } from "next";
 import { getProducts } from "@/lib/products";
 import categories from "@/data/categories";
 
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = "https://akautocare.pk";
-  const staticRoutes = ["/", "/shop", "/about", "/contact", "/cart", "/policies/shipping-returns", "/policies/privacy", "/policies/terms"].map(
+  const base = "https://www.akautocare.pk";
+  const staticRoutes = ["/", "/shop", "/about", "/contact", "/policies/shipping-returns", "/policies/privacy", "/policies/terms"].map(
     (route) => ({ url: `${base}${route}`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: route === "/" ? 1 : 0.8 })
   );
   const products = await getProducts();

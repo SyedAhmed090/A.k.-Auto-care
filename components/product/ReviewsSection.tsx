@@ -22,28 +22,34 @@ type Props = {
 function StarSelector({ value, onChange }: { value: number; onChange: (v: number) => void }) {
   const [hovered, setHovered] = useState(0);
   return (
-    <div style={{ display: "flex", gap: "4px" }}>
-      {[1, 2, 3, 4, 5].map((s) => (
-        <button
-          key={s}
-          type="button"
-          onClick={() => onChange(s)}
-          onMouseEnter={() => setHovered(s)}
-          onMouseLeave={() => setHovered(0)}
-          style={{ background: "none", border: "none", cursor: "pointer", padding: "2px" }}
-        >
-          <Star
-            style={{
-              width: "24px",
-              height: "24px",
-              color: s <= (hovered || value) ? "#fbbf24" : "var(--line-2)",
-              fill: s <= (hovered || value) ? "#fbbf24" : "var(--line-2)",
-              transition: "color .15s, fill .15s",
-            }}
-          />
-        </button>
-      ))}
-    </div>
+    <fieldset style={{ border: "none", margin: 0, padding: 0 }}>
+      <legend className="sr-only">Rating</legend>
+      <div style={{ display: "flex", gap: "4px" }}>
+        {[1, 2, 3, 4, 5].map((s) => (
+          <button
+            key={s}
+            type="button"
+            aria-label={`${s} star${s > 1 ? "s" : ""}`}
+            aria-pressed={s <= value}
+            onClick={() => onChange(s)}
+            onMouseEnter={() => setHovered(s)}
+            onMouseLeave={() => setHovered(0)}
+            style={{ background: "none", border: "none", cursor: "pointer", padding: "2px" }}
+          >
+            <Star
+              aria-hidden="true"
+              style={{
+                width: "24px",
+                height: "24px",
+                color: s <= (hovered || value) ? "#fbbf24" : "var(--line-2)",
+                fill: s <= (hovered || value) ? "#fbbf24" : "var(--line-2)",
+                transition: "color .15s, fill .15s",
+              }}
+            />
+          </button>
+        ))}
+      </div>
+    </fieldset>
   );
 }
 
@@ -82,6 +88,7 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
   const [showForm, setShowForm] = useState(false);
 
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [rating, setRating] = useState(0);
   const [titleVal, setTitleVal] = useState("");
   const [bodyVal, setBodyVal] = useState("");
@@ -130,7 +137,7 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
         body: JSON.stringify({
           product_id: productId,
           user_name: name.trim(),
-          user_email: "anonymous@placeholder.com",
+          user_email: email.trim(),
           rating,
           title: titleVal.trim(),
           body: bodyVal.trim(),
@@ -143,7 +150,7 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
       }
       setSubmitted(true);
       setShowForm(false);
-      setName(""); setRating(0); setTitleVal(""); setBodyVal("");
+      setName(""); setEmail(""); setRating(0); setTitleVal(""); setBodyVal("");
       await fetchReviews();
     } catch {
       setFormError("Network error. Please try again.");
@@ -342,7 +349,7 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
           </h3>
 
           <div>
-            <span style={labelStyle}>Your Rating</span>
+            <span style={labelStyle} aria-hidden="true">Your Rating</span>
             <StarSelector value={rating} onChange={setRating} />
           </div>
 
@@ -355,6 +362,18 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
               onChange={(e) => setName(e.target.value)}
               placeholder="John Doe"
               maxLength={80}
+            />
+          </div>
+
+          <div>
+            <label style={labelStyle}>Email (optional, for verified purchase badge)</label>
+            <input
+              style={inputStyle}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              maxLength={254}
             />
           </div>
 

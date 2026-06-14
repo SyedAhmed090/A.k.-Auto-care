@@ -1,6 +1,7 @@
 "use client";
 import { use, useState, useEffect } from "react";
 import Link from "next/link";
+import type { Order } from "@/types/order";
 
 const STATUSES = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled", "refunded"] as const;
 
@@ -19,40 +20,6 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleString("en-PK", { dateStyle: "medium", timeStyle: "short" });
 }
 
-interface OrderItem {
-  productName: string;
-  variantLabel: string;
-  variantSku: string;
-  price: number;
-  quantity: number;
-  image?: string;
-}
-
-interface Order {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string;
-  address: string;
-  city: string;
-  province: string;
-  postcode: string;
-  country: string;
-  shipping_method: string;
-  payment_method: string;
-  items: OrderItem[];
-  subtotal: number;
-  discount: number;
-  shipping: number;
-  total: number;
-  promo_code?: string;
-  status: string;
-  tracking_number?: string;
-  tracking_carrier?: string;
-  notes?: string;
-  created_at: string;
-}
 
 const labelStyle: React.CSSProperties = {
   display: "block",
@@ -171,7 +138,7 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
         </span>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: 20, alignItems: "start" }} className="order-detail-grid">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-5 items-start">
 
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
 
@@ -196,7 +163,7 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
             </div>
           </div>
 
-          <div style={{ borderRadius: 16, border: "1px solid var(--line)", background: "var(--surface)", overflow: "hidden" }}>
+          <div style={{ borderRadius: 16, border: "1px solid var(--line)", background: "var(--surface)", overflowX: "auto" }}>
             <h2 style={{ padding: "14px 20px", margin: 0, fontSize: ".75rem", fontFamily: "var(--font-space-mono)", letterSpacing: ".12em", textTransform: "uppercase", borderBottom: "1px solid var(--line)", color: "var(--muted)" }}>
               Items
             </h2>
@@ -377,14 +344,7 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
         </div>
       </div>
 
-      <style>{`
-        @media (max-width: 900px) {
-          .order-detail-grid { grid-template-columns: 1fr !important; }
-        }
-        @media (max-width: 560px) {
-          table td, table th { padding: 10px 10px !important; }
-        }
-      `}</style>
+
     </div>
   );
 }

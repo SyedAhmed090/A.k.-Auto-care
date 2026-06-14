@@ -13,6 +13,70 @@ const SORT_OPTIONS = [
   { label: "Newest", value: "newest" },
 ];
 
+interface FilterPanelProps {
+  priceMax: number;
+  setPriceMax: (v: number) => void;
+  inStockOnly: boolean;
+  setInStockOnly: (v: boolean) => void;
+}
+
+const FilterPanel = ({ priceMax, setPriceMax, inStockOnly, setInStockOnly }: FilterPanelProps) => (
+  <div className="space-y-8">
+    <div>
+      <h3
+        className="text-[.72rem] tracking-[.14em] uppercase mb-3"
+        style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
+      >
+        Max Price: <span style={{ color: "var(--accent)" }}>Rs {priceMax.toLocaleString("en-PK")}</span>
+      </h3>
+      <input
+        type="range" min={0} max={100000} step={1000} value={priceMax}
+        onChange={(e) => setPriceMax(Number(e.target.value))}
+        className="w-full"
+        style={{ accentColor: "var(--accent)" }}
+      />
+      <div className="flex justify-between text-xs mt-1" style={{ color: "var(--muted-2)", fontFamily: "var(--font-space-mono)" }}>
+        <span>Rs 0</span><span>Rs 1,00,000</span>
+      </div>
+    </div>
+
+    <label className="flex items-center gap-3 cursor-pointer select-none">
+      <div className="relative w-4 h-4 flex-shrink-0">
+        <input
+          type="checkbox"
+          checked={inStockOnly}
+          onChange={(e) => setInStockOnly(e.target.checked)}
+          className="sr-only"
+        />
+        <div
+          className="w-4 h-4 rounded-[4px] grid place-items-center transition-all"
+          style={{
+            border: inStockOnly ? "1px solid var(--accent)" : "1px solid var(--line-2)",
+            background: inStockOnly ? "var(--accent)" : "transparent",
+          }}
+        >
+          {inStockOnly && (
+            <svg className="w-2.5 h-2.5" viewBox="0 0 10 10" fill="none">
+              <path d="M1.5 5l2.5 2.5L8.5 2" stroke="#000" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          )}
+        </div>
+      </div>
+      <span className="text-sm font-medium" style={{ color: "var(--text)" }}>In Stock Only</span>
+    </label>
+
+    {(inStockOnly || priceMax < 100000) && (
+      <button
+        onClick={() => { setInStockOnly(false); setPriceMax(100000); }}
+        className="flex items-center gap-1.5 text-sm transition-colors cursor-pointer"
+        style={{ color: "var(--accent)" }}
+      >
+        <X className="w-3.5 h-3.5" /> Clear Filters
+      </button>
+    )}
+  </div>
+);
+
 export default function ShopClient({ allProducts }: { allProducts: Product[] }) {
   const searchParams = useSearchParams();
   const [priceMax, setPriceMax] = useState(100000);
@@ -36,63 +100,6 @@ export default function ShopClient({ allProducts }: { allProducts: Product[] }) 
     fontFamily: "var(--font-space-mono)",
     fontSize: ".78rem",
   };
-
-  const FilterPanel = () => (
-    <div className="space-y-8">
-      <div>
-        <h3
-          className="text-[.72rem] tracking-[.14em] uppercase mb-3"
-          style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
-        >
-          Max Price: <span style={{ color: "var(--accent)" }}>Rs {priceMax.toLocaleString("en-PK")}</span>
-        </h3>
-        <input
-          type="range" min={0} max={100000} step={1000} value={priceMax}
-          onChange={(e) => setPriceMax(Number(e.target.value))}
-          className="w-full"
-          style={{ accentColor: "var(--accent)" }}
-        />
-        <div className="flex justify-between text-xs mt-1" style={{ color: "var(--muted-2)", fontFamily: "var(--font-space-mono)" }}>
-          <span>Rs 0</span><span>Rs 1,00,000</span>
-        </div>
-      </div>
-
-      <label className="flex items-center gap-3 cursor-pointer select-none">
-        <div className="relative w-4 h-4 flex-shrink-0">
-          <input
-            type="checkbox"
-            checked={inStockOnly}
-            onChange={(e) => setInStockOnly(e.target.checked)}
-            className="sr-only"
-          />
-          <div
-            className="w-4 h-4 rounded-[4px] grid place-items-center transition-all"
-            style={{
-              border: inStockOnly ? "1px solid var(--accent)" : "1px solid var(--line-2)",
-              background: inStockOnly ? "var(--accent)" : "transparent",
-            }}
-          >
-            {inStockOnly && (
-              <svg className="w-2.5 h-2.5" viewBox="0 0 10 10" fill="none">
-                <path d="M1.5 5l2.5 2.5L8.5 2" stroke="#000" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-            )}
-          </div>
-        </div>
-        <span className="text-sm font-medium" style={{ color: "var(--text)" }}>In Stock Only</span>
-      </label>
-
-      {(inStockOnly || priceMax < 100000) && (
-        <button
-          onClick={() => { setInStockOnly(false); setPriceMax(100000); }}
-          className="flex items-center gap-1.5 text-sm transition-colors cursor-pointer"
-          style={{ color: "var(--accent)" }}
-        >
-          <X className="w-3.5 h-3.5" /> Clear Filters
-        </button>
-      )}
-    </div>
-  );
 
   return (
     <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
@@ -121,7 +128,12 @@ export default function ShopClient({ allProducts }: { allProducts: Product[] }) 
         <div className="flex gap-10">
           <aside className="hidden lg:block w-52 flex-shrink-0">
             <div className="sticky top-28">
-              <FilterPanel />
+              <FilterPanel
+                priceMax={priceMax}
+                setPriceMax={setPriceMax}
+                inStockOnly={inStockOnly}
+                setInStockOnly={setInStockOnly}
+              />
             </div>
           </aside>
 
@@ -180,9 +192,14 @@ export default function ShopClient({ allProducts }: { allProducts: Product[] }) 
           >
             <div className="flex items-center justify-between mb-5">
               <h3 style={{ fontFamily: "var(--font-anton)", fontSize: "1.4rem" }}>FILTERS</h3>
-              <button onClick={() => setFiltersOpen(false)} style={{ color: "var(--muted)" }}><X className="w-5 h-5" /></button>
+              <button onClick={() => setFiltersOpen(false)} aria-label="Close filters" style={{ color: "var(--muted)" }}><X className="w-5 h-5" /></button>
             </div>
-            <FilterPanel />
+            <FilterPanel
+              priceMax={priceMax}
+              setPriceMax={setPriceMax}
+              inStockOnly={inStockOnly}
+              setInStockOnly={setInStockOnly}
+            />
             <button
               onClick={() => setFiltersOpen(false)}
               className="w-full mt-6 py-3.5 rounded-[13px] font-semibold cursor-pointer"

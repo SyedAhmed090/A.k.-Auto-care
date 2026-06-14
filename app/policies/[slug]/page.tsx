@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
-const policies: Record<string, { title: string; content: string }> = {
+const policies: Record<string, { title: string; description: string; content: string }> = {
   "shipping-returns": {
     title: "Shipping & Returns",
+    description: "Learn about A.K. Auto Care's shipping options across Pakistan, delivery times, and our 30-day hassle-free returns policy.",
     content: `
 ## Shipping Policy
 
@@ -38,6 +39,7 @@ We want you to be 100% satisfied with your A.K. Auto Care products. If you're no
   },
   privacy: {
     title: "Privacy Policy",
+    description: "Read how A.K. Auto Care collects, uses, and protects your personal data in accordance with Pakistani data protection laws.",
     content: `
 ## Privacy Policy
 
@@ -70,6 +72,7 @@ You have the right to access your data, correct inaccuracies, request deletion, 
   },
   terms: {
     title: "Terms of Service",
+    description: "Review the terms and conditions governing your use of akautocare.pk, including product availability, pricing, orders, and liability.",
     content: `
 ## Terms of Service
 
@@ -108,7 +111,15 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const policy = policies[slug];
-  return { title: policy?.title ?? "Policy" };
+  if (!policy) return { title: "Policy" };
+  return {
+    title: policy.title,
+    description: policy.description,
+    openGraph: {
+      title: policy.title,
+      description: policy.description,
+    },
+  };
 }
 
 function renderMarkdown(content: string) {

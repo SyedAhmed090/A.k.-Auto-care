@@ -123,7 +123,7 @@ export default function CustomersPage() {
           <p className="font-semibold">No customers found</p>
         </div>
       ) : (
-        <div className="rounded-[14px] overflow-hidden" style={{ border: "1px solid var(--line)", background: "var(--surface)" }}>
+        <div className="rounded-[14px] overflow-x-auto" style={{ border: "1px solid var(--line)", background: "var(--surface)" }}>
           <table className="w-full text-sm">
             <thead>
               <tr style={{ borderBottom: "1px solid var(--line)" }}>

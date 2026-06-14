@@ -9,7 +9,7 @@ import { checkCsrf } from "@/lib/csrf";
 import { buildOrderConfirmationHtml } from "@/lib/email";
 
 const itemSchema = z.object({
-  productId:  z.string().max(20),
+  productId:  z.string().max(36),
   variantSku: z.string().max(40),
   quantity:   z.number().int().min(1).max(99),
 });
@@ -79,7 +79,10 @@ export async function POST(req: NextRequest) {
       if (available <= 0) {
         return NextResponse.json({ error: `${product.name} is out of stock.` }, { status: 400 });
       }
-      const qty = Math.min(item.quantity, available);
+      if (item.quantity > available) {
+        return NextResponse.json({ error: `Only ${available} unit(s) of ${product.name} are available. Please update your cart.` }, { status: 400 });
+      }
+      const qty = item.quantity;
       lineItems.push({
         productId: product.id, productName: product.name,
         variantLabel: variant.label, variantSku: variant.sku,

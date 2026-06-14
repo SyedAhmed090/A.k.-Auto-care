@@ -15,6 +15,7 @@ export default function MiniCart() {
   const [promoInput, setPromoInput] = useState("");
   const [promoMsg, setPromoMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [promoLoading, setPromoLoading] = useState(false);
+  const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
   const sub = subtotal();
   const discount = sub * promoDiscount;
   const afterDiscount = sub - discount;
@@ -97,7 +98,13 @@ export default function MiniCart() {
                     className="relative w-[60px] h-[60px] rounded-[10px] overflow-hidden flex-shrink-0"
                     style={{ background: "var(--surface-2)" }}
                   >
-                    <Image src={item.product.images[0]} alt={item.product.name} fill className="object-cover" onError={(e) => { e.currentTarget.src = "/placeholder.svg"; }} />
+                    <Image
+                      src={imgErrors[`${item.product.id}-${item.variant.sku}`] ? "/placeholder.svg" : item.product.images[0]}
+                      alt={item.product.name}
+                      fill
+                      className="object-cover"
+                      onError={() => setImgErrors((prev) => ({ ...prev, [`${item.product.id}-${item.variant.sku}`]: true }))}
+                    />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold line-clamp-1 leading-tight">{item.product.name}</p>
@@ -114,6 +121,7 @@ export default function MiniCart() {
                         </span>
                         <button
                           onClick={() => removeItem(item.product.id, item.variant.sku)}
+                          aria-label={`Remove ${item.product.name} from cart`}
                           className="flex items-center justify-center w-6 h-6 rounded cursor-pointer hover-danger"
                         >
                           <Trash2 className="w-3.5 h-3.5" />

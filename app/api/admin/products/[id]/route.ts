@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/utils/supabase/admin";
+import { requireAdmin } from "@/lib/adminAuth";
+import { checkCsrf } from "@/lib/csrf";
 
 const variantSchema = z.object({
   label:      z.string().min(1).max(80),
@@ -31,6 +33,9 @@ export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const authError = await requireAdmin();
+  if (authError) return authError;
+
   const { id } = await params;
   try {
     const sb = createAdminClient();
@@ -52,6 +57,12 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const csrfError = checkCsrf(req);
+  if (csrfError) return csrfError;
+
+  const authError = await requireAdmin();
+  if (authError) return authError;
+
   const { id } = await params;
   try {
     const body = await req.json();
@@ -88,9 +99,15 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const csrfError = checkCsrf(req);
+  if (csrfError) return csrfError;
+
+  const authError = await requireAdmin();
+  if (authError) return authError;
+
   const { id } = await params;
   try {
     const sb = createAdminClient();

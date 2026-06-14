@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Anton, Hanken_Grotesk, Space_Mono } from "next/font/google";
+import { Anton, Hanken_Grotesk, Space_Mono, Noto_Nastaliq_Urdu } from "next/font/google";
 import { Truck } from "lucide-react";
 import Script from "next/script";
 import "./globals.css";
@@ -25,6 +25,12 @@ const hanken = Hanken_Grotesk({
 const spaceMono = Space_Mono({
   variable: "--font-space-mono",
   subsets: ["latin"],
+  weight: ["400", "700"],
+});
+
+const notoNastaliqUrdu = Noto_Nastaliq_Urdu({
+  variable: "--font-noto-nastaliq-urdu",
+  subsets: ["arabic"],
   weight: ["400", "700"],
 });
 
@@ -73,12 +79,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${anton.variable} ${hanken.variable} ${spaceMono.variable}`}>
+    <html lang="en" className={`${anton.variable} ${hanken.variable} ${spaceMono.variable} ${notoNastaliqUrdu.variable}`}>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
         />
+        <noscript><style>{`.reveal { opacity: 1 !important; transform: none !important; }`}</style></noscript>
       </head>
       <body className="min-h-screen flex flex-col">
         {GA_ID && (
@@ -102,7 +109,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </div>
         <Header />
         <MiniCart />
-        <main className="flex-1 pt-[114px]">{children}</main>
+        <main className="flex-1 pt-[var(--header-offset)]">{children}</main>
         <Footer />
         <WhatsAppButton />
         <CookieConsent />

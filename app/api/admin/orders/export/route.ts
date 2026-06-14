@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/utils/supabase/admin";
+import { requireAdmin } from "@/lib/adminAuth";
+
+interface ExportOrderItem { productName: string; quantity: number; }
 
 export async function GET(req: NextRequest) {
+  const authError = await requireAdmin();
+  if (authError) return authError;
+
   try {
     const { searchParams } = req.nextUrl;
     const status  = searchParams.get("status");
@@ -24,7 +30,7 @@ export async function GET(req: NextRequest) {
     if (error) throw error;
 
     const orders = data ?? [];
-    const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const esc = (v: unknown) => { const s = String(v ?? ''); const safe = /^[=+\-@|\t\r]/.test(s) ? "'" + s : s; return '"' + safe.replace(/"/g, '""') + '"'; };
 
     const cols = ["Order ID","Date","Name","Email","Phone","City","Items","Subtotal","Discount","Promo","Shipping","Total","Payment","Shipping Method","Status","Tracking"];
     const rows = orders.map(o => [
@@ -34,7 +40,7 @@ export async function GET(req: NextRequest) {
       o.email,
       o.phone ?? "",
       o.city,
-      (o.items as any[]).map((i: any) => `${i.productName} x${i.quantity}`).join("; "),
+      (o.items as ExportOrderItem[]).map(i => `${i.productName} x${i.quantity}`).join("; "),
       o.subtotal,
       o.discount,
       o.promo_code ?? "",

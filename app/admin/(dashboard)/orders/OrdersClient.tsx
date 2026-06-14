@@ -10,7 +10,7 @@ const STATUS_COLORS: Record<string, string> = {
   shipped:"#06b6d4",  delivered:"#4ade80",  cancelled:"#ef4444", refunded:"#9ca3af",
 };
 
-type Order = {
+export type AdminOrder = {
   id: string; first_name: string; last_name: string; email: string;
   phone: string | null; city: string; total: number; status: string;
   payment_method: string; shipping_method: string | null;
@@ -18,7 +18,7 @@ type Order = {
 };
 
 interface Props {
-  orders: Order[];
+  orders: AdminOrder[];
   total: number;
   page: number;
   totalPages: number;

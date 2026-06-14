@@ -1,6 +1,16 @@
+import { createHmac } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { buildAbandonedCartHtml } from "@/lib/abandoned-cart-email";
+
+function mintCartToken(id: string, exp: number): string {
+  const secret = process.env.CART_RECOVERY_SECRET ?? "";
+  const payloadB64 = Buffer.from(JSON.stringify({ id, exp })).toString("base64url");
+  const sig = createHmac("sha256", secret)
+    .update(`${id}:${exp}`)
+    .digest("hex");
+  return `${payloadB64}.${sig}`;
+}
 
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
@@ -30,9 +40,8 @@ export async function GET(req: NextRequest) {
   let sent = 0;
 
   for (const cart of carts ?? []) {
-    const token = Buffer.from(
-      JSON.stringify({ id: cart.id, exp: Date.now() + 48 * 3600 * 1000 })
-    ).toString("base64url");
+    const exp = Date.now() + 48 * 3600 * 1000;
+    const token = mintCartToken(cart.id, exp);
     const recoveryUrl = `${siteUrl}/cart?recover=${token}`;
 
     const cartItems = Array.isArray(cart.cart_data) ? cart.cart_data : [];

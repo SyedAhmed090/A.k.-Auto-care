@@ -8,7 +8,8 @@ const ALLOWED_ORIGINS = [
 
 export function checkCsrf(req: NextRequest): NextResponse | null {
   const origin = req.headers.get("origin");
-  if (!origin) return null; // server-to-server calls — allow
+  // Require an explicit Origin header — reject requests with no Origin (curl, scripts, etc.)
+  if (!origin) return NextResponse.json({ error: "Forbidden." }, { status: 403 });
   if (ALLOWED_ORIGINS.includes(origin)) return null;
   return NextResponse.json({ error: "Forbidden." }, { status: 403 });
 }

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/utils/supabase/admin";
+import { checkCsrf } from "@/lib/csrf";
+import { requireAdmin } from "@/lib/adminAuth";
 
 const updateSchema = z.object({
   active:     z.boolean().optional(),
@@ -11,6 +13,12 @@ const updateSchema = z.object({
 });
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const authError = await requireAdmin();
+  if (authError) return authError;
+
+  const csrfError = checkCsrf(req);
+  if (csrfError) return csrfError;
+
   try {
     const { id } = await params;
     const parsed = updateSchema.safeParse(await req.json());
@@ -31,7 +39,13 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const authError = await requireAdmin();
+  if (authError) return authError;
+
+  const csrfError = checkCsrf(req);
+  if (csrfError) return csrfError;
+
   try {
     const { id } = await params;
     const supabase = createAdminClient();

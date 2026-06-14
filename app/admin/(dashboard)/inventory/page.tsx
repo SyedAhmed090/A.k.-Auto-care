@@ -105,7 +105,7 @@ export default function InventoryPage() {
           <p className="font-semibold">No products found</p>
         </div>
       ) : (
-        <div className="rounded-[14px] overflow-hidden" style={{ border: "1px solid var(--line)", background: "var(--surface)" }}>
+        <div className="rounded-[14px] overflow-x-auto" style={{ border: "1px solid var(--line)", background: "var(--surface)" }}>
           <table className="w-full text-sm">
             <thead>
               <tr style={{ borderBottom: "1px solid var(--line)" }}>
@@ -167,6 +167,9 @@ export default function InventoryPage() {
                     <td className="px-5 py-4">
                       <button
                         type="button"
+                        role="switch"
+                        aria-checked={row.in_stock}
+                        aria-label={`${p.name} in stock`}
                         onClick={() => markDirty(p.id, { in_stock: !row.in_stock })}
                         className="relative w-11 h-6 rounded-full transition-all"
                         style={{ background: row.in_stock ? "var(--accent)" : "var(--line-2)" }}

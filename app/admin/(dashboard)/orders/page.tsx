@@ -1,5 +1,5 @@
 import { createAdminClient } from "@/utils/supabase/admin";
-import OrdersClient from "./OrdersClient";
+import OrdersClient, { AdminOrder } from "./OrdersClient";
 
 const LIMIT = 25;
 
@@ -29,9 +29,9 @@ async function getOrders(opts: { status: string; search: string; dateFrom: strin
 
     const { data, count, error } = await query;
     if (error) throw error;
-    return { orders: data ?? [], total: count ?? 0 };
+    return { orders: (data ?? []) as AdminOrder[], total: count ?? 0 };
   } catch {
-    return { orders: [], total: 0 };
+    return { orders: [] as AdminOrder[], total: 0 };
   }
 }
 
@@ -48,7 +48,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
 
   return (
     <OrdersClient
-      orders={orders as any}
+      orders={orders}
       total={total}
       page={page}
       totalPages={totalPages}

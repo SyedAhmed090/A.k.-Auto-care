@@ -13,27 +13,35 @@ declare global {
 const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 
 export default function MetaPixel() {
-  if (!pixelId) return null;
-
   useEffect(() => {
+    if (!pixelId) return;
+
     captureUTM();
 
     if (typeof window.fbq === "undefined") {
-      const fbq = function (...args: unknown[]) {
-        (fbq as unknown as { callMethod?: (...a: unknown[]) => void; queue: unknown[][] }).callMethod
-          ? (fbq as unknown as { callMethod: (...a: unknown[]) => void }).callMethod(...args)
-          : (fbq as unknown as { queue: unknown[][] }).queue.push(args);
-      };
-      (fbq as unknown as { push: unknown; loaded: boolean; version: string; queue: unknown[][] }).push = fbq;
-      (fbq as unknown as { push: unknown; loaded: boolean; version: string; queue: unknown[][] }).loaded = true;
-      (fbq as unknown as { push: unknown; loaded: boolean; version: string; queue: unknown[][] }).version = "2.0";
-      (fbq as unknown as { push: unknown; loaded: boolean; version: string; queue: unknown[][] }).queue = [];
-      window.fbq = fbq as unknown as (...args: unknown[]) => void;
+      interface FbqStub {
+        (...args: unknown[]): void;
+        callMethod?: (...a: unknown[]) => void;
+        push: FbqStub;
+        loaded: boolean;
+        version: string;
+        queue: unknown[][];
+      }
+      const stub = function (...args: unknown[]) {
+        stub.callMethod ? stub.callMethod(...args) : stub.queue.push(args);
+      } as unknown as FbqStub;
+      stub.push = stub;
+      stub.loaded = true;
+      stub.version = "2.0";
+      stub.queue = [];
+      window.fbq = stub;
     }
 
     window.fbq("init", pixelId);
     window.fbq("track", "PageView");
   }, []);
+
+  if (!pixelId) return null;
 
   return (
     <Script

@@ -1,21 +1,25 @@
 const RESEND_URL = "https://api.resend.com/emails";
 
-type StatusKey = "confirmed" | "shipped" | "delivered" | "cancelled";
+type StatusKey = "confirmed" | "shipped" | "delivered" | "cancelled" | "processing" | "refunded";
 
 const SUBJECTS: Record<StatusKey, string> = {
-  confirmed: "Your A.K. Auto Care order is confirmed",
-  shipped:   "Your A.K. Auto Care order is on its way",
-  delivered: "Your A.K. Auto Care order has been delivered",
-  cancelled: "Your A.K. Auto Care order has been cancelled",
+  confirmed:  "Your A.K. Auto Care order is confirmed",
+  processing: "Your A.K. Auto Care order is being processed",
+  shipped:    "Your A.K. Auto Care order is on its way",
+  delivered:  "Your A.K. Auto Care order has been delivered",
+  cancelled:  "Your A.K. Auto Care order has been cancelled",
+  refunded:   "Your A.K. Auto Care order has been refunded",
 };
 
 function buildHtml(status: StatusKey, o: { first_name: string; id: string; tracking_number?: string | null; total: number }) {
   const orderId = `AK-${o.id.slice(0, 8).toUpperCase()}`;
   const msgs: Record<StatusKey, string> = {
-    confirmed: "Great news! We've confirmed your order and it's now being prepared.",
-    shipped:   `Your order is on its way!${o.tracking_number ? ` Tracking number: <strong>${o.tracking_number}</strong>` : ""}`,
-    delivered: "Your order has been delivered. We hope you love your new products!",
-    cancelled: "Your order has been cancelled. Contact us if you have any questions.",
+    confirmed:  "Great news! We've confirmed your order and it's now being prepared.",
+    processing: "Your order is currently being processed and will be dispatched soon.",
+    shipped:    `Your order is on its way!${o.tracking_number ? ` Tracking number: <strong>${o.tracking_number}</strong>` : ""}`,
+    delivered:  "Your order has been delivered. We hope you love your new products!",
+    cancelled:  "Your order has been cancelled. Contact us if you have any questions.",
+    refunded:   "Your order has been refunded. Please allow 5–7 business days for the amount to reflect in your account. Contact us if you have any questions.",
   };
   return `<!DOCTYPE html><html><head><meta charset="utf-8"></head>
 <body style="font-family:sans-serif;max-width:580px;margin:0 auto;padding:24px;color:#1a1a1a;">
@@ -37,7 +41,7 @@ export async function sendStatusEmail(
   const key = process.env.RESEND_API_KEY;
   if (!key) return;
 
-  const notify: StatusKey[] = ["confirmed", "shipped", "delivered", "cancelled"];
+  const notify: StatusKey[] = ["confirmed", "processing", "shipped", "delivered", "cancelled", "refunded"];
   if (!notify.includes(status as StatusKey)) return;
 
   const s = status as StatusKey;

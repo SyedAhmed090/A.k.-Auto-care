@@ -26,10 +26,15 @@ const TABS: { key: Tab; label: string }[] = [
 
 function StarDisplay({ rating }: { rating: number }) {
   return (
-    <div style={{ display: "flex", gap: "2px" }}>
+    <div
+      style={{ display: "flex", gap: "2px" }}
+      role="img"
+      aria-label={`Rated ${rating} out of 5 stars`}
+    >
       {[1, 2, 3, 4, 5].map((s) => (
         <Star
           key={s}
+          aria-hidden="true"
           style={{
             width: "12px",
             height: "12px",
@@ -192,7 +197,7 @@ export default function AdminReviewsPage() {
             borderRadius: "14px",
             border: "1px solid var(--line)",
             background: "var(--surface)",
-            overflow: "hidden",
+            overflowX: "auto",
           }}
         >
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: ".875rem" }}>
@@ -208,8 +213,7 @@ export default function AdminReviewsPage() {
                 <tr
                   key={r.id}
                   style={{ borderBottom: "1px solid var(--line)" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,.02)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                  className="transition-colors hover:bg-white/[.02]"
                 >
                   <td style={{ padding: "14px 20px" }}>
                     <div style={{ fontFamily: "var(--font-hanken)", color: "var(--text)", fontWeight: 600, fontSize: ".85rem" }}>

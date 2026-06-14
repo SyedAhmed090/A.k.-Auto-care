@@ -1,10 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createAdminClient } from "@/utils/supabase/admin";
+import { requireAdmin } from "@/lib/adminAuth";
+import { checkCsrf } from "@/lib/csrf";
+
+const patchSchema = z.object({
+  approved: z.boolean(),
+});
 
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const csrfError = checkCsrf(req);
+  if (csrfError) return csrfError;
+
+  const authError = await requireAdmin();
+  if (authError) return authError;
+
   const { id } = await params;
   let body: unknown;
   try {
@@ -13,10 +26,9 @@ export async function PATCH(
     return NextResponse.json({ error: "Invalid JSON." }, { status: 400 });
   }
 
-  const { approved } = body as Record<string, unknown>;
-  if (typeof approved !== "boolean") {
-    return NextResponse.json({ error: "approved must be a boolean." }, { status: 400 });
-  }
+  const parsed = patchSchema.safeParse(body);
+  if (!parsed.success) return NextResponse.json({ error: "Invalid fields." }, { status: 400 });
+  const { approved } = parsed.data;
 
   try {
     const sb = createAdminClient();
@@ -30,9 +42,15 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const csrfError = checkCsrf(req);
+  if (csrfError) return csrfError;
+
+  const authError = await requireAdmin();
+  if (authError) return authError;
+
   const { id } = await params;
   try {
     const sb = createAdminClient();

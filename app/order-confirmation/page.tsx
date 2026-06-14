@@ -4,6 +4,7 @@ import { CheckCircle, Package, ArrowRight } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import { createAdminClient } from "@/utils/supabase/admin";
 import PurchasePixel from "@/components/analytics/PurchasePixel";
+import type { OrderItem } from "@/types/order";
 
 export const metadata: Metadata = {
   title: "Order Confirmed",
@@ -15,7 +16,8 @@ async function getOrder(id: string) {
     const supabase = createAdminClient();
     const { data } = await supabase.from("orders").select().eq("id", id).single();
     return data;
-  } catch {
+  } catch (err) {
+    console.error('[order-confirmation] getOrder failed:', err);
     return null;
   }
 }
@@ -61,6 +63,26 @@ export default async function OrderConfirmationPage({
           {name ? `Thank you, ${order.first_name}.` : "Thank you."} We&apos;ll be in touch shortly.
         </p>
 
+        {!order ? (
+          <div
+            className="rounded-[20px] p-6 mb-8 text-left w-full"
+            style={{ background: "var(--surface)", border: "1px solid var(--line-2)" }}
+          >
+            <div className="flex items-center gap-3 mb-4" style={{ borderBottom: "1px solid var(--line)", paddingBottom: "1rem" }}>
+              <Package className="w-[18px] h-[18px] flex-shrink-0" style={{ color: "var(--accent)" }} />
+              <h2 className="uppercase" style={{ fontFamily: "var(--font-anton)", fontSize: "1.2rem" }}>Order Details</h2>
+            </div>
+            <div className="text-sm space-y-3">
+              <div className="flex items-center justify-between py-3" style={{ borderBottom: "1px solid var(--line)" }}>
+                <span style={{ color: "var(--muted)" }}>Order Number</span>
+                <span className="font-semibold" style={{ fontFamily: "var(--font-space-mono)", fontSize: ".78rem" }}>{displayId}</span>
+              </div>
+              <p className="text-[.9rem] pt-1" style={{ color: "var(--muted)" }}>
+                Your order was placed. Email confirmation is on its way.
+              </p>
+            </div>
+          </div>
+        ) : (
         <div
           className="rounded-[20px] p-6 mb-8 text-left w-full"
           style={{ background: "var(--surface)", border: "1px solid var(--line-2)" }}
@@ -70,21 +92,21 @@ export default async function OrderConfirmationPage({
             <h2 className="uppercase" style={{ fontFamily: "var(--font-anton)", fontSize: "1.2rem" }}>Order Details</h2>
           </div>
           <div className="text-sm">
-            {[
+            {((): Array<{ label: string; value: string; accent?: boolean; mono?: boolean }> => [
               { label: "Order Number", value: displayId, mono: true },
               { label: "Total", value: total },
               ...(redactedEmail ? [{ label: "Email", value: redactedEmail }] : []),
               { label: "Estimated Delivery", value: "3–5 business days" },
               { label: "Status", value: "Processing", accent: true },
-            ].map((row) => (
+            ])().map((row) => (
               <div key={row.label} className="flex items-center justify-between py-3" style={{ borderBottom: "1px solid var(--line)" }}>
                 <span style={{ color: "var(--muted)" }}>{row.label}</span>
                 <span
                   className="font-semibold text-right"
                   style={{
-                    color: (row as any).accent ? "var(--accent)" : "var(--text)",
-                    fontFamily: (row as any).mono ? "var(--font-space-mono)" : "inherit",
-                    fontSize: (row as any).mono ? ".78rem" : "inherit",
+                    color: row.accent ? "var(--accent)" : "var(--text)",
+                    fontFamily: row.mono ? "var(--font-space-mono)" : "inherit",
+                    fontSize: row.mono ? ".78rem" : "inherit",
                   }}
                 >
                   {row.value}
@@ -98,7 +120,7 @@ export default async function OrderConfirmationPage({
               <p className="text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
                 Items ordered
               </p>
-              {order.items.map((item: any, i: number) => (
+              {(order.items as OrderItem[]).map((item, i) => (
                 <div key={i} className="flex items-center justify-between gap-3 text-sm">
                   <div className="flex items-center gap-2 min-w-0">
                     <span
@@ -117,6 +139,7 @@ export default async function OrderConfirmationPage({
             </div>
           )}
         </div>
+        )}
 
         <Link
           href="/shop"

@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/utils/supabase/admin";
+import { requireAdmin } from "@/lib/adminAuth";
+import { checkCsrf } from "@/lib/csrf";
 
 export async function GET() {
+  const authError = await requireAdmin();
+  if (authError) return authError;
+
   try {
     const sb = createAdminClient();
     const { data, error } = await sb
@@ -17,6 +22,12 @@ export async function GET() {
 }
 
 export async function PATCH(req: NextRequest) {
+  const csrfError = checkCsrf(req);
+  if (csrfError) return csrfError;
+
+  const authError = await requireAdmin();
+  if (authError) return authError;
+
   try {
     const body = await req.json();
     const updates: Array<{ id: string; stock: number | null; in_stock: boolean }> = body.updates ?? [];

@@ -2,8 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { sendStatusEmail } from "@/lib/email";
+import { checkCsrf } from "@/lib/csrf";
+import { requireAdmin } from "@/lib/adminAuth";
 
 const ORDER_STATUSES = ["pending","confirmed","processing","shipped","delivered","cancelled","refunded"] as const;
+
+interface CurrentOrder {
+  status: string;
+  email: string;
+  first_name: string;
+  tracking_number: string | null;
+  tracking_carrier: string | null;
+  total: number;
+}
 
 const updateSchema = z.object({
   status:           z.enum(ORDER_STATUSES).optional(),
@@ -13,6 +24,9 @@ const updateSchema = z.object({
 });
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const authError = await requireAdmin();
+  if (authError) return authError;
+
   try {
     const { id } = await params;
     const supabase = createAdminClient();
@@ -25,6 +39,12 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const authError = await requireAdmin();
+  if (authError) return authError;
+
+  const csrfError = checkCsrf(req);
+  if (csrfError) return csrfError;
+
   try {
     const { id } = await params;
     const parsed = updateSchema.safeParse(await req.json());
@@ -36,7 +56,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       .from("orders")
       .select("status, email, first_name, tracking_number, tracking_carrier, total")
       .eq("id", id)
-      .single() as any;
+      .single() as { data: CurrentOrder | null; error: unknown };
 
     const updates: Record<string, unknown> = { updated_at: new Date().toISOString() };
     if (parsed.data.status            !== undefined) updates.status            = parsed.data.status;

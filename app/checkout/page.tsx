@@ -63,6 +63,7 @@ export default function CheckoutPage() {
   const [submitError, setSubmitError] = useState("");
   const [shippingId, setShippingId] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("cod");
+  const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
   const router = useRouter();
   const submittingRef = useRef(false);
 
@@ -358,7 +359,13 @@ export default function CheckoutPage() {
                 {items.map((item) => (
                   <div key={`${item.product.id}-${item.variant.sku}`} className="flex gap-3">
                     <div className="relative w-12 h-12 rounded-[8px] overflow-hidden flex-shrink-0" style={{ background: "var(--surface-2)" }}>
-                      <Image src={item.product.images[0]} alt={item.product.name} fill className="object-cover opacity-70" onError={(e) => { e.currentTarget.src = "/placeholder.svg"; }} />
+                      <Image
+                        src={imgErrors[`${item.product.id}-${item.variant.sku}`] ? "/placeholder.svg" : item.product.images[0]}
+                        alt={item.product.name}
+                        fill
+                        className="object-cover opacity-70"
+                        onError={() => setImgErrors((prev) => ({ ...prev, [`${item.product.id}-${item.variant.sku}`]: true }))}
+                      />
                       <span
                         className="absolute -top-1 -right-1 w-[18px] h-[18px] rounded-full text-[.6rem] font-bold grid place-items-center"
                         style={{ background: "var(--muted)", color: "var(--bg)", fontFamily: "var(--font-space-mono)" }}
@@ -377,7 +384,7 @@ export default function CheckoutPage() {
                 ))}
 
                 <div className="pt-3 space-y-2 text-sm" style={{ borderTop: "1px solid var(--line)" }}>
-                  {[
+                  {((): Array<{ l: string; v: string; accent?: boolean; green?: boolean }> => [
                     { l: "Subtotal", v: formatPrice(sub) },
                     ...(promoDiscount > 0 ? [{ l: `Discount (${promoCode})`, v: `-${formatPrice(discount)}`, accent: true }] : []),
                     {
@@ -385,10 +392,10 @@ export default function CheckoutPage() {
                       v: shippingCost === 0 ? "FREE" : shippingOptions.length === 0 ? "—" : formatPrice(shippingCost),
                       green: shippingCost === 0,
                     },
-                  ].map((row) => (
+                  ])().map((row) => (
                     <div key={row.l} className="flex justify-between">
                       <span style={{ color: "var(--muted)" }}>{row.l}</span>
-                      <span style={{ color: (row as any).accent ? "var(--accent)" : (row as any).green ? "#4ade80" : "var(--text)" }}>{row.v}</span>
+                      <span style={{ color: row.accent ? "var(--accent)" : row.green ? "#4ade80" : "var(--text)" }}>{row.v}</span>
                     </div>
                   ))}
                   <div className="flex justify-between pt-2" style={{ borderTop: "1px solid var(--line)" }}>
