@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
     const insertData = id ? { id, ...productData } : productData;
     const { data: product, error: productError } = await sb
       .from("products")
-      .insert(insertData)
+      .insert(insertData as any)
       .select("id")
       .single();
     if (productError) throw productError;

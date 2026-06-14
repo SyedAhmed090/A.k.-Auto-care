@@ -11,7 +11,9 @@ export function getAdminSecret(): string {
 }
 
 export async function makeToken(secret: string): Promise<string> {
-  const data = new TextEncoder().encode(`ak-admin:${secret}`);
+  // Include UTC date so tokens expire at midnight daily regardless of cookie maxAge
+  const day = new Date().toISOString().slice(0, 10);
+  const data = new TextEncoder().encode(`ak-admin:${secret}:${day}`);
   const hashBuffer = await crypto.subtle.digest("SHA-256", data);
   return Array.from(new Uint8Array(hashBuffer))
     .map((b) => b.toString(16).padStart(2, "0"))

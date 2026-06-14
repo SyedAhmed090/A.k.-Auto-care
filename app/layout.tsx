@@ -37,15 +37,18 @@ const notoNastaliqUrdu = Noto_Nastaliq_Urdu({
 const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "923000000000";
+const orgPhone = `+${WHATSAPP_NUMBER.replace(/\D/g, "")}`;
+
 const orgSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "A.K. Auto Care",
   url: "https://www.akautocare.pk",
-  logo: "https://www.akautocare.pk/logo.png",
+  logo: "https://www.akautocare.pk/logo.svg",
   contactPoint: {
     "@type": "ContactPoint",
-    telephone: "+92-300-0000000",
+    telephone: orgPhone,
     contactType: "customer service",
     areaServed: "PK",
     availableLanguage: ["English", "Urdu"],

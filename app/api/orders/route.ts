@@ -130,7 +130,7 @@ export async function POST(req: NextRequest) {
     }
 
     const afterDiscount = parseFloat((subtotal - discount).toFixed(2));
-    const shippingOptions = getShippingOptions(data.country, subtotal);
+    const shippingOptions = getShippingOptions(data.country, afterDiscount);
     const selectedShipping = shippingOptions.find(o => o.id === data.shippingMethod) ?? shippingOptions[0];
     const shippingCost = selectedShipping?.price ?? 0;
     const total = parseFloat((afterDiscount + shippingCost).toFixed(2));
@@ -140,7 +140,7 @@ export async function POST(req: NextRequest) {
       .insert({
         email: data.email, phone: data.phone,
         first_name: data.firstName, last_name: data.lastName,
-        address: data.address, city: data.city, province: data.province ?? null, postcode: data.postcode, country: data.country,
+        address: data.address, city: data.city, postcode: data.postcode, country: data.country,
         shipping_method: selectedShipping?.label ?? "Standard",
         payment_method: data.paymentMethod,
         items: lineItems, subtotal, discount, shipping: shippingCost, total,
@@ -156,13 +156,8 @@ export async function POST(req: NextRequest) {
 
     // Atomic promo increment — requires 003_stock_functions.sql migration
     if (promoUsed) {
-      try {
-        await supabase.rpc("increment_promo_uses", { promo_id: promoUsed.id });
-      } catch {
-        // RPC not yet migrated — fall back to non-atomic update
-        const { data: cur } = await supabase.from("promo_codes").select("uses").eq("id", promoUsed.id).single();
-        if (cur) await supabase.from("promo_codes").update({ uses: cur.uses + 1 }).eq("id", promoUsed.id);
-      }
+      const { error: rpcErr } = await supabase.rpc("increment_promo_uses", { promo_id: promoUsed.id });
+      if (rpcErr) console.error("[orders] increment_promo_uses RPC failed — run 003_stock_functions.sql migration:", rpcErr);
     }
 
     // Reserve stock — requires 003_stock_functions.sql migration (best-effort)

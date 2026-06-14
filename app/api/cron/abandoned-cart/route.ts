@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
     const token = mintCartToken(cart.id, exp);
     const recoveryUrl = `${siteUrl}/cart?recover=${token}`;
 
-    const cartItems = Array.isArray(cart.cart_data) ? cart.cart_data : [];
+    const cartItems = (Array.isArray(cart.cart_data) ? cart.cart_data : []) as unknown as Parameters<typeof buildAbandonedCartHtml>[0]['cartItems'];
 
     if (apiKey) {
       try {

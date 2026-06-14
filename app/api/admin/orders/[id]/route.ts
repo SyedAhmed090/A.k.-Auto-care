@@ -66,7 +66,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
     const { data, error } = await supabase
       .from("orders")
-      .update(updates)
+      .update(updates as any)
       .eq("id", id)
       .select()
       .single();

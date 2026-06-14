@@ -76,7 +76,7 @@ export default function CheckoutPage() {
   const country = useWatch({ control, name: "country", defaultValue: "" });
   const emailValue = useWatch({ control, name: "email", defaultValue: "" });
 
-  const shippingOptions = getShippingOptions(country, sub);
+  const shippingOptions = getShippingOptions(country, afterDiscount);
   const resolvedShipping = shippingOptions.find((o) => o.id === shippingId) ?? shippingOptions[0];
   const shippingCost = resolvedShipping?.price ?? 0;
   const total = afterDiscount + shippingCost;
@@ -84,7 +84,7 @@ export default function CheckoutPage() {
 
   // Reset shipping selection when country (and therefore options) changes
   useEffect(() => {
-    const opts = getShippingOptions(country, sub);
+    const opts = getShippingOptions(country, afterDiscount);
     if (opts.length > 0) setShippingId(opts[0].id);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [country]);

@@ -35,12 +35,12 @@ export async function GET(req: NextRequest) {
     const cols = ["Order ID","Date","Name","Email","Phone","City","Items","Subtotal","Discount","Promo","Shipping","Total","Payment","Shipping Method","Status","Tracking"];
     const rows = orders.map(o => [
       `AK-${o.id.slice(0, 8).toUpperCase()}`,
-      new Date(o.created_at).toLocaleDateString("en-PK"),
+      new Date(o.created_at ?? "").toLocaleDateString("en-PK"),
       `${o.first_name} ${o.last_name}`,
       o.email,
       o.phone ?? "",
       o.city,
-      (o.items as ExportOrderItem[]).map(i => `${i.productName} x${i.quantity}`).join("; "),
+      (o.items as unknown as ExportOrderItem[]).map(i => `${i.productName} x${i.quantity}`).join("; "),
       o.subtotal,
       o.discount,
       o.promo_code ?? "",

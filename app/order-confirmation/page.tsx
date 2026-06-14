@@ -60,7 +60,7 @@ export default async function OrderConfirmationPage({
           Order Confirmed!
         </h1>
         <p className="mb-8 text-[.97rem]" style={{ color: "var(--muted)" }}>
-          {name ? `Thank you, ${order.first_name}.` : "Thank you."} We&apos;ll be in touch shortly.
+          {order ? `Thank you, ${order.first_name}.` : "Thank you."} We&apos;ll be in touch shortly.
         </p>
 
         {!order ? (
@@ -120,7 +120,7 @@ export default async function OrderConfirmationPage({
               <p className="text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
                 Items ordered
               </p>
-              {(order.items as OrderItem[]).map((item, i) => (
+              {(order.items as unknown as OrderItem[]).map((item, i) => (
                 <div key={i} className="flex items-center justify-between gap-3 text-sm">
                   <div className="flex items-center gap-2 min-w-0">
                     <span

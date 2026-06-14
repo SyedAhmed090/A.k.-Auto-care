@@ -1,4 +1,4 @@
-import { createAdminClient } from "@/utils/supabase/admin";
+import { createPublicClient } from "@/utils/supabase/public";
 import type { Product, Variant } from "@/data/products";
 
 type DbVariant = {
@@ -16,7 +16,7 @@ type DbProductCard = {
   category_slug: string;
   tagline: string;
   price: number;
-  images: string[];
+  images: unknown;
   stock: number | null;
   in_stock: boolean;
   featured: boolean;
@@ -30,7 +30,7 @@ type DbProductCard = {
 type DbProduct = DbProductCard & {
   description: string;
   how_to_use: string;
-  specs: { label: string; value: string }[];
+  specs: unknown;
   created_at: string;
 };
 
@@ -47,6 +47,7 @@ function mapVariants(product_variants: DbVariant[]): Variant[] {
 }
 
 function mapProductCard(db: DbProductCard): Product {
+  const row = db as any;
   return {
     id: db.id,
     slug: db.slug,
@@ -58,7 +59,7 @@ function mapProductCard(db: DbProductCard): Product {
     specs: [],
     price: db.price,
     variants: mapVariants(db.product_variants),
-    images: db.images ?? [],
+    images: (row.images as string[]) ?? [],
     stock: db.stock ?? undefined,
     inStock: db.in_stock,
     featured: db.featured,
@@ -70,6 +71,7 @@ function mapProductCard(db: DbProductCard): Product {
 }
 
 function mapProduct(db: DbProduct): Product {
+  const row = db as any;
   return {
     id: db.id,
     slug: db.slug,
@@ -78,10 +80,10 @@ function mapProduct(db: DbProduct): Product {
     tagline: db.tagline,
     description: db.description,
     howToUse: db.how_to_use,
-    specs: db.specs ?? [],
+    specs: (row.specs as { label: string; value: string }[]) ?? [],
     price: db.price,
     variants: mapVariants(db.product_variants),
-    images: db.images ?? [],
+    images: (row.images as string[]) ?? [],
     stock: db.stock ?? undefined,
     inStock: db.in_stock,
     featured: db.featured,
@@ -93,7 +95,7 @@ function mapProduct(db: DbProduct): Product {
 }
 
 export async function getProducts(): Promise<Product[]> {
-  const sb = createAdminClient();
+  const sb = createPublicClient();
   const { data, error } = await sb
     .from("products")
     .select(SELECT_CARD)
@@ -104,7 +106,7 @@ export async function getProducts(): Promise<Product[]> {
 }
 
 export async function getFeaturedProducts(): Promise<Product[]> {
-  const sb = createAdminClient();
+  const sb = createPublicClient();
   const { data, error } = await sb
     .from("products")
     .select(SELECT_CARD)
@@ -116,7 +118,7 @@ export async function getFeaturedProducts(): Promise<Product[]> {
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  const sb = createAdminClient();
+  const sb = createPublicClient();
   const { data, error } = await sb
     .from("products")
     .select(SELECT_DETAIL)
@@ -128,7 +130,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 }
 
 export async function getProductsByCategory(categorySlug: string): Promise<Product[]> {
-  const sb = createAdminClient();
+  const sb = createPublicClient();
   const { data, error } = await sb
     .from("products")
     .select(SELECT_CARD)
@@ -140,7 +142,7 @@ export async function getProductsByCategory(categorySlug: string): Promise<Produ
 }
 
 export async function getRelatedProducts(product: Product, limit = 4): Promise<Product[]> {
-  const sb = createAdminClient();
+  const sb = createPublicClient();
   const { data, error } = await sb
     .from("products")
     .select(SELECT_CARD)
@@ -157,7 +159,7 @@ export async function searchProducts(query: string): Promise<Product[]> {
   const q = query.trim();
   if (!q) return getProducts();
   const safe = q.replace(/[%_,()]/g, '\\$&');
-  const sb = createAdminClient();
+  const sb = createPublicClient();
   const { data, error } = await sb
     .from("products")
     .select(SELECT_CARD)
@@ -170,7 +172,7 @@ export async function searchProducts(query: string): Promise<Product[]> {
 
 export async function getProductsByIds(ids: string[]): Promise<Product[]> {
   if (!ids.length) return [];
-  const sb = createAdminClient();
+  const sb = createPublicClient();
   const { data, error } = await sb
     .from("products")
     .select(SELECT_CARD)

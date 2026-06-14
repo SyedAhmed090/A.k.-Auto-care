@@ -74,7 +74,7 @@ export async function PATCH(
     const sb = createAdminClient();
 
     if (Object.keys(productData).length > 0) {
-      const { error } = await sb.from("products").update(productData).eq("id", id);
+      const { error } = await sb.from("products").update(productData as any).eq("id", id);
       if (error) throw error;
     }
 
