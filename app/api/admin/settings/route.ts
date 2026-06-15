@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/utils/supabase/admin";
-import { requireAdmin } from "@/lib/adminAuth";
+import { requireAdmin, getAdminSession } from "@/lib/adminAuth";
 import { checkCsrf } from "@/lib/csrf";
+import { logAudit } from "@/lib/audit";
 import { getSettings, invalidateSettingsCache, type SettingsGroup } from "@/lib/settings";
 import type { Json } from "@/types/supabase";
 
@@ -100,6 +101,11 @@ export async function PATCH(req: NextRequest) {
     if (error) throw error;
 
     invalidateSettingsCache();
+    await logAudit(await getAdminSession(), {
+      action: "settings.update",
+      entity: "settings",
+      meta: { groups: groups.map(([k]) => k) },
+    });
     const settings = await getSettings();
     return NextResponse.json({ settings });
   } catch (err) {

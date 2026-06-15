@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/utils/supabase/admin";
-import { requireAdmin } from "@/lib/adminAuth";
+import { requireAdmin, getAdminSession } from "@/lib/adminAuth";
 import { checkCsrf } from "@/lib/csrf";
+import { logAudit } from "@/lib/audit";
 
 const variantSchema = z.object({
   label:      z.string().min(1).max(80),
@@ -113,6 +114,7 @@ export async function DELETE(
     const sb = createAdminClient();
     const { error } = await sb.from("products").delete().eq("id", id);
     if (error) throw error;
+    await logAudit(await getAdminSession(), { action: "product.delete", entity: "product", entityId: id });
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Admin product DELETE error:", err);

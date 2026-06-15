@@ -3,7 +3,8 @@ import { z } from "zod";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { sendStatusEmail } from "@/lib/email";
 import { checkCsrf } from "@/lib/csrf";
-import { requireAdmin } from "@/lib/adminAuth";
+import { requireAdmin, getAdminSession } from "@/lib/adminAuth";
+import { logAudit } from "@/lib/audit";
 
 const ORDER_STATUSES = ["pending","confirmed","processing","shipped","delivered","cancelled","refunded"] as const;
 
@@ -74,6 +75,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (error) throw error;
 
     if (current && parsed.data.status && parsed.data.status !== current.status) {
+      await logAudit(await getAdminSession(), {
+        action: "order.status_change",
+        entity: "order",
+        entityId: id,
+        meta: { from: current.status, to: parsed.data.status },
+      });
       await sendStatusEmail(
         {
           id,

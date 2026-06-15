@@ -1,14 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifyToken } from "@/lib/adminToken";
 
 const COOKIE = "ak_admin_session";
-
-async function sha256Hex(text: string): Promise<string> {
-  const data = new TextEncoder().encode(text);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-  return Array.from(new Uint8Array(hashBuffer))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-}
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -27,11 +20,11 @@ export async function middleware(req: NextRequest) {
     return new NextResponse("Admin not configured.", { status: 503 });
   }
 
+  // Accepts the legacy shared-secret token and per-user (v2) tokens alike.
   const token = req.cookies.get(COOKIE)?.value;
-  const day = new Date().toISOString().slice(0, 10);
-  const expected = await sha256Hex(`ak-admin:${secret}:${day}`);
+  const identity = await verifyToken(token, secret);
 
-  if (token !== expected) {
+  if (!identity) {
     // API routes get a JSON 401; page routes get redirected to login
     if (pathname.startsWith("/api/")) {
       return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
