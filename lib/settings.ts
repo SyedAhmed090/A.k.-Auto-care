@@ -178,8 +178,6 @@ export const WHATSAPP_MESSAGE = encodeURIComponent(
   "Hi! I'm interested in A.K. Auto Care products. Can you help me?"
 );
 
-export const whatsappLink = (store: StoreSettings) => `https://wa.me/${store.whatsapp}`;
-
 /** Human-readable phone, e.g. "+92 300 0000000". */
 export const whatsappDisplay = (store: StoreSettings) =>
   `+${store.whatsapp.slice(0, 2)} ${store.whatsapp.slice(2, 5)} ${store.whatsapp.slice(5)}`;

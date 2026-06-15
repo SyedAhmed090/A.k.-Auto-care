@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { sendStatusEmail } from "@/lib/email";
 import { checkCsrf } from "@/lib/csrf";
-import { requireAdmin, getAdminSession } from "@/lib/adminAuth";
+import { requireAdmin, requireRole, getAdminSession } from "@/lib/adminAuth";
 import { logAudit } from "@/lib/audit";
 
 const ORDER_STATUSES = ["pending","confirmed","processing","shipped","delivered","cancelled","refunded"] as const;
@@ -51,6 +51,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const parsed = updateSchema.safeParse(await req.json());
     if (!parsed.success) return NextResponse.json({ error: "Invalid data." }, { status: 400 });
 
+    // Refunds are a sensitive financial action — owner/manager only.
+    if (parsed.data.status === "refunded") {
+      const { error: roleErr } = await requireRole(["owner", "manager"]);
+      if (roleErr) return roleErr;
+    }
+
     const supabase = createAdminClient();
 
     const { data: current } = await supabase
@@ -81,17 +87,18 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         entityId: id,
         meta: { from: current.status, to: parsed.data.status },
       });
-      await sendStatusEmail(
-        {
-          id,
-          email:            current.email,
-          first_name:       current.first_name,
-          tracking_number:  parsed.data.tracking_number  ?? current.tracking_number,
-          tracking_carrier: parsed.data.tracking_carrier ?? current.tracking_carrier,
-          total:            current.total,
-        },
-        parsed.data.status
-      );
+      // Send the status email after the response so the admin's click doesn't
+      // block on the Resend API round-trip.
+      const newStatus = parsed.data.status;
+      const emailData = {
+        id,
+        email:            current.email,
+        first_name:       current.first_name,
+        tracking_number:  parsed.data.tracking_number  ?? current.tracking_number,
+        tracking_carrier: parsed.data.tracking_carrier ?? current.tracking_carrier,
+        total:            current.total,
+      };
+      after(() => sendStatusEmail(emailData, newStatus));
     }
 
     return NextResponse.json({ order: data });

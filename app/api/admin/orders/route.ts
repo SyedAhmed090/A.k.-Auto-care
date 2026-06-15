@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { requireAdmin } from "@/lib/adminAuth";
+import { sanitizeSearchTerm } from "@/lib/utils";
 
 export async function GET(req: NextRequest) {
   const authError = await requireAdmin();
@@ -29,10 +30,12 @@ export async function GET(req: NextRequest) {
     if (status && status !== "all") query = query.eq("status", status);
 
     if (search) {
-      const s = search.replace(/[%_]/g, "\\$&");
-      query = query.or(
-        `first_name.ilike.%${s}%,last_name.ilike.%${s}%,email.ilike.%${s}%,phone.ilike.%${s}%`
-      );
+      const s = sanitizeSearchTerm(search);
+      if (s) {
+        query = query.or(
+          `first_name.ilike.%${s}%,last_name.ilike.%${s}%,email.ilike.%${s}%,phone.ilike.%${s}%`
+        );
+      }
     }
 
     if (dateFrom) query = query.gte("created_at", `${dateFrom}T00:00:00`);

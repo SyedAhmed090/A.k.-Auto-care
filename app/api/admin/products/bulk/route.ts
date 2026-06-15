@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/utils/supabase/admin";
-import { requireAdmin } from "@/lib/adminAuth";
+import { requireRole } from "@/lib/adminAuth";
 import { checkCsrf } from "@/lib/csrf";
 import type { Database } from "@/types/supabase";
 
@@ -36,7 +36,7 @@ export async function PATCH(req: NextRequest) {
   const csrfError = checkCsrf(req);
   if (csrfError) return csrfError;
 
-  const authError = await requireAdmin();
+  const { error: authError } = await requireRole(["owner", "manager"]);
   if (authError) return authError;
 
   try {

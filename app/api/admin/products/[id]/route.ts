@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/utils/supabase/admin";
-import { requireAdmin, getAdminSession } from "@/lib/adminAuth";
+import { requireAdmin, requireRole, getAdminSession } from "@/lib/adminAuth";
 import { checkCsrf } from "@/lib/csrf";
 import { logAudit } from "@/lib/audit";
 
@@ -106,7 +106,7 @@ export async function DELETE(
   const csrfError = checkCsrf(req);
   if (csrfError) return csrfError;
 
-  const authError = await requireAdmin();
+  const { error: authError } = await requireRole(["owner", "manager"]);
   if (authError) return authError;
 
   const { id } = await params;

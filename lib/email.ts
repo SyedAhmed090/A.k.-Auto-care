@@ -1,4 +1,4 @@
-import { getTemplate, renderEmail, type EmailTemplateKey } from "@/lib/email-templates";
+import { getTemplate, renderEmail, escapeHtml, type EmailTemplateKey } from "@/lib/email-templates";
 
 const RESEND_URL = "https://api.resend.com/emails";
 
@@ -67,7 +67,7 @@ export function buildOrderConfirmationHtml(d: OrderEmailData): string {
     .map(
       (i) =>
         `<tr>
-          <td style="padding:8px 0;border-bottom:1px solid #2a2a2a;color:#ccc">${i.productName} — ${i.variantLabel}</td>
+          <td style="padding:8px 0;border-bottom:1px solid #2a2a2a;color:#ccc">${escapeHtml(i.productName)} — ${escapeHtml(i.variantLabel)}</td>
           <td style="padding:8px 0;border-bottom:1px solid #2a2a2a;text-align:center;color:#ccc">${i.quantity}</td>
           <td style="padding:8px 0;border-bottom:1px solid #2a2a2a;text-align:right;color:#ccc">${fmt(i.price * i.quantity)}</td>
         </tr>`
@@ -82,7 +82,7 @@ export function buildOrderConfirmationHtml(d: OrderEmailData): string {
       <h1 style="margin:0;color:#000;font-size:1.4rem">Order Confirmed ✓</h1>
     </div>
     <div style="background:#1a1a1a;padding:24px;border-radius:0 0 12px 12px">
-      <p style="color:#aaa">Hi ${d.firstName}, thank you for your order!</p>
+      <p style="color:#aaa">Hi ${escapeHtml(d.firstName)}, thank you for your order!</p>
       <p style="color:#aaa">Order ID: <strong style="color:#4fa8e6">#${orderId}</strong></p>
       <table style="width:100%;border-collapse:collapse;margin:16px 0">
         <thead>
@@ -102,8 +102,8 @@ export function buildOrderConfirmationHtml(d: OrderEmailData): string {
       </div>
       <hr style="border:none;border-top:1px solid #333;margin:16px 0"/>
       <p style="color:#aaa;font-size:.85rem">
-        Payment: <strong style="color:#fff">${d.paymentMethod.toUpperCase()}</strong><br/>
-        Delivery to: ${d.address}, ${d.city}
+        Payment: <strong style="color:#fff">${escapeHtml(d.paymentMethod).toUpperCase()}</strong><br/>
+        Delivery to: ${escapeHtml(d.address)}, ${escapeHtml(d.city)}
       </p>
       ${d.paymentMethod !== "cod" ? `<p style="color:#4fa8e6;font-size:.85rem">Please send your payment screenshot to our WhatsApp to confirm your order.</p>` : ""}
       <p style="color:#555;font-size:.75rem;margin-top:24px">A.K. Auto Care · Karachi, Pakistan · hello@akautocare.pk</p>

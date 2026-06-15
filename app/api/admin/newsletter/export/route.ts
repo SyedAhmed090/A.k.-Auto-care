@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/utils/supabase/admin";
-import { requireAdmin } from "@/lib/adminAuth";
+import { requireRole } from "@/lib/adminAuth";
 
 export async function GET(req: NextRequest) {
-  const authError = await requireAdmin();
+  // Bulk subscriber PII export — restrict to owner/manager.
+  const { error: authError } = await requireRole(["owner", "manager"]);
   if (authError) return authError;
 
   try {

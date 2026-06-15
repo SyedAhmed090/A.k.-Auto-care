@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { checkCsrf } from "@/lib/csrf";
-import { requireAdmin } from "@/lib/adminAuth";
+import { requireAdmin, requireRole } from "@/lib/adminAuth";
 
 const createSchema = z.object({
   code:      z.string().min(2).max(30).transform(s => s.toUpperCase()),
@@ -30,7 +30,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const authError = await requireAdmin();
+  const { error: authError } = await requireRole(["owner", "manager"]);
   if (authError) return authError;
 
   const csrfError = checkCsrf(req);

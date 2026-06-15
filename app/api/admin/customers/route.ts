@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { requireAdmin } from "@/lib/adminAuth";
+import { sanitizeSearchTerm } from "@/lib/utils";
 
 // Win-back / nurture windows (days). Used to derive segments below.
 const AT_RISK_DAYS = 90;
@@ -74,10 +75,12 @@ export async function GET(req: NextRequest) {
       .range(0, 499);
 
     if (search) {
-      const q = search.replace(/%/g, "\\%").replace(/_/g, "\\_");
-      query = query.or(
-        `email.ilike.%${q}%,first_name.ilike.%${q}%,last_name.ilike.%${q}%,phone.ilike.%${q}%`
-      );
+      const q = sanitizeSearchTerm(search);
+      if (q) {
+        query = query.or(
+          `email.ilike.%${q}%,first_name.ilike.%${q}%,last_name.ilike.%${q}%,phone.ilike.%${q}%`
+        );
+      }
     }
 
     const { data, error } = await query;

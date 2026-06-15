@@ -1,7 +1,5 @@
 import { DEFAULT_SETTINGS, type ShippingSettings } from "@/lib/settings";
 
-/** @deprecated Read `tax.gstRate` from settings (useSettings / getSettings) instead. */
-export const GST_RATE = DEFAULT_SETTINGS.tax.gstRate;
 /** @deprecated Read `shipping.freeThreshold` from settings instead. */
 export const FREE_SHIPPING_THRESHOLD = DEFAULT_SETTINGS.shipping.freeThreshold;
 

@@ -20,14 +20,6 @@ export type EmailTemplateKey =
 
 export type EmailTemplate = { subject: string; body: string };
 
-export const TEMPLATE_VARIABLES = [
-  "name",
-  "order_id",
-  "total",
-  "tracking_number",
-  "status",
-] as const;
-
 // Friendly labels for the admin UI (order preserved).
 export const TEMPLATE_META: { key: EmailTemplateKey; label: string }[] = [
   { key: "status_confirmed",  label: "Order confirmed" },
@@ -73,6 +65,16 @@ export type TemplateVars = {
   status?: string;
 };
 
+/** Escape a value for safe interpolation into HTML. */
+export function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 /** Substitute {{var}} tokens. Unknown / missing vars collapse to "". */
 export function interpolate(text: string, vars: TemplateVars): string {
   return text.replace(/\{\{\s*(\w+)\s*\}\}/g, (_, key: string) => {
@@ -95,11 +97,17 @@ export function buildEmailShell(innerHtml: string): string {
 
 /** Render subject + full HTML for a template + variables. */
 export function renderEmail(tpl: EmailTemplate, vars: TemplateVars): { subject: string; html: string } {
+  // Subject is a plain-text header — interpolate raw. In the HTML body, escape
+  // variable VALUES (customer name etc. are user-controlled) while preserving
+  // the template body's own intentional HTML markup.
   const subject = interpolate(tpl.subject, vars);
-  const greeting = vars.name ? `<p style="font-size:16px;">Hi ${vars.name},</p>` : "";
-  const message = `<p>${interpolate(tpl.body, vars)}</p>`;
-  const orderLine = vars.order_id ? `<p><strong>Order:</strong> ${vars.order_id}</p>` : "";
-  const totalLine = vars.total ? `<p><strong>Total:</strong> ${vars.total}</p>` : "";
+  const escVars: TemplateVars = Object.fromEntries(
+    Object.entries(vars).map(([k, v]) => [k, v == null ? v : escapeHtml(String(v))])
+  );
+  const greeting = vars.name ? `<p style="font-size:16px;">Hi ${escapeHtml(vars.name)},</p>` : "";
+  const message = `<p>${interpolate(tpl.body, escVars)}</p>`;
+  const orderLine = vars.order_id ? `<p><strong>Order:</strong> ${escapeHtml(vars.order_id)}</p>` : "";
+  const totalLine = vars.total ? `<p><strong>Total:</strong> ${escapeHtml(vars.total)}</p>` : "";
   return { subject, html: buildEmailShell(`${greeting}${message}${orderLine}${totalLine}`) };
 }
 

@@ -40,29 +40,10 @@ export function cookieMaxAge(): number {
 }
 
 /**
- * Stateless auth check (no DB). Returns a 401 NextResponse if the request is
- * not authenticated, or null if auth passes. Used at the top of every admin
- * API route. Accepts both the legacy secret token and per-user tokens.
- */
-export async function requireAdmin(): Promise<NextResponse | null> {
-  let secret: string;
-  try {
-    secret = getAdminSecret();
-  } catch {
-    return NextResponse.json({ error: "Admin not configured." }, { status: 503 });
-  }
-
-  const token = (await cookies()).get(COOKIE)?.value;
-  const identity = await verifyToken(token, secret);
-  if (!identity) {
-    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
-  }
-  return null;
-}
-
-/**
- * Returns the authenticated admin identity (or null), decoded statelessly from
- * the cookie. Use when a route needs to know *who* is acting (e.g. audit log).
+ * Decodes the cookie statelessly into an identity (or null). Use only when you
+ * just need *who* is acting for labelling (e.g. audit log) and a freshness check
+ * is unnecessary. For access control use requireAdmin / requireRole, which
+ * verify the account is still active.
  */
 export async function getAdminSession(): Promise<AdminIdentity | null> {
   let secret: string;
@@ -76,28 +57,19 @@ export async function getAdminSession(): Promise<AdminIdentity | null> {
 }
 
 /**
- * Require an authenticated admin whose role is in `roles`. For per-user tokens
- * this re-checks the DB so disabled accounts and role changes take effect
- * immediately on protected routes (the legacy shared secret is always owner).
- * Returns { identity } on success, or { error } (a NextResponse) to return.
+ * Resolves the *active* admin identity for access control. For per-user tokens
+ * this re-checks `admin_users` so a disabled or role-changed account loses
+ * access immediately (rather than at token expiry). The legacy shared secret is
+ * always owner. Fails closed (returns null) on any DB error. Returns null if
+ * unauthenticated or inactive.
  */
-export async function requireRole(
-  roles: AdminRole[]
-): Promise<{ identity: AdminIdentity; error: null } | { identity: null; error: NextResponse }> {
+async function activeIdentity(): Promise<AdminIdentity | null> {
   const identity = await getAdminSession();
-  if (!identity) {
-    return { identity: null, error: NextResponse.json({ error: "Unauthorized." }, { status: 401 }) };
-  }
+  if (!identity) return null;
 
-  // Legacy shared-secret session is always treated as owner.
-  if (identity.via === "secret") {
-    if (!roles.includes("owner")) {
-      return { identity: null, error: NextResponse.json({ error: "Forbidden." }, { status: 403 }) };
-    }
-    return { identity, error: null };
-  }
+  // Legacy shared-secret session is always a valid owner — no DB lookup needed.
+  if (identity.via === "secret") return identity;
 
-  // Per-user session — confirm the account is still active and read the live role.
   try {
     const sb = createAdminClient();
     const { data, error } = await (sb as any)
@@ -106,16 +78,45 @@ export async function requireRole(
       .eq("id", identity.uid)
       .maybeSingle();
     if (error) throw error;
-    if (!data || !data.active) {
-      return { identity: null, error: NextResponse.json({ error: "Unauthorized." }, { status: 401 }) };
-    }
-    const liveRole = data.role as AdminRole;
-    if (!roles.includes(liveRole)) {
-      return { identity: null, error: NextResponse.json({ error: "Forbidden." }, { status: 403 }) };
-    }
-    return { identity: { ...identity, role: liveRole }, error: null };
+    if (!data || !data.active) return null;
+    return { ...identity, role: data.role as AdminRole };
   } catch (err) {
-    console.error("requireRole DB check failed:", err);
-    return { identity: null, error: NextResponse.json({ error: "Server error." }, { status: 500 }) };
+    console.error("activeIdentity DB check failed:", err);
+    return null; // fail closed
   }
+}
+
+/**
+ * Auth gate for admin API routes: requires an authenticated, still-active admin
+ * (any role). Returns a 401/503 NextResponse to return, or null if auth passes.
+ */
+export async function requireAdmin(): Promise<NextResponse | null> {
+  try {
+    getAdminSecret();
+  } catch {
+    return NextResponse.json({ error: "Admin not configured." }, { status: 503 });
+  }
+
+  const identity = await activeIdentity();
+  if (!identity) {
+    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+  }
+  return null;
+}
+
+/**
+ * Require an authenticated, active admin whose live role is in `roles`.
+ * Returns { identity } on success, or { error } (a NextResponse) to return.
+ */
+export async function requireRole(
+  roles: AdminRole[]
+): Promise<{ identity: AdminIdentity; error: null } | { identity: null; error: NextResponse }> {
+  const identity = await activeIdentity();
+  if (!identity) {
+    return { identity: null, error: NextResponse.json({ error: "Unauthorized." }, { status: 401 }) };
+  }
+  if (!roles.includes(identity.role)) {
+    return { identity: null, error: NextResponse.json({ error: "Forbidden." }, { status: 403 }) };
+  }
+  return { identity, error: null };
 }
