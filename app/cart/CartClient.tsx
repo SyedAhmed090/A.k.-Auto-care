@@ -6,10 +6,12 @@ import { useSearchParams } from "next/navigation";
 import { Trash2, ShoppingCart, ArrowRight, Tag, Truck } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
-import { gstAmount, getShippingOptions, FREE_SHIPPING_THRESHOLD } from "@/lib/commerce";
+import { gstAmount, getShippingOptions } from "@/lib/commerce";
+import { useSettings } from "@/components/providers/SettingsProvider";
 import QuantityStepper from "@/components/ui/QuantityStepper";
 
 function CartPageInner() {
+  const settings = useSettings();
   const { items, removeItem, updateQty, subtotal, promoCode, promoDiscount, applyPromo, removePromo, clearCart, addItem } = useCartStore();
   const searchParams = useSearchParams();
 
@@ -41,9 +43,11 @@ function CartPageInner() {
   const sub = subtotal();
   const discount = sub * promoDiscount;
   const afterDiscount = sub - discount;
-  const shipping = getShippingOptions("PK", afterDiscount)[0]?.price ?? 0;
+  const shipping = getShippingOptions("PK", afterDiscount, settings.shipping)[0]?.price ?? 0;
   const total = afterDiscount + shipping;
-  const vat = gstAmount(total);
+  const vat = gstAmount(total, settings.tax.gstRate);
+  const gstPct = Math.round(settings.tax.gstRate * 100);
+  const freeThreshold = settings.shipping.freeThreshold;
 
   const handlePromo = async () => {
     if (!promoInput.trim() || promoLoading) return;
@@ -223,7 +227,7 @@ function CartPageInner() {
                 ))}
                 {shipping > 0 && (
                   <p className="text-xs flex items-center gap-1.5" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
-                    <Truck className="w-3.5 h-3.5 flex-shrink-0" /> Add {formatPrice(FREE_SHIPPING_THRESHOLD - afterDiscount)} for free shipping
+                    <Truck className="w-3.5 h-3.5 flex-shrink-0" /> Add {formatPrice(freeThreshold - afterDiscount)} for free shipping
                   </p>
                 )}
                 <div
@@ -243,7 +247,7 @@ function CartPageInner() {
                   </span>
                 </div>
                 <p className="text-right text-[.72rem]" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
-                  Incl. GST (17%): {formatPrice(vat)}
+                  Incl. GST ({gstPct}%): {formatPrice(vat)}
                 </p>
                 <p className="text-[.72rem]" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
                   Final shipping &amp; method selected at checkout

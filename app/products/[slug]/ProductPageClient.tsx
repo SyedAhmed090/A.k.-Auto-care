@@ -13,7 +13,7 @@ import QuantityStepper from "@/components/ui/QuantityStepper";
 import WishlistButton from "@/components/ui/WishlistButton";
 import ReviewsSection from "@/components/product/ReviewsSection";
 import { trackViewContent, trackAddToCart } from "@/components/analytics/MetaPixel";
-import { WHATSAPP_NUMBER } from "@/lib/constants";
+import { useSettings } from "@/components/providers/SettingsProvider";
 
 const TABS = ["Description", "How to Use", "Specs"] as const;
 type Tab = typeof TABS[number];
@@ -28,6 +28,7 @@ const TRUST = [
 ];
 
 export default function ProductPageClient({ product, related }: { product: Product; related: Product[] }) {
+  const { store } = useSettings();
   const [activeImg, setActiveImg]           = useState(0);
   const [selectedVariant, setSelectedVariant] = useState(0);
   const [qty, setQty]                       = useState(1);
@@ -100,7 +101,7 @@ export default function ProductPageClient({ product, related }: { product: Produ
   };
 
   const waMsg = encodeURIComponent(`Hi! I have a question about ${product.name}: `);
-  const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${waMsg}`;
+  const waUrl = `https://wa.me/${store.whatsapp}?text=${waMsg}`;
 
   return (
     <div style={{ background: "var(--bg)", minHeight: "100vh" }}>

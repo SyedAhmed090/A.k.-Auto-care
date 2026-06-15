@@ -3,9 +3,11 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Phone, Mail } from "lucide-react";
 import SocialLinks from "@/components/ui/SocialLinks";
-import { WHATSAPP_NUMBER, WHATSAPP_DISPLAY, BUSINESS } from "@/lib/constants";
+import { useSettings } from "@/components/providers/SettingsProvider";
+import { whatsappDisplay } from "@/lib/settings";
 
 export default function Footer() {
+  const { store } = useSettings();
   const [nlEmail, setNlEmail] = useState("");
   const [nlState, setNlState] = useState<"idle" | "submitting" | "ok" | "error">("idle");
   const [nlError, setNlError] = useState("");
@@ -58,11 +60,11 @@ export default function Footer() {
               Engineered car care for people who notice the details. Prep. Correct. Coat. Protect.
             </p>
             <div className="mt-5 space-y-2.5">
-              <a href={`tel:+${WHATSAPP_NUMBER}`} className="flex items-center gap-2.5 text-[.88rem] transition-colors hover:text-[var(--accent)]" style={{ color: "var(--muted)" }}>
-                <Phone className="w-4 h-4 flex-shrink-0" style={{ color: "var(--accent)" }} /> {WHATSAPP_DISPLAY}
+              <a href={`tel:+${store.whatsapp}`} className="flex items-center gap-2.5 text-[.88rem] transition-colors hover:text-[var(--accent)]" style={{ color: "var(--muted)" }}>
+                <Phone className="w-4 h-4 flex-shrink-0" style={{ color: "var(--accent)" }} /> {whatsappDisplay(store)}
               </a>
-              <a href={`mailto:${BUSINESS.email}`} className="flex items-center gap-2.5 text-[.88rem] transition-colors hover:text-[var(--accent)]" style={{ color: "var(--muted)" }}>
-                <Mail className="w-4 h-4 flex-shrink-0" style={{ color: "var(--accent)" }} /> {BUSINESS.email}
+              <a href={`mailto:${store.email}`} className="flex items-center gap-2.5 text-[.88rem] transition-colors hover:text-[var(--accent)]" style={{ color: "var(--muted)" }}>
+                <Mail className="w-4 h-4 flex-shrink-0" style={{ color: "var(--accent)" }} /> {store.email}
               </a>
             </div>
             <SocialLinks className="mt-5" />

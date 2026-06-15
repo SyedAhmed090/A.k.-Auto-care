@@ -6,11 +6,13 @@ import { useRouter } from "next/navigation";
 import { X, ShoppingCart, ArrowRight, Trash2, Truck, Tag } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
-import { getShippingOptions, FREE_SHIPPING_THRESHOLD } from "@/lib/commerce";
+import { getShippingOptions } from "@/lib/commerce";
+import { useSettings } from "@/components/providers/SettingsProvider";
 import QuantityStepper from "@/components/ui/QuantityStepper";
 
 export default function MiniCart() {
   const router = useRouter();
+  const settings = useSettings();
   const { isOpen, closeCart, items, removeItem, updateQty, subtotal, promoDiscount, promoCode, applyPromo, removePromo } = useCartStore();
   const [promoInput, setPromoInput] = useState("");
   const [promoMsg, setPromoMsg] = useState<{ ok: boolean; text: string } | null>(null);
@@ -19,7 +21,7 @@ export default function MiniCart() {
   const sub = subtotal();
   const discount = sub * promoDiscount;
   const afterDiscount = sub - discount;
-  const shipping = getShippingOptions("PK", afterDiscount)[0]?.price ?? 0;
+  const shipping = getShippingOptions("PK", afterDiscount, settings.shipping)[0]?.price ?? 0;
   const total = afterDiscount + shipping;
 
   const handlePromo = async () => {
@@ -195,7 +197,7 @@ export default function MiniCart() {
             </div>
             {shipping > 0 && (
               <p className="text-[.65rem] mb-2" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
-                Add {formatPrice(FREE_SHIPPING_THRESHOLD - afterDiscount)} for free shipping
+                Add {formatPrice(settings.shipping.freeThreshold - afterDiscount)} for free shipping
               </p>
             )}
             <div className="flex items-center justify-between mb-4">

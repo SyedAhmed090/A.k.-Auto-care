@@ -1,4 +1,6 @@
-import { SOCIAL_LINKS } from "@/lib/constants";
+"use client";
+import { useSettings } from "@/components/providers/SettingsProvider";
+import { socialLinks } from "@/lib/settings";
 
 // lucide-react v1 dropped brand icons, so we ship our own inline SVGs.
 type IconProps = { className?: string };
@@ -43,10 +45,12 @@ const ICONS: Record<string, React.ComponentType<IconProps>> = {
 };
 
 export default function SocialLinks({ className = "" }: { className?: string }) {
-  if (SOCIAL_LINKS.length === 0) return null;
+  const { social } = useSettings();
+  const links = socialLinks(social);
+  if (links.length === 0) return null;
   return (
     <div className={`flex items-center gap-2.5 ${className}`}>
-      {SOCIAL_LINKS.map(({ name, href }) => {
+      {links.map(({ name, href }) => {
         const Icon = ICONS[name];
         if (!Icon) return null;
         return (

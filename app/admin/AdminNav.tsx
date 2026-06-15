@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { LayoutDashboard, ShoppingBag, Tag, Package, Star, Boxes, Users, Mail, MessageSquare, ShoppingCart, LogOut, Menu, X } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, Tag, Package, Star, Boxes, Users, Mail, MessageSquare, ShoppingCart, Settings, LogOut, Menu, X } from "lucide-react";
 
 const NAV = [
   { href: "/admin",                 label: "Dashboard",       icon: LayoutDashboard, exact: true  },
@@ -15,6 +15,7 @@ const NAV = [
   { href: "/admin/messages",        label: "Messages",        icon: MessageSquare,   exact: false, badge: "messages" },
   { href: "/admin/abandoned-carts", label: "Abandoned Carts", icon: ShoppingCart,    exact: false },
   { href: "/admin/newsletter",      label: "Newsletter",      icon: Mail,            exact: false },
+  { href: "/admin/settings",        label: "Settings",        icon: Settings,        exact: false },
 ];
 
 export default function AdminNav() {

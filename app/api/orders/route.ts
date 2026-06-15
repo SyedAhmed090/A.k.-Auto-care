@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getProductsByIds } from "@/lib/products";
 import { getShippingOptions } from "@/lib/commerce";
+import { getSettings } from "@/lib/settings";
 import { PROMOS } from "@/lib/promos";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { checkRateLimit, getIP } from "@/lib/rateLimit";
@@ -130,7 +131,8 @@ export async function POST(req: NextRequest) {
     }
 
     const afterDiscount = parseFloat((subtotal - discount).toFixed(2));
-    const shippingOptions = getShippingOptions(data.country, afterDiscount);
+    const settings = await getSettings();
+    const shippingOptions = getShippingOptions(data.country, afterDiscount, settings.shipping);
     const selectedShipping = shippingOptions.find(o => o.id === data.shippingMethod) ?? shippingOptions[0];
     const shippingCost = selectedShipping?.price ?? 0;
     const total = parseFloat((afterDiscount + shippingCost).toFixed(2));

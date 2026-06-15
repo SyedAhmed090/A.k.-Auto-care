@@ -1,9 +1,13 @@
-export const GST_RATE = 0.17; // 17% Pakistan GST, inclusive in displayed prices
-export const FREE_SHIPPING_THRESHOLD = 5000; // PKR — standard domestic free-shipping floor
+import { DEFAULT_SETTINGS, type ShippingSettings } from "@/lib/settings";
 
-/** Extract GST amount from a GST-inclusive price */
-export function gstAmount(inclusiveTotal: number): number {
-  return parseFloat((inclusiveTotal * (GST_RATE / (1 + GST_RATE))).toFixed(2));
+/** @deprecated Read `tax.gstRate` from settings (useSettings / getSettings) instead. */
+export const GST_RATE = DEFAULT_SETTINGS.tax.gstRate;
+/** @deprecated Read `shipping.freeThreshold` from settings instead. */
+export const FREE_SHIPPING_THRESHOLD = DEFAULT_SETTINGS.shipping.freeThreshold;
+
+/** Extract GST amount from a GST-inclusive price. */
+export function gstAmount(inclusiveTotal: number, gstRate: number = DEFAULT_SETTINGS.tax.gstRate): number {
+  return parseFloat((inclusiveTotal * (gstRate / (1 + gstRate))).toFixed(2));
 }
 
 /** Minimum fields required for filter-and-sort */
@@ -37,25 +41,30 @@ export type ShippingOption = {
   description: string;
 };
 
-/** Returns available shipping options based on destination country and subtotal (PKR) */
-export function getShippingOptions(country: string, subtotal: number): ShippingOption[] {
+/** Returns available shipping options based on destination country and subtotal (PKR).
+ *  Rates and ETAs come from settings; defaults preserve the previous hardcoded values. */
+export function getShippingOptions(
+  country: string,
+  subtotal: number,
+  shipping: ShippingSettings = DEFAULT_SETTINGS.shipping
+): ShippingOption[] {
   const isPK = country === "PK" || country === "";
   if (isPK) {
+    const standardFree = subtotal >= shipping.freeThreshold;
     return [
       {
         id: "pk-standard",
         label: "Standard Delivery",
-        price: subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 199,
-        description:
-          subtotal >= FREE_SHIPPING_THRESHOLD
-            ? "Free · Karachi 1–2 days, other cities 3–5 days · TCS / Leopards"
-            : "Karachi 1–2 days, other cities 3–5 days · TCS / Leopards · Rs 199",
+        price: standardFree ? 0 : shipping.domestic.standard,
+        description: standardFree
+          ? `Free · ${shipping.etas.domesticStandard}`
+          : `${shipping.etas.domesticStandard} · Rs ${shipping.domestic.standard}`,
       },
       {
         id: "pk-express",
         label: "Express Delivery",
-        price: 499,
-        description: "Karachi same/next day · other cities 2–3 days · order before 2pm",
+        price: shipping.domestic.express,
+        description: shipping.etas.domesticExpress,
       },
     ];
   }
@@ -63,14 +72,14 @@ export function getShippingOptions(country: string, subtotal: number): ShippingO
     {
       id: "intl-standard",
       label: "International Standard",
-      price: 2499,
-      description: "10–20 business days",
+      price: shipping.international.standard,
+      description: shipping.etas.intlStandard,
     },
     {
       id: "intl-express",
       label: "International Express",
-      price: 4999,
-      description: "5–7 business days",
+      price: shipping.international.express,
+      description: shipping.etas.intlExpress,
     },
   ];
 }

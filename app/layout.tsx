@@ -10,7 +10,8 @@ import WhatsAppButton from "@/components/ui/WhatsAppButton";
 import CookieConsent from "@/components/ui/CookieConsent";
 // import FirstPurchasePopup from "@/components/ui/FirstPurchasePopup"; // disabled for now
 import MetaPixel from "@/components/analytics/MetaPixel";
-import { WHATSAPP_NUMBER, BUSINESS, SOCIAL_LINKS } from "@/lib/constants";
+import { SettingsProvider } from "@/components/providers/SettingsProvider";
+import { getSettings, socialLinks } from "@/lib/settings";
 
 const anton = Anton({
   variable: "--font-anton",
@@ -33,38 +34,40 @@ const spaceMono = Space_Mono({
 const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 
-const orgSchema = {
-  "@context": "https://schema.org",
-  "@type": "Store",
-  "@id": "https://www.akautocare.pk/#store",
-  name: "A.K. Auto Care",
-  description:
-    "Pakistan's specialist in pre- and post-paint car care — primers, ceramic coatings, polishes, compounds, and paint protection.",
-  url: "https://www.akautocare.pk",
-  logo: "https://www.akautocare.pk/logo.png",
-  image: "https://www.akautocare.pk/logo.png",
-  telephone: `+${WHATSAPP_NUMBER}`,
-  email: BUSINESS.email,
-  priceRange: "₨₨",
-  currenciesAccepted: "PKR",
-  paymentAccepted: "Cash on Delivery, JazzCash, EasyPaisa, Bank Transfer",
-  areaServed: { "@type": "Country", name: "Pakistan" },
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: BUSINESS.address,
-    addressLocality: BUSINESS.city,
-    addressCountry: "PK",
-  },
-  openingHours: "Mo-Sa 10:00-20:00",
-  contactPoint: {
-    "@type": "ContactPoint",
-    telephone: `+${WHATSAPP_NUMBER}`,
-    contactType: "customer service",
-    areaServed: "PK",
-    availableLanguage: ["English", "Urdu"],
-  },
-  ...(SOCIAL_LINKS.length > 0 ? { sameAs: SOCIAL_LINKS.map((s) => s.href) } : {}),
-};
+function buildOrgSchema(store: { whatsapp: string; email: string; address: string; city: string }, social: { href: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Store",
+    "@id": "https://www.akautocare.pk/#store",
+    name: "A.K. Auto Care",
+    description:
+      "Pakistan's specialist in pre- and post-paint car care — primers, ceramic coatings, polishes, compounds, and paint protection.",
+    url: "https://www.akautocare.pk",
+    logo: "https://www.akautocare.pk/logo.png",
+    image: "https://www.akautocare.pk/logo.png",
+    telephone: `+${store.whatsapp}`,
+    email: store.email,
+    priceRange: "₨₨",
+    currenciesAccepted: "PKR",
+    paymentAccepted: "Cash on Delivery, JazzCash, EasyPaisa, Bank Transfer",
+    areaServed: { "@type": "Country", name: "Pakistan" },
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: store.address,
+      addressLocality: store.city,
+      addressCountry: "PK",
+    },
+    openingHours: "Mo-Sa 10:00-20:00",
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: `+${store.whatsapp}`,
+      contactType: "customer service",
+      areaServed: "PK",
+      availableLanguage: ["English", "Urdu"],
+    },
+    ...(social.length > 0 ? { sameAs: social.map((s) => s.href) } : {}),
+  };
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.akautocare.pk"),
@@ -86,7 +89,10 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const settings = await getSettings();
+  const orgSchema = buildOrgSchema(settings.store, socialLinks(settings.social));
+  const freeShipLabel = settings.shipping.freeThreshold.toLocaleString("en-PK");
   return (
     <html lang="en" className={`${anton.variable} ${hanken.variable} ${spaceMono.variable}`}>
       <head>
@@ -114,14 +120,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           className="no-print fixed top-0 left-0 right-0 z-[60] w-full text-center py-2 px-4 text-[.7rem] font-semibold tracking-[.08em] h-9 flex items-center justify-center"
           style={{ background: "var(--accent)", color: "#000", fontFamily: "var(--font-space-mono)" }}
         >
-          <Truck className="inline w-3.5 h-3.5 -mt-0.5 mr-1" /> Free delivery on orders over Rs 5,000 · Ships via TCS &amp; Leopards · Cash on Delivery available
+          <Truck className="inline w-3.5 h-3.5 -mt-0.5 mr-1" /> Free delivery on orders over Rs {freeShipLabel} · Ships via TCS &amp; Leopards · Cash on Delivery available
         </div>
-        <Header />
-        <MiniCart />
-        <main className="flex-1 pt-[var(--header-offset)]">{children}</main>
-        <Footer />
-        <WhatsAppButton />
-        <CookieConsent />
+        <SettingsProvider value={settings}>
+          <Header />
+          <MiniCart />
+          <main className="flex-1 pt-[var(--header-offset)]">{children}</main>
+          <Footer />
+          <WhatsAppButton />
+          <CookieConsent />
+        </SettingsProvider>
         {/* First-purchase popup disabled for now — re-enable by uncommenting. */}
         {/* <FirstPurchasePopup /> */}
       </body>
