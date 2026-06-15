@@ -1,6 +1,7 @@
 import { createAdminClient } from "@/utils/supabase/admin";
 import Link from "next/link";
 import RevenueChart from "./RevenueChart";
+import AnalyticsSection from "./AnalyticsSection";
 
 const STATUS_COLORS: Record<string, string> = {
   pending:"#f59e0b", confirmed:"#3b82f6", processing:"#8b5cf6",
@@ -70,6 +71,9 @@ export default async function AdminDashboard() {
 
       {/* Revenue chart */}
       <RevenueChart />
+
+      {/* Decision-grade analytics */}
+      <AnalyticsSection />
 
       {/* Recent orders */}
       <div className="rounded-[16px] overflow-hidden" style={{ border: "1px solid var(--line)", background: "var(--surface)" }}>
