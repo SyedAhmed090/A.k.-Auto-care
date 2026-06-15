@@ -2,21 +2,43 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { LayoutDashboard, ShoppingBag, Tag, Package, Star, Boxes, Users, LogOut, Menu, X } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, Tag, Package, Star, Boxes, Users, Mail, MessageSquare, ShoppingCart, FileText, Settings, LogOut, Menu, X } from "lucide-react";
 
 const NAV = [
-  { href: "/admin",             label: "Dashboard", icon: LayoutDashboard, exact: true  },
-  { href: "/admin/orders",      label: "Orders",    icon: ShoppingBag,     exact: false },
-  { href: "/admin/products",    label: "Products",  icon: Package,         exact: false },
-  { href: "/admin/inventory",   label: "Inventory", icon: Boxes,           exact: false },
-  { href: "/admin/promos",      label: "Promos",    icon: Tag,             exact: false },
-  { href: "/admin/reviews",     label: "Reviews",   icon: Star,            exact: false },
-  { href: "/admin/customers",   label: "Customers", icon: Users,           exact: false },
+  { href: "/admin",                 label: "Dashboard",       icon: LayoutDashboard, exact: true  },
+  { href: "/admin/orders",          label: "Orders",          icon: ShoppingBag,     exact: false },
+  { href: "/admin/products",        label: "Products",        icon: Package,         exact: false },
+  { href: "/admin/inventory",       label: "Inventory",       icon: Boxes,           exact: false },
+  { href: "/admin/promos",          label: "Promos",          icon: Tag,             exact: false },
+  { href: "/admin/reviews",         label: "Reviews",         icon: Star,            exact: false },
+  { href: "/admin/customers",       label: "Customers",       icon: Users,           exact: false },
+  { href: "/admin/messages",        label: "Messages",        icon: MessageSquare,   exact: false, badge: "messages" },
+  { href: "/admin/abandoned-carts", label: "Abandoned Carts", icon: ShoppingCart,    exact: false },
+  { href: "/admin/newsletter",      label: "Newsletter",      icon: Mail,            exact: false },
+  { href: "/admin/reports",         label: "Reports",         icon: FileText,        exact: false },
+  { href: "/admin/settings",        label: "Settings",        icon: Settings,        exact: false },
 ];
 
 export default function AdminNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [unread, setUnread] = useState(0);
+
+  // Poll the unread (new) contact-message count for the Messages badge.
+  useEffect(() => {
+    let active = true;
+    const fetchUnread = async () => {
+      try {
+        const res = await fetch("/api/admin/contact-messages?status=new");
+        if (!res.ok) return;
+        const json = await res.json();
+        if (active) setUnread(json.newCount ?? 0);
+      } catch { /* ignore — badge is best-effort */ }
+    };
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 60_000);
+    return () => { active = false; clearInterval(interval); };
+  }, [pathname]);
 
   // Close the drawer whenever the route changes (mobile navigation).
   useEffect(() => { setOpen(false); }, [pathname]);
@@ -53,14 +75,23 @@ export default function AdminNav() {
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-        {NAV.map(({ href, label, icon: Icon, exact }) => {
+        {NAV.map(({ href, label, icon: Icon, exact, badge }) => {
           const active = exact ? pathname === href : pathname.startsWith(href);
+          const showBadge = badge === "messages" && unread > 0;
           return (
             <Link key={href} href={href}
               className="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-sm font-semibold transition-all"
               style={{ background: active ? "rgba(79, 168, 230,.1)" : "transparent", color: active ? "var(--accent)" : "var(--muted)" }}>
               <Icon className="w-4 h-4 flex-shrink-0" />
-              {label}
+              <span className="flex-1">{label}</span>
+              {showBadge && (
+                <span
+                  className="text-[.62rem] font-bold rounded-full px-1.5 min-w-[18px] text-center"
+                  style={{ background: "var(--accent)", color: "#000", fontFamily: "var(--font-space-mono)" }}
+                >
+                  {unread}
+                </span>
+              )}
             </Link>
           );
         })}

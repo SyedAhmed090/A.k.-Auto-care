@@ -1,10 +1,12 @@
 "use client";
-import { WHATSAPP_NUMBER, WHATSAPP_MESSAGE } from "@/lib/constants";
+import { useSettings } from "@/components/providers/SettingsProvider";
+import { WHATSAPP_MESSAGE } from "@/lib/settings";
 
 export default function WhatsAppButton() {
+  const { store } = useSettings();
   return (
     <a
-      href={`https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`}
+      href={`https://wa.me/${store.whatsapp}?text=${WHATSAPP_MESSAGE}`}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with us on WhatsApp"

@@ -4,7 +4,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Mail, Phone, MapPin, CheckCircle, MessageCircle } from "lucide-react";
-import { WHATSAPP_NUMBER, WHATSAPP_DISPLAY, WHATSAPP_MESSAGE, BUSINESS, MAP_EMBED_URL, MAP_DIRECTIONS_URL } from "@/lib/constants";
+import { useSettings } from "@/components/providers/SettingsProvider";
+import { WHATSAPP_MESSAGE, whatsappDisplay, mapEmbedUrl, mapDirectionsUrl } from "@/lib/settings";
 
 const schema = z.object({
   name: z.string().min(2, "Name required"),
@@ -15,6 +16,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function ContactClient() {
+  const { store } = useSettings();
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({ resolver: zodResolver(schema) });
@@ -65,10 +67,10 @@ export default function ContactClient() {
             </p>
             <div className="space-y-5">
               {[
-                { icon: MessageCircle, label: "WhatsApp", value: WHATSAPP_DISPLAY, href: `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`, ext: true },
-                { icon: Mail, label: "Email", value: BUSINESS.email, href: `mailto:${BUSINESS.email}`, ext: false },
-                { icon: Phone, label: "Phone", value: WHATSAPP_DISPLAY, href: `tel:+${WHATSAPP_NUMBER}`, ext: false },
-                { icon: MapPin, label: "Location", value: BUSINESS.address, href: MAP_DIRECTIONS_URL, ext: true },
+                { icon: MessageCircle, label: "WhatsApp", value: whatsappDisplay(store), href: `https://wa.me/${store.whatsapp}?text=${WHATSAPP_MESSAGE}`, ext: true },
+                { icon: Mail, label: "Email", value: store.email, href: `mailto:${store.email}`, ext: false },
+                { icon: Phone, label: "Phone", value: whatsappDisplay(store), href: `tel:+${store.whatsapp}`, ext: false },
+                { icon: MapPin, label: "Location", value: store.address, href: mapDirectionsUrl(store), ext: true },
               ].map(({ icon: Icon, label, value, href, ext }) => (
                 <a
                   key={label}
@@ -91,13 +93,13 @@ export default function ContactClient() {
             </div>
 
             <p className="mt-6 text-sm" style={{ color: "var(--muted)" }}>
-              <span className="font-semibold" style={{ color: "var(--text)" }}>Hours:</span> {BUSINESS.hours}
+              <span className="font-semibold" style={{ color: "var(--text)" }}>Hours:</span> {store.hours}
             </p>
 
             <div className="mt-6 rounded-[16px] overflow-hidden" style={{ border: "1px solid var(--line-2)" }}>
               <iframe
                 title="A.K. Auto Care location"
-                src={MAP_EMBED_URL}
+                src={mapEmbedUrl(store)}
                 width="100%"
                 height="220"
                 loading="lazy"

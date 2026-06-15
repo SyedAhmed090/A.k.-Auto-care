@@ -10,7 +10,7 @@ import { Lock, ChevronDown, ChevronUp, Banknote, Smartphone, Building } from "lu
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
 import { getShippingOptions, gstAmount } from "@/lib/commerce";
-import { WHATSAPP_NUMBER, PAYMENT_DETAILS } from "@/lib/constants";
+import { useSettings } from "@/components/providers/SettingsProvider";
 import { trackInitiateCheckout } from "@/components/analytics/MetaPixel";
 import { saveCartToServer } from "@/lib/cart-session";
 
@@ -104,6 +104,8 @@ const SectionCard = ({ title, children }: { title: string; children: React.React
 );
 
 export default function CheckoutPage() {
+  const settings = useSettings();
+  const { store: storeInfo, payment: paymentDetails, tax } = settings;
   const { items, subtotal, promoDiscount, promoCode, clearCart } = useCartStore();
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -124,15 +126,16 @@ export default function CheckoutPage() {
   const country = useWatch({ control, name: "country", defaultValue: "" });
   const emailValue = useWatch({ control, name: "email", defaultValue: "" });
 
-  const shippingOptions = getShippingOptions(country, afterDiscount);
+  const shippingOptions = getShippingOptions(country, afterDiscount, settings.shipping);
   const resolvedShipping = shippingOptions.find((o) => o.id === shippingId) ?? shippingOptions[0];
   const shippingCost = resolvedShipping?.price ?? 0;
   const total = afterDiscount + shippingCost;
-  const vat = gstAmount(total);
+  const vat = gstAmount(total, tax.gstRate);
+  const gstPct = Math.round(tax.gstRate * 100);
 
   // Reset shipping selection when country (and therefore options) changes
   useEffect(() => {
-    const opts = getShippingOptions(country, afterDiscount);
+    const opts = getShippingOptions(country, afterDiscount, settings.shipping);
     if (opts.length > 0) setShippingId(opts[0].id);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [country]);
@@ -338,9 +341,9 @@ export default function CheckoutPage() {
               <div className="space-y-2.5">
                   {[
                     { id: "cod", label: "Cash on Delivery (COD)", description: "Pay cash when your order arrives — no card needed", icon: Banknote },
-                    { id: "jazzcash", label: "JazzCash", description: `Send to ${PAYMENT_DETAILS.jazzcash.number} · Share screenshot on WhatsApp after ordering`, icon: Smartphone },
-                    { id: "easypaisa", label: "EasyPaisa", description: `Send to ${PAYMENT_DETAILS.easypaisa.number} · Share screenshot on WhatsApp after ordering`, icon: Smartphone },
-                    { id: "bank", label: "Bank Transfer", description: `${PAYMENT_DETAILS.bank.bank} · A/C: ${PAYMENT_DETAILS.bank.account} · Branch: ${PAYMENT_DETAILS.bank.branch} · Share receipt on WhatsApp`, icon: Building },
+                    { id: "jazzcash", label: "JazzCash", description: `Send to ${paymentDetails.jazzcash.number} · Share screenshot on WhatsApp after ordering`, icon: Smartphone },
+                    { id: "easypaisa", label: "EasyPaisa", description: `Send to ${paymentDetails.easypaisa.number} · Share screenshot on WhatsApp after ordering`, icon: Smartphone },
+                    { id: "bank", label: "Bank Transfer", description: `${paymentDetails.bank.bank} · A/C: ${paymentDetails.bank.account} · Branch: ${paymentDetails.bank.branch} · Share receipt on WhatsApp`, icon: Building },
                   ].map((method) => {
                     const active = paymentMethod === method.id;
                     const Icon = method.icon;
@@ -381,7 +384,7 @@ export default function CheckoutPage() {
                       <li>
                         Send the payment screenshot to our WhatsApp{" "}
                         <span className="font-semibold" style={{ color: "var(--accent)", fontFamily: "var(--font-space-mono)" }}>
-                          +92 {WHATSAPP_NUMBER.slice(1, 4)} {WHATSAPP_NUMBER.slice(4)}
+                          +92 {storeInfo.whatsapp.slice(1, 4)} {storeInfo.whatsapp.slice(4)}
                         </span>
                         .
                       </li>
@@ -490,7 +493,7 @@ export default function CheckoutPage() {
                     </span>
                   </div>
                   <p className="text-right text-[.72rem]" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
-                    Incl. GST (17%): {formatPrice(vat)}
+                    Incl. GST ({gstPct}%): {formatPrice(vat)}
                   </p>
                 </div>
               </div>

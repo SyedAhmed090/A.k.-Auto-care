@@ -1,8 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
-import { Plus, Trash2, Loader2 } from "lucide-react";
+import { Plus, Trash2, Loader2, UploadCloud, ChevronUp, ChevronDown, ImageOff } from "lucide-react";
 
 const CATEGORIES = [
   { slug: "cleaners-degreasers",  label: "Cleaners & Degreasers" },
@@ -60,6 +60,10 @@ export default function ProductForm({
 }) {
   const router = useRouter();
   const [serverError, setServerError] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const [dragActive, setDragActive] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const isEdit = !!productId;
 
   const { register, control, handleSubmit, watch, setValue, formState: { isSubmitting, errors } } = useForm<FormValues>({
@@ -73,10 +77,41 @@ export default function ProductForm({
   });
 
   const { fields: specFields,    append: appendSpec,    remove: removeSpec }    = useFieldArray({ control, name: "specs" });
-  const { fields: imageFields,   append: appendImage,   remove: removeImage }   = useFieldArray({ control, name: "images" });
+  const { fields: imageFields,   append: appendImage,   remove: removeImage, move: moveImage } = useFieldArray({ control, name: "images" });
   const { fields: variantFields, append: appendVariant, remove: removeVariant } = useFieldArray({ control, name: "variants" });
 
   const nameVal = watch("name");
+
+  const uploadFiles = async (files: FileList | File[]) => {
+    const list = Array.from(files).filter((f) => f.type.startsWith("image/"));
+    if (!list.length) {
+      setUploadError("Only image files can be uploaded.");
+      return;
+    }
+    setUploadError("");
+    setUploading(true);
+    try {
+      for (const file of list) {
+        const fd = new FormData();
+        fd.append("file", file);
+        const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.url) {
+          setUploadError(json.error ?? "Upload failed.");
+          continue;
+        }
+        appendImage({ url: json.url });
+      }
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setDragActive(false);
+    if (e.dataTransfer.files?.length) void uploadFiles(e.dataTransfer.files);
+  };
 
   const onSubmit = async (values: FormValues) => {
     setServerError("");
@@ -258,19 +293,93 @@ export default function ProductForm({
       </section>
 
       {/* Images */}
-      <section className="rounded-[14px] p-6 space-y-4" style={{ border: "1px solid var(--line)", background: "var(--surface)" }}>
+      <section className="rounded-[14px] p-6 space-y-5" style={{ border: "1px solid var(--line)", background: "var(--surface)" }}>
         <div className="flex items-center justify-between">
-          <h2 className="text-[.8rem] tracking-[.16em] uppercase font-bold" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Images (URLs)</h2>
+          <h2 className="text-[.8rem] tracking-[.16em] uppercase font-bold" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Images</h2>
           <button type="button" onClick={() => appendImage({ url: "" })}
             className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-[8px] transition-all cursor-pointer"
             style={{ border: "1px solid var(--line-2)", color: "var(--accent)" }}>
-            <Plus className="w-3.5 h-3.5" /> Add Image
+            <Plus className="w-3.5 h-3.5" /> Add URL
           </button>
         </div>
+
+        {/* Drag & drop / file picker */}
+        <div
+          onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
+          onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
+          onDrop={onDrop}
+          onClick={() => fileInputRef.current?.click()}
+          className="flex flex-col items-center justify-center gap-2 rounded-[12px] py-8 px-4 text-center cursor-pointer transition-all"
+          style={{
+            border: `1.5px dashed ${dragActive ? "var(--accent)" : "var(--line-2)"}`,
+            background: dragActive ? "var(--bg-2)" : "var(--bg)",
+          }}
+        >
+          {uploading ? (
+            <Loader2 className="w-6 h-6 animate-spin" style={{ color: "var(--accent)" }} />
+          ) : (
+            <UploadCloud className="w-6 h-6" style={{ color: "var(--accent)" }} />
+          )}
+          <p className="text-sm font-semibold" style={{ color: "var(--text)", fontFamily: "var(--font-hanken)" }}>
+            {uploading ? "Uploading…" : "Drag & drop images here, or click to browse"}
+          </p>
+          <p className="text-[.68rem]" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
+            JPEG, PNG, WebP, GIF or AVIF · up to 5MB each
+          </p>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
+            multiple
+            className="hidden"
+            onChange={(e) => {
+              if (e.target.files?.length) void uploadFiles(e.target.files);
+              e.target.value = "";
+            }}
+          />
+        </div>
+        {uploadError && (
+          <p className="text-[.68rem]" style={{ color: "#ef4444", fontFamily: "var(--font-space-mono)" }}>{uploadError}</p>
+        )}
+
+        {/* Current images: previews, reorder, delete + URL fallback input */}
         {imageFields.map((f, i) => (
           <div key={f.id} className="flex gap-3 items-center">
+            <div
+              className="flex-shrink-0 w-14 h-14 rounded-[10px] overflow-hidden flex items-center justify-center"
+              style={{ border: "1px solid var(--line-2)", background: "var(--bg-2)" }}
+            >
+              {watch(`images.${i}.url`) ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={watch(`images.${i}.url`)} alt="" className="w-full h-full object-cover" />
+              ) : (
+                <ImageOff className="w-5 h-5" style={{ color: "var(--muted)" }} />
+              )}
+            </div>
             <input {...register(`images.${i}.url`)} placeholder="https://…" className={`${inputCls} flex-1`} style={inputStyle} />
-            <button type="button" onClick={() => removeImage(i)} className="p-2.5 rounded-[8px] cursor-pointer transition-all hover:bg-red-500/10" style={{ color: "#ef4444" }}>
+            <div className="flex flex-col">
+              <button
+                type="button"
+                onClick={() => moveImage(i, i - 1)}
+                disabled={i === 0}
+                className="p-1 rounded-[6px] cursor-pointer transition-all disabled:opacity-30 disabled:cursor-default hover:bg-[var(--bg-2)]"
+                style={{ color: "var(--muted)" }}
+                aria-label="Move image up"
+              >
+                <ChevronUp className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => moveImage(i, i + 1)}
+                disabled={i === imageFields.length - 1}
+                className="p-1 rounded-[6px] cursor-pointer transition-all disabled:opacity-30 disabled:cursor-default hover:bg-[var(--bg-2)]"
+                style={{ color: "var(--muted)" }}
+                aria-label="Move image down"
+              >
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </div>
+            <button type="button" onClick={() => removeImage(i)} className="p-2.5 rounded-[8px] cursor-pointer transition-all hover:bg-red-500/10" style={{ color: "#ef4444" }} aria-label="Remove image">
               <Trash2 className="w-4 h-4" />
             </button>
           </div>
