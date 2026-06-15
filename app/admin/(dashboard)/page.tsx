@@ -1,7 +1,9 @@
 import { createAdminClient } from "@/utils/supabase/admin";
 import Link from "next/link";
+import { AlertTriangle } from "lucide-react";
 import RevenueChart from "./RevenueChart";
 import AnalyticsSection from "./AnalyticsSection";
+import { getSettings } from "@/lib/settings";
 
 const STATUS_COLORS: Record<string, string> = {
   pending:"#f59e0b", confirmed:"#3b82f6", processing:"#8b5cf6",
@@ -11,17 +13,20 @@ const STATUS_COLORS: Record<string, string> = {
 async function getStats() {
   try {
     const supabase = createAdminClient();
-    const [ordersRes, revenueRes, pendingRes, todayRes] = await Promise.all([
+    const { inventory } = await getSettings();
+    const [ordersRes, revenueRes, pendingRes, todayRes, lowStockRes] = await Promise.all([
       supabase.from("orders").select("id", { count: "exact", head: true }),
       supabase.from("orders").select("total").not("status", "in", '("cancelled","refunded")'),
       supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", "pending"),
       supabase.from("orders").select("id", { count: "exact", head: true })
         .gte("created_at", new Date(new Date().setHours(0, 0, 0, 0)).toISOString()),
+      supabase.from("products").select("id", { count: "exact", head: true })
+        .not("stock", "is", null).lte("stock", inventory.lowStockThreshold),
     ]);
     const totalRevenue = (revenueRes.data ?? []).reduce((a, o) => a + Number(o.total ?? 0), 0);
-    return { totalOrders: ordersRes.count ?? 0, totalRevenue, pendingOrders: pendingRes.count ?? 0, todayOrders: todayRes.count ?? 0 };
+    return { totalOrders: ordersRes.count ?? 0, totalRevenue, pendingOrders: pendingRes.count ?? 0, todayOrders: todayRes.count ?? 0, lowStock: lowStockRes.count ?? 0 };
   } catch {
-    return { totalOrders: 0, totalRevenue: 0, pendingOrders: 0, todayOrders: 0 };
+    return { totalOrders: 0, totalRevenue: 0, pendingOrders: 0, todayOrders: 0, lowStock: 0 };
   }
 }
 
@@ -69,6 +74,23 @@ export default async function AdminDashboard() {
         ))}
       </div>
 
+      {/* Low-stock alert widget */}
+      {stats.lowStock > 0 && (
+        <Link href="/admin/inventory?lowstock=1"
+          className="flex items-center gap-3 rounded-[14px] px-5 py-4 mb-6 transition-all hover:-translate-y-0.5"
+          style={{ background: "rgba(234,179,8,.08)", border: "1px solid rgba(234,179,8,.4)" }}>
+          <AlertTriangle className="w-5 h-5 flex-shrink-0" style={{ color: "#eab308" }} />
+          <div className="flex-1">
+            <p className="text-sm font-semibold" style={{ color: "#eab308" }}>
+              {stats.lowStock} product{stats.lowStock === 1 ? "" : "s"} low on stock
+            </p>
+            <p className="text-[.72rem] mt-0.5" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
+              At or below your low-stock threshold — review inventory →
+            </p>
+          </div>
+        </Link>
+      )}
+
       {/* Revenue chart */}
       <RevenueChart />
 
@@ -90,7 +112,7 @@ export default async function AdminDashboard() {
               </p>
             </div>
           )}
-          {recent.map((o: any) => (
+          {recent.map((o) => (
             <Link key={o.id} href={`/admin/orders/${o.id}`}
               className="flex items-center justify-between px-5 py-4 border-t hover:bg-white/[.02] transition-colors"
               style={{ borderColor: "var(--line)" }}>
@@ -105,7 +127,7 @@ export default async function AdminDashboard() {
                   Rs {Number(o.total).toLocaleString("en-PK")}
                 </p>
                 <span className="text-[.65rem] font-bold px-2 py-0.5 rounded-full uppercase"
-                  style={{ background: `${STATUS_COLORS[o.status] ?? "#9ca3af"}22`, color: STATUS_COLORS[o.status] ?? "#9ca3af", fontFamily: "var(--font-space-mono)" }}>
+                  style={{ background: `${STATUS_COLORS[o.status ?? ""] ?? "#9ca3af"}22`, color: STATUS_COLORS[o.status ?? ""] ?? "#9ca3af", fontFamily: "var(--font-space-mono)" }}>
                   {o.status}
                 </span>
               </div>

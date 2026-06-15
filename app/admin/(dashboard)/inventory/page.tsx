@@ -1,6 +1,8 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { Package, CheckCircle } from "lucide-react";
+import { useSettings } from "@/components/providers/SettingsProvider";
 
 type Variant = { id: string; sku: string; label: string; price: number };
 type Product = {
@@ -22,13 +24,29 @@ const thStyle: React.CSSProperties = {
   letterSpacing: ".14em",
 };
 
-function statusInfo(stock: number | null, in_stock: boolean) {
+function statusInfo(stock: number | null, in_stock: boolean, threshold: number) {
   if (!in_stock || stock === 0) return { dot: "#ef4444", label: "Out" };
-  if (stock !== null && stock <= 10) return { dot: "#eab308", label: "Low" };
+  if (stock !== null && stock <= threshold) return { dot: "#eab308", label: "Low" };
   return { dot: "#22c55e", label: "OK" };
 }
 
-export default function InventoryPage() {
+/** A product counts as "low" for filtering when it's out of stock or at/under the threshold. */
+function isLow(stock: number | null, in_stock: boolean, threshold: number) {
+  if (!in_stock || stock === 0) return true;
+  return stock !== null && stock <= threshold;
+}
+
+function InventoryInner() {
+  const { inventory } = useSettings();
+  const threshold = inventory.lowStockThreshold;
+  const searchParams = useSearchParams();
+  const [lowOnly, setLowOnly] = useState(false);
+
+  // Honor the ?lowstock=1 deep link from the dashboard widget / email digest.
+  useEffect(() => {
+    if (searchParams.get("lowstock") === "1") setLowOnly(true);
+  }, [searchParams]);
+
   const [products, setProducts] = useState<Product[]>([]);
   const [rows, setRows] = useState<Record<string, RowState>>({});
   const [dirty, setDirty] = useState<Set<string>>(new Set());
@@ -77,14 +95,34 @@ export default function InventoryPage() {
     setDirty(new Set());
   };
 
+  const lowList = products.filter((p) => {
+    const r = rows[p.id] ?? { stock: p.stock, in_stock: p.in_stock };
+    return isLow(r.stock, r.in_stock, threshold);
+  });
+  const lowCount = lowList.length;
+  const visible = lowOnly ? lowList : products;
+
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="uppercase text-[1.8rem]" style={{ fontFamily: "var(--font-anton)" }}>Inventory</h1>
-          <p className="text-sm mt-0.5" style={{ color: "var(--muted)" }}>{products.length} products</p>
+          <p className="text-sm mt-0.5" style={{ color: "var(--muted)" }}>
+            {lowOnly ? `${lowCount} low / ${products.length} products` : `${products.length} products`}
+          </p>
         </div>
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => setLowOnly((v) => !v)}
+            className="px-3.5 py-2.5 rounded-[10px] text-xs font-semibold transition-all cursor-pointer"
+            style={{
+              background: lowOnly ? "rgba(234,179,8,.12)" : "var(--surface)",
+              border: `1px solid ${lowOnly ? "rgba(234,179,8,.4)" : "var(--line)"}`,
+              color: lowOnly ? "#eab308" : "var(--muted)",
+            }}
+          >
+            {lowOnly ? "Showing low stock" : "Low stock only"}
+          </button>
           {saved && (
             <span className="flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-[10px] uppercase tracking-[.06em]"
               style={{ background: "rgba(34,197,94,.18)", color: "#22c55e", border: "1px solid rgba(34,197,94,.4)", fontFamily: "var(--font-space-mono)" }}>
@@ -106,10 +144,10 @@ export default function InventoryPage() {
         <div className="flex items-center justify-center py-20" style={{ color: "var(--muted)" }}>
           <Package className="w-6 h-6 animate-pulse mr-3" /> Loading inventory…
         </div>
-      ) : products.length === 0 ? (
+      ) : visible.length === 0 ? (
         <div className="text-center py-20 rounded-[16px]" style={{ border: "1px solid var(--line)", background: "var(--surface)" }}>
           <Package className="w-10 h-10 mx-auto mb-3 opacity-30" />
-          <p className="font-semibold">No products found</p>
+          <p className="font-semibold">{lowOnly ? "No low-stock products" : "No products found"}</p>
         </div>
       ) : (
         <div className="rounded-[14px] overflow-x-auto" style={{ border: "1px solid var(--line)", background: "var(--surface)" }}>
@@ -122,9 +160,9 @@ export default function InventoryPage() {
               </tr>
             </thead>
             <tbody>
-              {products.map((p) => {
+              {visible.map((p) => {
                 const row = rows[p.id] ?? { stock: p.stock, in_stock: p.in_stock };
-                const status = statusInfo(row.stock, row.in_stock);
+                const status = statusInfo(row.stock, row.in_stock, threshold);
                 const isDirty = dirty.has(p.id);
                 return (
                   <tr
@@ -215,5 +253,13 @@ export default function InventoryPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function InventoryPage() {
+  return (
+    <Suspense>
+      <InventoryInner />
+    </Suspense>
   );
 }

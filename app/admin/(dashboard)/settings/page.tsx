@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import { Settings as SettingsIcon, Loader2, Check, Truck, Percent, CreditCard, Store, Share2 } from "lucide-react";
+import { Settings as SettingsIcon, Loader2, Check, Truck, Percent, CreditCard, Store, Share2, Boxes } from "lucide-react";
 import { DEFAULT_SETTINGS, type Settings } from "@/lib/settings";
 
-type Tab = "shipping" | "tax" | "payment" | "store" | "social";
+type Tab = "shipping" | "tax" | "payment" | "store" | "social" | "inventory";
 
 const TABS: { id: Tab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
   { id: "shipping", label: "Shipping", icon: Truck },
@@ -11,6 +11,7 @@ const TABS: { id: Tab; label: string; icon: React.ComponentType<{ className?: st
   { id: "payment", label: "Payments", icon: CreditCard },
   { id: "store", label: "Store", icon: Store },
   { id: "social", label: "Social", icon: Share2 },
+  { id: "inventory", label: "Inventory", icon: Boxes },
 ];
 
 const labelCls = "block text-[.72rem] tracking-[.14em] uppercase mb-2";
@@ -215,6 +216,17 @@ export default function SettingsPage() {
               <Field label="Facebook URL"><TextInput value={s.social.facebook} onChange={(v) => update("social", { ...s.social, facebook: v })} /></Field>
               <Field label="TikTok URL"><TextInput value={s.social.tiktok} onChange={(v) => update("social", { ...s.social, tiktok: v })} /></Field>
               <Field label="YouTube URL (leave blank to hide)"><TextInput value={s.social.youtube} onChange={(v) => update("social", { ...s.social, youtube: v })} /></Field>
+            </div>
+          )}
+
+          {tab === "inventory" && (
+            <div className="space-y-5">
+              <Field label="Low-stock threshold (alert at/under this quantity)">
+                <NumberInput value={s.inventory.lowStockThreshold} onChange={(v) => update("inventory", { ...s.inventory, lowStockThreshold: Math.round(v) })} />
+              </Field>
+              <p className="text-xs" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
+                Used by the inventory “Low” status, the dashboard low-stock widget, and the daily low-stock email digest.
+              </p>
             </div>
           )}
         </div>

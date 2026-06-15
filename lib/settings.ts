@@ -50,12 +50,17 @@ export type SocialSettings = {
   youtube: string;
 };
 
+export type InventorySettings = {
+  lowStockThreshold: number; // products with stock at/under this count are "low"
+};
+
 export type Settings = {
   shipping: ShippingSettings;
   tax: TaxSettings;
   payment: PaymentSettings;
   store: StoreSettings;
   social: SocialSettings;
+  inventory: InventorySettings;
 };
 
 export type SettingsGroup = keyof Settings;
@@ -108,6 +113,9 @@ export const DEFAULT_SETTINGS: Settings = {
     tiktok: process.env.NEXT_PUBLIC_TIKTOK_URL ?? "https://tiktok.com/@akautocare",
     youtube: process.env.NEXT_PUBLIC_YOUTUBE_URL ?? "",
   },
+  inventory: {
+    lowStockThreshold: 10,
+  },
 };
 
 // ── Server-side cached reader ──────────────────────────────────────────────────
@@ -141,6 +149,7 @@ export async function getSettings(): Promise<Settings> {
       payment: mergeGroup("payment", byKey.get("payment")),
       store: mergeGroup("store", byKey.get("store")),
       social: mergeGroup("social", byKey.get("social")),
+      inventory: mergeGroup("inventory", byKey.get("inventory")),
     };
     cache = { value, at: Date.now() };
     return value;

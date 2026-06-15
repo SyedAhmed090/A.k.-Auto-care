@@ -51,12 +51,17 @@ const socialSchema = z.object({
   youtube: z.string().max(300),
 });
 
+const inventorySchema = z.object({
+  lowStockThreshold: z.number().int().min(0).max(100000),
+});
+
 const bodySchema = z.object({
   shipping: shippingSchema.optional(),
   tax: taxSchema.optional(),
   payment: paymentSchema.optional(),
   store: storeSchema.optional(),
   social: socialSchema.optional(),
+  inventory: inventorySchema.optional(),
 });
 
 export async function GET() {
