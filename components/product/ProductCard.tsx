@@ -8,6 +8,7 @@ import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
 import StarRating from "@/components/ui/StarRating";
 import WishlistButton from "@/components/ui/WishlistButton";
+import SampleRequestButton from "@/components/product/SampleRequestButton";
 
 const LOW_STOCK_THRESHOLD = 5;
 
@@ -104,6 +105,8 @@ export default function ProductCard({ product }: { product: Product }) {
               {added ? <Check className="w-[18px] h-[18px]" /> : <Plus className="w-[18px] h-[18px]" />}
             </button>
           </div>
+
+          <SampleRequestButton product={{ id: product.id, slug: product.slug, name: product.name }} variant="card" />
         </div>
       </article>
     </Link>

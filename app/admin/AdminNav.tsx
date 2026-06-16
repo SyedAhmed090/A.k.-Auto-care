@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { LayoutDashboard, ShoppingBag, Tag, Package, Star, Boxes, Users, Mail, MailCheck, MessageSquare, ShoppingCart, FileText, Settings, ShieldCheck, History, LogOut, Menu, X } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, Tag, Package, Star, Boxes, Users, Mail, MailCheck, MessageSquare, FlaskConical, ShoppingCart, FileText, Settings, ShieldCheck, History, LogOut, Menu, X } from "lucide-react";
 
 const NAV = [
   { href: "/admin",                 label: "Dashboard",       icon: LayoutDashboard, exact: true  },
@@ -13,6 +13,7 @@ const NAV = [
   { href: "/admin/reviews",         label: "Reviews",         icon: Star,            exact: false },
   { href: "/admin/customers",       label: "Customers",       icon: Users,           exact: false },
   { href: "/admin/messages",        label: "Messages",        icon: MessageSquare,   exact: false, badge: "messages" },
+  { href: "/admin/sample-requests",  label: "Sample Requests", icon: FlaskConical,    exact: false, badge: "samples" },
   { href: "/admin/abandoned-carts", label: "Abandoned Carts", icon: ShoppingCart,    exact: false },
   { href: "/admin/newsletter",      label: "Newsletter",      icon: Mail,            exact: false },
   { href: "/admin/reports",         label: "Reports",         icon: FileText,        exact: false },
@@ -26,20 +27,23 @@ export default function AdminNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [unread, setUnread] = useState(0);
+  const [newSamples, setNewSamples] = useState(0);
 
-  // Poll the unread (new) contact-message count for the Messages badge.
+  // Poll the new-count for the Messages and Sample Requests badges.
   useEffect(() => {
     let active = true;
-    const fetchUnread = async () => {
+    const fetchCounts = async () => {
       try {
-        const res = await fetch("/api/admin/contact-messages?status=new");
-        if (!res.ok) return;
-        const json = await res.json();
-        if (active) setUnread(json.newCount ?? 0);
-      } catch { /* ignore — badge is best-effort */ }
+        const [msgRes, sampleRes] = await Promise.all([
+          fetch("/api/admin/contact-messages?status=new"),
+          fetch("/api/admin/sample-requests?status=new"),
+        ]);
+        if (active && msgRes.ok) setUnread((await msgRes.json()).newCount ?? 0);
+        if (active && sampleRes.ok) setNewSamples((await sampleRes.json()).newCount ?? 0);
+      } catch { /* ignore — badges are best-effort */ }
     };
-    fetchUnread();
-    const interval = setInterval(fetchUnread, 60_000);
+    fetchCounts();
+    const interval = setInterval(fetchCounts, 60_000);
     return () => { active = false; clearInterval(interval); };
   }, [pathname]);
 
@@ -80,7 +84,8 @@ export default function AdminNav() {
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         {NAV.map(({ href, label, icon: Icon, exact, badge }) => {
           const active = exact ? pathname === href : pathname.startsWith(href);
-          const showBadge = badge === "messages" && unread > 0;
+          const badgeCount = badge === "messages" ? unread : badge === "samples" ? newSamples : 0;
+          const showBadge = badgeCount > 0;
           return (
             <Link key={href} href={href}
               className="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-sm font-semibold transition-all"
@@ -92,7 +97,7 @@ export default function AdminNav() {
                   className="text-[.62rem] font-bold rounded-full px-1.5 min-w-[18px] text-center"
                   style={{ background: "var(--accent)", color: "#000", fontFamily: "var(--font-space-mono)" }}
                 >
-                  {unread}
+                  {badgeCount}
                 </span>
               )}
             </Link>

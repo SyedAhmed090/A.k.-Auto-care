@@ -77,6 +77,54 @@ export type Database = {
         }
         Relationships: []
       }
+      sample_requests: {
+        Row: {
+          address: string | null
+          business_name: string | null
+          city: string | null
+          created_at: string
+          email: string | null
+          id: string
+          monthly_usage: string
+          name: string
+          phone: string
+          product_id: string | null
+          product_name: string
+          product_slug: string | null
+          status: string
+        }
+        Insert: {
+          address?: string | null
+          business_name?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          monthly_usage: string
+          name: string
+          phone: string
+          product_id?: string | null
+          product_name: string
+          product_slug?: string | null
+          status?: string
+        }
+        Update: {
+          address?: string | null
+          business_name?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          monthly_usage?: string
+          name?: string
+          phone?: string
+          product_id?: string | null
+          product_name?: string
+          product_slug?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       settings: {
         Row: {
           key: string
