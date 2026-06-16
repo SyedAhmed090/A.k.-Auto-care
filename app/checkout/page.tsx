@@ -41,7 +41,7 @@ const inputStyle = (err?: string) => ({
 
 const Field = ({ label, error, required, children }: { label: string; error?: string; required?: boolean; children: React.ReactNode }) => (
   <div>
-    <label className="block text-[.72rem] tracking-[.14em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+    <label className="block text-[.82rem] tracking-[.01em] font-medium mb-2" style={{ fontFamily: "var(--font-hanken)", color: "var(--muted)" }}>
       {label}
       {required && <span aria-hidden="true" style={{ color: "var(--accent)", marginLeft: "3px" }}>*</span>}
     </label>
@@ -235,39 +235,39 @@ export default function CheckoutPage() {
           <form ref={formRef} onSubmit={handleSubmit(onSubmit, onInvalid)} className="lg:col-span-3 space-y-5">
             <SectionCard title="Contact">
               <Field label="Email" error={errors.email?.message} required>
-                <input {...register("email")} type="email" placeholder="you@example.com" aria-invalid={!!errors.email} style={inputStyle(errors.email?.message)} />
+                <input {...register("email")} type="email" aria-invalid={!!errors.email} style={inputStyle(errors.email?.message)} />
               </Field>
               <Field label="WhatsApp / Phone" error={errors.phone?.message} required>
-                <input {...register("phone")} type="tel" placeholder="+92 300 0000000" aria-invalid={!!errors.phone} style={inputStyle(errors.phone?.message)} />
+                <input {...register("phone")} type="tel" aria-invalid={!!errors.phone} style={inputStyle(errors.phone?.message)} />
               </Field>
             </SectionCard>
 
             <SectionCard title="Shipping Address">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Field label="First Name" error={errors.firstName?.message} required>
-                  <input {...register("firstName")} placeholder="John" aria-invalid={!!errors.firstName} style={inputStyle(errors.firstName?.message)} />
+                  <input {...register("firstName")} aria-invalid={!!errors.firstName} style={inputStyle(errors.firstName?.message)} />
                 </Field>
                 <Field label="Last Name" error={errors.lastName?.message} required>
-                  <input {...register("lastName")} placeholder="Smith" aria-invalid={!!errors.lastName} style={inputStyle(errors.lastName?.message)} />
+                  <input {...register("lastName")} aria-invalid={!!errors.lastName} style={inputStyle(errors.lastName?.message)} />
                 </Field>
                 <div className="col-span-1 sm:col-span-2">
                   <Field label="Address" error={errors.address?.message} required>
-                    <input {...register("address")} placeholder="123 Main Street" aria-invalid={!!errors.address} style={inputStyle(errors.address?.message)} />
+                    <input {...register("address")} aria-invalid={!!errors.address} style={inputStyle(errors.address?.message)} />
                   </Field>
                 </div>
                 <div>
                   <Field label="City" error={errors.city?.message} required>
-                    <input {...register("city")} placeholder="Karachi" aria-invalid={!!errors.city} style={inputStyle(errors.city?.message)} />
+                    <input {...register("city")} aria-invalid={!!errors.city} style={inputStyle(errors.city?.message)} />
                   </Field>
                 </div>
                 <div>
                   <Field label="Province / State" error={errors.province?.message}>
-                    <input {...register("province")} placeholder="Sindh" aria-invalid={!!errors.province} style={inputStyle(errors.province?.message)} />
+                    <input {...register("province")} aria-invalid={!!errors.province} style={inputStyle(errors.province?.message)} />
                   </Field>
                 </div>
                 <div>
                   <Field label="Postcode" error={errors.postcode?.message} required>
-                    <input {...register("postcode")} placeholder="75400" aria-invalid={!!errors.postcode} style={inputStyle(errors.postcode?.message)} />
+                    <input {...register("postcode")} aria-invalid={!!errors.postcode} style={inputStyle(errors.postcode?.message)} />
                   </Field>
                 </div>
                 <div className="col-span-1 sm:col-span-2">

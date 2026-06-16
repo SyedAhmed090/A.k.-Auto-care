@@ -1,20 +1,16 @@
 import { createAdminClient } from "@/utils/supabase/admin";
 import Link from "next/link";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, FlaskConical } from "lucide-react";
 import RevenueChart from "./RevenueChart";
 import AnalyticsSection from "./AnalyticsSection";
 import { getSettings } from "@/lib/settings";
-
-const STATUS_COLORS: Record<string, string> = {
-  pending:"#f59e0b", confirmed:"#3b82f6", processing:"#8b5cf6",
-  shipped:"#06b6d4",  delivered:"#4ade80",  cancelled:"#ef4444", refunded:"#9ca3af",
-};
+import { ORDER_STATUS_COLORS as STATUS_COLORS } from "@/lib/orderStatus";
 
 async function getStats() {
   try {
     const supabase = createAdminClient();
     const { inventory } = await getSettings();
-    const [ordersRes, revenueRes, pendingRes, todayRes, lowStockRes] = await Promise.all([
+    const [ordersRes, revenueRes, pendingRes, todayRes, lowStockRes, newSamplesRes, totalSamplesRes] = await Promise.all([
       supabase.from("orders").select("id", { count: "exact", head: true }),
       supabase.from("orders").select("total").not("status", "in", '("cancelled","refunded")'),
       supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", "pending"),
@@ -22,11 +18,17 @@ async function getStats() {
         .gte("created_at", new Date(new Date().setHours(0, 0, 0, 0)).toISOString()),
       supabase.from("products").select("id", { count: "exact", head: true })
         .not("stock", "is", null).lte("stock", inventory.lowStockThreshold),
+      supabase.from("sample_requests").select("id", { count: "exact", head: true }).eq("status", "new"),
+      supabase.from("sample_requests").select("id", { count: "exact", head: true }),
     ]);
     const totalRevenue = (revenueRes.data ?? []).reduce((a, o) => a + Number(o.total ?? 0), 0);
-    return { totalOrders: ordersRes.count ?? 0, totalRevenue, pendingOrders: pendingRes.count ?? 0, todayOrders: todayRes.count ?? 0, lowStock: lowStockRes.count ?? 0 };
+    return {
+      totalOrders: ordersRes.count ?? 0, totalRevenue, pendingOrders: pendingRes.count ?? 0,
+      todayOrders: todayRes.count ?? 0, lowStock: lowStockRes.count ?? 0,
+      newSamples: newSamplesRes.count ?? 0, totalSamples: totalSamplesRes.count ?? 0,
+    };
   } catch {
-    return { totalOrders: 0, totalRevenue: 0, pendingOrders: 0, todayOrders: 0, lowStock: 0 };
+    return { totalOrders: 0, totalRevenue: 0, pendingOrders: 0, todayOrders: 0, lowStock: 0, newSamples: 0, totalSamples: 0 };
   }
 }
 
@@ -86,6 +88,28 @@ export default async function AdminDashboard() {
             </p>
             <p className="text-[.72rem] mt-0.5" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
               At or below your low-stock threshold — review inventory →
+            </p>
+          </div>
+        </Link>
+      )}
+
+      {/* Sample requests widget */}
+      {stats.totalSamples > 0 && (
+        <Link href="/admin/sample-requests"
+          className="flex items-center gap-3 rounded-[14px] px-5 py-4 mb-6 transition-all hover:-translate-y-0.5"
+          style={{
+            background: stats.newSamples > 0 ? "rgba(79,168,230,.08)" : "var(--surface)",
+            border: `1px solid ${stats.newSamples > 0 ? "rgba(79,168,230,.4)" : "var(--line)"}`,
+          }}>
+          <FlaskConical className="w-5 h-5 flex-shrink-0" style={{ color: "var(--accent)" }} />
+          <div className="flex-1">
+            <p className="text-sm font-semibold" style={{ color: stats.newSamples > 0 ? "var(--accent)" : "var(--text)" }}>
+              {stats.newSamples > 0
+                ? `${stats.newSamples} new sample request${stats.newSamples === 1 ? "" : "s"}`
+                : "Sample requests"}
+            </p>
+            <p className="text-[.72rem] mt-0.5" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
+              {stats.totalSamples} total · review and follow up →
             </p>
           </div>
         </Link>

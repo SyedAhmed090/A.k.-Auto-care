@@ -5,12 +5,9 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { Plus, Trash2, Loader2, UploadCloud, ChevronUp, ChevronDown, ImageOff } from "lucide-react";
 
 const CATEGORIES = [
-  { slug: "cleaners-degreasers",  label: "Cleaners & Degreasers" },
-  { slug: "polishes-compounds",   label: "Polishes & Compounds" },
-  { slug: "waxes-sealants",       label: "Waxes & Sealants" },
-  { slug: "ceramic-coatings",     label: "Ceramic Coatings" },
-  { slug: "towels-applicators",   label: "Towels & Applicators" },
-  { slug: "kits-bundles",         label: "Kits & Bundles" },
+  { slug: "surface-correction", label: "Surface Correction" },
+  { slug: "refinement-polish",  label: "Refinement & Polish" },
+  { slug: "automotive-utility", label: "Automotive Utility" },
 ];
 
 export type FormValues = {
@@ -23,6 +20,7 @@ export type FormValues = {
   description:   string;
   how_to_use:    string;
   price:         number;
+  sample_price:  number | null;
   stock:         number | null;
   in_stock:      boolean;
   featured:      boolean;
@@ -68,9 +66,9 @@ export default function ProductForm({
 
   const { register, control, handleSubmit, watch, setValue, formState: { isSubmitting, errors } } = useForm<FormValues>({
     defaultValues: {
-      name: "", slug: "", category_slug: "cleaners-degreasers",
+      name: "", slug: "", category_slug: "surface-correction",
       tagline: "", badge: "", description: "", how_to_use: "",
-      price: 0, stock: null, in_stock: true, featured: false, sort_order: 0,
+      price: 0, sample_price: null, stock: null, in_stock: true, featured: true, sort_order: 0,
       specs: [], images: [], variants: [{ label: "Standard", price: 0, sku: "", sort_order: 0 }],
       ...defaultValues,
     },
@@ -166,7 +164,7 @@ export default function ProductForm({
             <input
               {...register("name", { required: "Name is required.", onChange: (e) => { if (!isEdit) setValue("slug", slugify(e.target.value)); } })}
               className={inputCls} style={{ ...inputStyle, borderColor: errors.name ? "#ef4444" : "var(--line-2)" }}
-              placeholder="Product name"
+
             />
             <FieldError msg={errors.name?.message} />
           </div>
@@ -175,7 +173,7 @@ export default function ProductForm({
             <input
               {...register("slug", { required: "Slug is required.", pattern: { value: /^[a-z0-9-]+$/, message: "Use lowercase letters, numbers and hyphens only." } })}
               className={inputCls} style={{ ...inputStyle, borderColor: errors.slug ? "#ef4444" : "var(--line-2)" }}
-              placeholder="auto-generated-slug"
+
             />
             <FieldError msg={errors.slug?.message} />
           </div>
@@ -198,7 +196,7 @@ export default function ProductForm({
             <input
               {...register("tagline", { required: "Tagline is required." })}
               className={inputCls} style={{ ...inputStyle, borderColor: errors.tagline ? "#ef4444" : "var(--line-2)" }}
-              placeholder="Short compelling tagline"
+
             />
             <FieldError msg={errors.tagline?.message} />
           </div>
@@ -214,16 +212,24 @@ export default function ProductForm({
             <input
               type="number" min={0}
               {...register("price", { required: "Price is required.", valueAsNumber: true, min: { value: 0, message: "Must be 0 or more." } })}
-              className={inputCls} style={{ ...inputStyle, borderColor: errors.price ? "#ef4444" : "var(--line-2)" }} placeholder="0"
+              className={inputCls} style={{ ...inputStyle, borderColor: errors.price ? "#ef4444" : "var(--line-2)" }}
             />
             <FieldError msg={errors.price?.message} />
+          </div>
+          <div>
+            <label className={labelCls} style={labelStyle}>Sample Price (Rs)</label>
+            <input
+              type="number" min={0}
+              {...register("sample_price", { setValueAs: (v) => v === "" || v === null || v === undefined ? null : Number(v) })}
+              className={inputCls} style={inputStyle}
+            />
           </div>
           <div>
             <label className={labelCls} style={labelStyle}>Stock Qty</label>
             <input
               type="number" min={0}
               {...register("stock", { valueAsNumber: true, setValueAs: (v) => v === "" ? null : Number(v) })}
-              className={inputCls} style={inputStyle} placeholder="(unlimited)"
+              className={inputCls} style={inputStyle}
             />
           </div>
           <div>
@@ -231,7 +237,7 @@ export default function ProductForm({
             <input
               type="number"
               {...register("sort_order", { valueAsNumber: true })}
-              className={inputCls} style={inputStyle} placeholder="0"
+              className={inputCls} style={inputStyle}
             />
           </div>
         </div>
@@ -255,7 +261,7 @@ export default function ProductForm({
           <textarea
             {...register("description", { required: "Description is required." })}
             rows={5} className={inputCls} style={{ ...inputStyle, resize: "vertical", borderColor: errors.description ? "#ef4444" : "var(--line-2)" }}
-            placeholder="Full product description…"
+
           />
           <FieldError msg={errors.description?.message} />
         </div>
@@ -264,7 +270,7 @@ export default function ProductForm({
           <textarea
             {...register("how_to_use", { required: "Usage instructions are required." })}
             rows={4} className={inputCls} style={{ ...inputStyle, resize: "vertical", borderColor: errors.how_to_use ? "#ef4444" : "var(--line-2)" }}
-            placeholder="Application instructions…"
+
           />
           <FieldError msg={errors.how_to_use?.message} />
         </div>
@@ -282,8 +288,8 @@ export default function ProductForm({
         </div>
         {specFields.map((f, i) => (
           <div key={f.id} className="flex gap-3 items-start">
-            <input {...register(`specs.${i}.label`)} placeholder="Label" className={`${inputCls} flex-1`} style={inputStyle} />
-            <input {...register(`specs.${i}.value`)} placeholder="Value" className={`${inputCls} flex-1`} style={inputStyle} />
+            <input {...register(`specs.${i}.label`)} className={`${inputCls} flex-1`} style={inputStyle} />
+            <input {...register(`specs.${i}.value`)} className={`${inputCls} flex-1`} style={inputStyle} />
             <button type="button" onClick={() => removeSpec(i)} className="mt-0.5 p-2.5 rounded-[8px] cursor-pointer transition-all hover:bg-red-500/10" style={{ color: "#ef4444" }}>
               <Trash2 className="w-4 h-4" />
             </button>
@@ -356,7 +362,7 @@ export default function ProductForm({
                 <ImageOff className="w-5 h-5" style={{ color: "var(--muted)" }} />
               )}
             </div>
-            <input {...register(`images.${i}.url`)} placeholder="https://…" className={`${inputCls} flex-1`} style={inputStyle} />
+            <input {...register(`images.${i}.url`)} className={`${inputCls} flex-1`} style={inputStyle} />
             <div className="flex flex-col">
               <button
                 type="button"
@@ -401,7 +407,7 @@ export default function ProductForm({
           <div key={f.id} className="grid grid-cols-3 gap-3 items-start">
             <div>
               <label className={labelCls} style={labelStyle}>Label<Req /></label>
-              <input {...register(`variants.${i}.label`, { required: "Required." })} placeholder="e.g. 500ml" className={inputCls} style={{ ...inputStyle, borderColor: errors.variants?.[i]?.label ? "#ef4444" : "var(--line-2)" }} />
+              <input {...register(`variants.${i}.label`, { required: "Required." })} className={inputCls} style={{ ...inputStyle, borderColor: errors.variants?.[i]?.label ? "#ef4444" : "var(--line-2)" }} />
               <FieldError msg={errors.variants?.[i]?.label?.message} />
             </div>
             <div>
@@ -411,7 +417,7 @@ export default function ProductForm({
             <div className="flex gap-2 items-start">
               <div className="flex-1">
                 <label className={labelCls} style={labelStyle}>SKU<Req /></label>
-                <input {...register(`variants.${i}.sku`, { required: "Required." })} placeholder="PROD-001-500" className={inputCls} style={{ ...inputStyle, borderColor: errors.variants?.[i]?.sku ? "#ef4444" : "var(--line-2)" }} />
+                <input {...register(`variants.${i}.sku`, { required: "Required." })} className={inputCls} style={{ ...inputStyle, borderColor: errors.variants?.[i]?.sku ? "#ef4444" : "var(--line-2)" }} />
                 <FieldError msg={errors.variants?.[i]?.sku?.message} />
               </div>
               {variantFields.length > 1 && (

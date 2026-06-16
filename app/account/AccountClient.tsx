@@ -82,7 +82,7 @@ export default function AccountClient({
         </div>
         <div>
           <label className={lbl} style={lblStyle}>Phone</label>
-          <input className={field} style={fieldStyle} value={profile.phone} onChange={(e) => update("phone", e.target.value)} placeholder="+92 300 0000000" />
+          <input className={field} style={fieldStyle} value={profile.phone} onChange={(e) => update("phone", e.target.value)} />
         </div>
         <div>
           <label className={lbl} style={lblStyle}>Address</label>

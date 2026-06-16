@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PROMOS } from "@/lib/promos";
-import { checkRateLimit, getIP } from "@/lib/rateLimit";
+import { rateLimit, getIP } from "@/lib/rateLimit";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { checkCsrf } from "@/lib/csrf";
 
@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   if (csrfError) return csrfError;
 
   const ip = getIP(req.headers);
-  if (!checkRateLimit(`promo:${ip}`, 10, 60_000)) {
+  if (!(await rateLimit(`promo:${ip}`, 10, 60_000))) {
     return NextResponse.json({ valid: false, reason: "Too many attempts. Please wait a moment." }, { status: 429 });
   }
 

@@ -1,9 +1,12 @@
-import { getFeaturedProducts } from "@/lib/products";
+import { getFeaturedProducts, getNewArrivals } from "@/lib/products";
 import HomeClient from "./HomeClient";
 
 export const revalidate = 60;
 
 export default async function Page() {
-  const featured = await getFeaturedProducts();
-  return <HomeClient featured={featured} />;
+  const [featured, newArrivals] = await Promise.all([
+    getFeaturedProducts(),
+    getNewArrivals(8),
+  ]);
+  return <HomeClient featured={featured} newArrivals={newArrivals} />;
 }

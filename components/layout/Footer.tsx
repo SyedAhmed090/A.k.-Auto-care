@@ -8,6 +8,7 @@ import { whatsappDisplay } from "@/lib/settings";
 
 export default function Footer() {
   const { store } = useSettings();
+  const [logoError, setLogoError] = useState(false);
   const [nlEmail, setNlEmail] = useState("");
   const [nlState, setNlState] = useState<"idle" | "submitting" | "ok" | "error">("idle");
   const [nlError, setNlError] = useState("");
@@ -50,12 +51,25 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-16">
           {/* Brand */}
           <div className="col-span-1 sm:col-span-2 lg:col-span-1">
-            <div
-              className="text-[1.8rem] tracking-[.06em] mb-4"
-              style={{ fontFamily: "var(--font-anton)" }}
-            >
-              A<span style={{ color: "var(--accent)" }}>.</span>K AUTO CARE
-            </div>
+            {/* Full lockup at public/logo.png. Shown by default; if missing/404s the
+                onError handler swaps in the text wordmark. Gating on onError (not onLoad)
+                avoids the cached-image race that could leave the logo permanently hidden. */}
+            {!logoError ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src="/logo.png"
+                alt="A.K. Auto Care"
+                onError={() => setLogoError(true)}
+                className="h-[58px] w-auto object-contain mb-4"
+              />
+            ) : (
+              <div
+                className="text-[1.8rem] tracking-[.06em] mb-4"
+                style={{ fontFamily: "var(--font-anton)" }}
+              >
+                A<span style={{ color: "var(--accent)" }}>.</span>K AUTO CARE
+              </div>
+            )}
             <p className="text-[.92rem] max-w-[280px]" style={{ color: "var(--muted)" }}>
               Engineered car care for people who notice the details. Prep. Correct. Coat. Protect.
             </p>
@@ -167,7 +181,7 @@ export default function Footer() {
                     type="email"
                     value={nlEmail}
                     onChange={(e) => { setNlEmail(e.target.value); if (nlState === "error") setNlState("idle"); }}
-                    placeholder="your@email.com"
+
                     className="flex-1 min-w-0 px-3 py-2.5 rounded-[9px] text-xs outline-none"
                     style={{ background: "var(--bg)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }}
                     onKeyDown={(e) => e.key === "Enter" && handleNewsletter()}

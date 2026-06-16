@@ -23,6 +23,7 @@ const patchSchema = z.object({
   specs:        z.array(z.object({ label: z.string(), value: z.string() })).optional(),
   images:       z.array(z.string().url()).optional(),
   price:        z.number().int().min(0).optional(),
+  sample_price: z.number().int().min(0).nullable().optional(),
   stock:        z.number().int().min(0).nullable().optional(),
   in_stock:     z.boolean().optional(),
   featured:     z.boolean().optional(),

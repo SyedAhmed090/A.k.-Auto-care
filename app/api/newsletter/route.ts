@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { checkRateLimit, getIP } from "@/lib/rateLimit";
+import { rateLimit, getIP } from "@/lib/rateLimit";
 import { checkCsrf } from "@/lib/csrf";
 import { createAdminClient } from "@/utils/supabase/admin";
 
@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
   if (csrfError) return csrfError;
 
   const ip = getIP(req.headers);
-  if (!checkRateLimit(`newsletter:${ip}`, 3, 60 * 60_000)) {
+  if (!(await rateLimit(`newsletter:${ip}`, 3, 60 * 60_000))) {
     return NextResponse.json({ ok: false, error: "Too many attempts. Please try again later." }, { status: 429 });
   }
 

@@ -57,7 +57,7 @@ export default function AdminLoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="username"
-              placeholder="you@akautocare.pk"
+
               className="w-full px-4 py-3 rounded-[11px] outline-none text-sm"
               style={{ background: "var(--bg)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }}
             />

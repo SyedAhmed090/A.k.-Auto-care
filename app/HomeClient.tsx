@@ -11,7 +11,7 @@ const MARQUEE_ITEMS = [
   "Polish & Compound", "Wax & Sealant", "Microfiber", "Pro-Grade Chemistry",
 ];
 
-export default function HomeClient({ featured }: { featured: Product[] }) {
+export default function HomeClient({ featured, newArrivals }: { featured: Product[]; newArrivals: Product[] }) {
   const heroRef = useRef<HTMLElement>(null);
   const [nlEmail, setNlEmail] = useState("");
   const [nlState, setNlState] = useState<"idle" | "submitting" | "ok" | "error">("idle");
@@ -252,8 +252,8 @@ export default function HomeClient({ featured }: { featured: Product[] }) {
                   }}
                 >
                   <div className="absolute top-0 left-[22%] w-[14%] h-[55%] rounded-full pointer-events-none" style={{ background: "linear-gradient(180deg,rgba(255,255,255,.35),transparent)" }} />
-                  <span className="text-[2.2rem] tracking-[.06em]" style={{ fontFamily: "var(--font-anton)", color: "var(--accent)" }}>9H</span>
-                  <span className="text-[.55rem] tracking-[.22em] uppercase text-center px-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Ceramic<br />Pro Coat</span>
+                  <span className="text-[2.2rem] tracking-[.06em]" style={{ fontFamily: "var(--font-anton)", color: "var(--accent)" }}>BPO</span>
+                  <span className="text-[.55rem] tracking-[.22em] uppercase text-center px-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Hardener<br />Paste</span>
                   <div className="w-8 h-[1px]" style={{ background: "var(--line-2)" }} />
                   <span className="text-[.5rem] tracking-[.16em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted-2)" }}>A.K. Auto Care</span>
                 </div>
@@ -262,12 +262,12 @@ export default function HomeClient({ featured }: { featured: Product[] }) {
               <div className="absolute w-[380px] h-[380px] rounded-full pointer-events-none" style={{ border: "1px solid var(--line-2)", boxShadow: "0 0 80px rgba(79, 168, 230,.08)" }} />
               <div className="absolute w-[520px] h-[520px] rounded-full pointer-events-none opacity-50" style={{ border: "1px solid var(--line-2)" }} />
               <div className="absolute top-[60px] right-[34px] rounded-[12px] px-4 py-3 z-[3]" style={{ background: "rgba(10, 11, 13,.7)", backdropFilter: "blur(8px)", border: "1px solid var(--line-2)" }}>
-                <div className="text-[1.3rem]" style={{ fontFamily: "var(--font-anton)", color: "var(--text)" }}>9H</div>
-                <div className="text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Hardness</div>
+                <div className="text-[1.3rem]" style={{ fontFamily: "var(--font-anton)", color: "var(--text)" }}>2–3%</div>
+                <div className="text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Mix ratio</div>
               </div>
               <div className="absolute bottom-[70px] left-[30px] rounded-[12px] px-4 py-3 z-[3]" style={{ background: "rgba(10, 11, 13,.7)", backdropFilter: "blur(8px)", border: "1px solid var(--line-2)" }}>
-                <div className="text-[1.3rem]" style={{ fontFamily: "var(--font-anton)", color: "var(--accent)" }}>110°</div>
-                <div className="text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Contact angle</div>
+                <div className="text-[1.3rem]" style={{ fontFamily: "var(--font-anton)", color: "var(--accent)" }}>Low</div>
+                <div className="text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Shrinkage</div>
               </div>
             </div>
 
@@ -277,28 +277,31 @@ export default function HomeClient({ featured }: { featured: Product[] }) {
                 Hero Product
               </div>
               <h3 className="uppercase leading-[.98] tracking-[.01em]" style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(2rem,4vw,3.2rem)" }}>
-                Ceramic<br />Pro 9H Coat
+                Benzoyl Peroxide<br />(BPO) Hardener Paste
               </h3>
+              <div className="mt-3 text-[.78rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+                Industrial Curing Agent &amp; Catalyst
+              </div>
               <div className="text-[2.4rem] my-4" style={{ fontFamily: "var(--font-hanken)", fontWeight: 700, color: "var(--text)", display: "inline-block" }}>
-                Rs 32,999
+                Rs 1,000
               </div>
               <p className="max-w-[440px] mb-7" style={{ color: "var(--muted)" }}>
-                A single-layer nano-ceramic coating that locks in a deep, glassy gloss and shrugs off water, grime, and UV for years — not weeks.
+                A premium-grade, highly stable catalyst formulated to initiate the rapid curing of unsaturated polyester resins — transforming liquid gels and putties into a durable, sandable, stable solid across automotive refinish, marine, and composite work.
               </p>
               <div style={{ borderTop: "1px solid var(--line)" }} className="mb-7">
                 {[
-                  { k: "Coverage", v: "Up to 2 vehicles" },
-                  { k: "Durability", v: "5+ years" },
-                  { k: "Cure time", v: "24 hrs" },
-                  { k: "Finish", v: "High-gloss / hydrophobic" },
+                  { k: "Optimized Reactivity", v: "Predictable, controllable cure with minimal shrinkage." },
+                  { k: "Excellent Dispersion", v: "Smooth, homogeneous paste blends into resins and fillers without streaking or pocketing." },
+                  { k: "Vibrant Color Coding", v: "High-visibility pigment confirms a complete, uniform mix at a glance." },
+                  { k: "Enhanced Heat Stability", v: "Resists separation and holds chemical integrity through transport and long-term storage." },
                 ].map((row) => (
-                  <div key={row.k} className="flex justify-between py-3.5 text-sm" style={{ borderBottom: "1px solid var(--line)" }}>
-                    <span style={{ color: "var(--muted)" }}>{row.k}</span>
-                    <span className="font-semibold">{row.v}</span>
+                  <div key={row.k} className="py-3.5 text-sm" style={{ borderBottom: "1px solid var(--line)" }}>
+                    <span className="font-semibold block">{row.k}</span>
+                    <span className="block mt-1" style={{ color: "var(--muted)" }}>{row.v}</span>
                   </div>
                 ))}
               </div>
-              <Link href="/products/armour-ceramic-9h" className="btn-accent inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5">
+              <Link href="/products/bpo-hardener-paste" className="btn-accent inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5">
                 View Product <ArrowUpRight className="w-[18px] h-[18px]" />
               </Link>
             </div>
@@ -330,6 +333,33 @@ export default function HomeClient({ featured }: { featured: Product[] }) {
           </div>
         </div>
       </section>
+
+      {/* ── NEW ARRIVALS ── */}
+      {newArrivals.length > 0 && (
+        <section style={{ borderTop: "1px solid var(--line)", background: "var(--bg-2)" }} className="py-[120px]">
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-end justify-between gap-7 mb-12 flex-wrap reveal">
+              <div>
+                <div className="flex items-center gap-2.5 mb-4 text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+                  <span className="w-7 h-[1px]" style={{ background: "var(--accent)" }} />
+                  Just Landed
+                </div>
+                <h2 className="uppercase leading-[.96] tracking-[.01em]" style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(2.2rem,5vw,4rem)" }}>
+                  New<br />arrivals
+                </h2>
+              </div>
+              <Link href="/shop" className="btn-ghost inline-flex items-center gap-2.5 px-6 py-3 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5">
+                View all products <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {newArrivals.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── CATEGORY SHOWCASE ── */}
       <section style={{ borderTop: "1px solid var(--line)", background: "var(--bg-2)" }} className="py-[120px]">
@@ -520,7 +550,7 @@ export default function HomeClient({ featured }: { featured: Product[] }) {
                       value={nlEmail}
                       onChange={(e) => { setNlEmail(e.target.value); if (nlState === "error") setNlState("idle"); }}
                       onKeyDown={(e) => e.key === "Enter" && handleNewsletter()}
-                      placeholder="your@email.com"
+
                       className="flex-1 min-w-[220px] px-5 py-4 rounded-[13px] text-[1rem] outline-none transition-all"
                       style={{ background: "rgba(10, 11, 13,.6)", border: `1px solid ${nlState === "error" ? "#ef4444" : "var(--line-2)"}`, color: "var(--text)", fontFamily: "var(--font-hanken)" }}
                     />

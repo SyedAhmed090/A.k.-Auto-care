@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import type { Order } from "@/types/order";
+import { ORDER_STATUS_COLORS as STATUS_COLORS } from "@/lib/orderStatus";
+import { formatPrice } from "@/lib/utils";
 
 const STATUSES = ["pending", "confirmed", "processing", "shipped", "delivered"] as const;
 type OrderStatus = typeof STATUSES[number] | "cancelled" | "refunded";
@@ -36,20 +38,6 @@ const SHIPPING_METHOD_LABELS: Record<string, string> = {
   "intl-standard": "International Standard",
   "intl-express": "International Express",
 };
-
-const STATUS_COLORS: Record<string, string> = {
-  pending: "#f59e0b",
-  confirmed: "#3b82f6",
-  processing: "#8b5cf6",
-  shipped: "#06b6d4",
-  delivered: "#4ade80",
-  cancelled: "#ef4444",
-  refunded: "#9ca3af",
-};
-
-function formatPrice(price: number) {
-  return `Rs ${Math.round(price).toLocaleString("en-PK")}`;
-}
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-PK", { year: "numeric", month: "long", day: "numeric" });
@@ -129,27 +117,27 @@ export default function OrderTrackingClient() {
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label style={{ display: "block", fontFamily: "var(--font-space-mono)", fontSize: ".65rem", letterSpacing: ".12em", textTransform: "uppercase", color: "var(--muted)", marginBottom: 8 }}>
+                <label style={{ display: "block", fontFamily: "var(--font-hanken)", fontSize: ".82rem", letterSpacing: ".01em", color: "var(--muted)", marginBottom: 8 }}>
                   Order ID
                 </label>
                 <input
                   type="text"
                   value={orderId}
                   onChange={(e) => setOrderId(e.target.value)}
-                  placeholder="e.g. AK-A1B2C3D4"
+
                   required
                   style={{ ...inputStyle, padding: "10px 14px", borderRadius: 10, fontSize: ".9rem" }}
                 />
               </div>
               <div>
-                <label style={{ display: "block", fontFamily: "var(--font-space-mono)", fontSize: ".65rem", letterSpacing: ".12em", textTransform: "uppercase", color: "var(--muted)", marginBottom: 8 }}>
+                <label style={{ display: "block", fontFamily: "var(--font-hanken)", fontSize: ".82rem", letterSpacing: ".01em", color: "var(--muted)", marginBottom: 8 }}>
                   Email Address
                 </label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your@email.com"
+
                   required
                   style={{ ...inputStyle, padding: "10px 14px", borderRadius: 10, fontSize: ".9rem" }}
                 />

@@ -45,20 +45,20 @@ export default function LoginPage() {
 
         <form onSubmit={submit} className="rounded-[20px] p-7 space-y-4" style={{ background: "var(--surface)", border: "1px solid var(--line)" }}>
           <div>
-            <label className="block text-[.72rem] tracking-[.14em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Email</label>
-            <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com"
+            <label className="block text-[.82rem] tracking-[.01em] font-medium mb-2" style={{ fontFamily: "var(--font-hanken)", color: "var(--muted)" }}>Email</label>
+            <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 rounded-[11px] text-sm outline-none"
               style={{ background: "var(--bg)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }} />
           </div>
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Password</label>
+              <label className="block text-[.82rem] tracking-[.01em] font-medium" style={{ fontFamily: "var(--font-hanken)", color: "var(--muted)" }}>Password</label>
               <Link href="/account/forgot-password" className="text-[.72rem] tracking-[.04em] hover:text-[var(--accent)]" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
                 Forgot password?
               </Link>
             </div>
             <div className="relative">
-              <input type={show ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••"
+              <input type={show ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 pr-11 rounded-[11px] text-sm outline-none"
                 style={{ background: "var(--bg)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }} />
               <button type="button" onClick={() => setShow(v => !v)}

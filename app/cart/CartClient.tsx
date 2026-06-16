@@ -281,7 +281,7 @@ function CartPageInner() {
                         type="text"
                         value={promoInput}
                         onChange={(e) => setPromoInput(e.target.value)}
-                        placeholder="Enter code…"
+
                         className="flex-1 min-w-0 px-3 py-2.5 rounded-[11px] text-sm outline-none"
                         style={{ background: "var(--surface)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }}
                         onKeyDown={(e) => e.key === "Enter" && handlePromo()}

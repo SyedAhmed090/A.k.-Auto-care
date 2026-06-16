@@ -23,6 +23,7 @@ const productSchema = z.object({
   specs:        z.array(z.object({ label: z.string(), value: z.string() })).default([]),
   images:       z.array(z.string().url()).default([]),
   price:        z.number().int().min(0),
+  sample_price: z.number().int().min(0).nullable().optional(),
   stock:        z.number().int().min(0).nullable().optional(),
   in_stock:     z.boolean().default(true),
   featured:     z.boolean().default(false),

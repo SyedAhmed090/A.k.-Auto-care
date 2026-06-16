@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/utils/supabase/admin";
-import { checkRateLimit, getIP } from "@/lib/rateLimit";
+import { rateLimit, getIP } from "@/lib/rateLimit";
 import { checkCsrf } from "@/lib/csrf";
 
 const cartItemSchema = z.object({
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
   if (csrfError) return csrfError;
 
   const ip = getIP(req.headers);
-  if (!checkRateLimit(`cart-save:${ip}`, 20, 60_000)) {
+  if (!(await rateLimit(`cart-save:${ip}`, 20, 60_000))) {
     return NextResponse.json({ ok: false, error: "Too many requests. Please slow down." }, { status: 429 });
   }
 

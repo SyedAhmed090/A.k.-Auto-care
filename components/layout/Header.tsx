@@ -16,7 +16,7 @@ export default function Header() {
   const count = useCartStore((s) => s.itemCount());
   const openCart = useCartStore((s) => s.openCart);
   const wishlistCount = useWishlistStore((s) => s.items.length);
-  const [logoLoaded, setLogoLoaded] = useState(false);
+  const [logoError, setLogoError] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -90,17 +90,19 @@ export default function Header() {
           <nav className="flex items-center justify-between h-[78px]">
             {/* Brand */}
             <Link href="/" className="flex items-center gap-3">
-              {/* Shield mark. Drop a transparent PNG/SVG at public/logo-mark.png and it
-                  reveals automatically; until then (or if it 404s) the CSS mark below shows.
-                  Plain <img> is intentional so a missing file degrades gracefully with no flash. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/logo-mark.png"
-                alt="A.K. Auto Care"
-                onLoad={() => setLogoLoaded(true)}
-                className={logoLoaded ? "w-[40px] h-[40px] object-contain" : "hidden"}
-              />
-              {!logoLoaded && (
+              {/* Shield mark at public/logo-mark.png. Shown by default; if the file is
+                  missing/404s the onError handler swaps in the CSS mark below. Gating on
+                  onError (not onLoad) avoids the race where a cached image loads before
+                  React attaches the handler, which would leave the logo permanently hidden. */}
+              {!logoError ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src="/logo-mark.png"
+                  alt="A.K. Auto Care"
+                  onError={() => setLogoError(true)}
+                  className="w-[40px] h-[40px] object-contain"
+                />
+              ) : (
                 <div
                   className="w-[38px] h-[38px] rounded-[9px] grid place-items-center text-[.95rem] tracking-[.02em]"
                   style={{

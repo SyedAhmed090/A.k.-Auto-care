@@ -1,12 +1,9 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { ORDER_STATUS_COLORS as STATUS_COLORS } from "@/lib/orderStatus";
 
 const STATUSES = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled", "refunded"] as const;
-const STATUS_COLORS: Record<string, string> = {
-  pending: "#f59e0b", confirmed: "#3b82f6", processing: "#8b5cf6",
-  shipped: "#06b6d4", delivered: "#4ade80", cancelled: "#ef4444", refunded: "#9ca3af",
-};
 
 export default function OrderActions({ order }: { order: any }) {
   const [status, setStatus] = useState<string>(order.status);
@@ -53,12 +50,12 @@ export default function OrderActions({ order }: { order: any }) {
 
       <div>
         <label className="block text-[.65rem] tracking-[.12em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Tracking Number (TCS / Leopards)</label>
-        <input value={tracking} onChange={(e) => setTracking(e.target.value)} className={inputCls} style={inputStyle} placeholder="e.g. TCS-123456789" />
+        <input value={tracking} onChange={(e) => setTracking(e.target.value)} className={inputCls} style={inputStyle} />
       </div>
 
       <div>
         <label className="block text-[.65rem] tracking-[.12em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Internal Notes</label>
-        <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} className={inputCls} style={{ ...inputStyle, resize: "vertical" }} placeholder="Courier contacted, customer notified…" />
+        <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} className={inputCls} style={{ ...inputStyle, resize: "vertical" }} />
       </div>
 
       <button

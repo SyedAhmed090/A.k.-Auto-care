@@ -4,7 +4,7 @@ import { makeToken, makeUserToken, cookieName, cookieMaxAge, getAdminSecret } fr
 import { createAdminClient } from "@/utils/supabase/admin";
 import { verifyPassword } from "@/lib/password";
 import { logAudit } from "@/lib/audit";
-import { checkRateLimit, getIP } from "@/lib/rateLimit";
+import { rateLimit, getIP } from "@/lib/rateLimit";
 import { checkCsrf } from "@/lib/csrf";
 import type { AdminRole } from "@/lib/adminToken";
 
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const ip = getIP(req.headers);
-    if (!checkRateLimit("admin-login:" + ip, 5, 15 * 60_000)) {
+    if (!(await rateLimit("admin-login:" + ip, 5, 15 * 60_000))) {
       return NextResponse.json({ error: "Too many attempts." }, { status: 429 });
     }
 

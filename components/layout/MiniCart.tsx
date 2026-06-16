@@ -159,7 +159,7 @@ export default function MiniCart() {
                     type="text"
                     value={promoInput}
                     onChange={(e) => setPromoInput(e.target.value)}
-                    placeholder="Promo code"
+
                     className="flex-1 min-w-0 px-2.5 py-2 rounded-[9px] text-xs outline-none"
                     style={{ background: "var(--surface)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }}
                     onKeyDown={(e) => e.key === "Enter" && handlePromo()}
