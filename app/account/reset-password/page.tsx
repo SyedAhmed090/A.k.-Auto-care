@@ -131,7 +131,7 @@ export default function ResetPasswordPage() {
               New Password <span style={{ color: "var(--accent)" }}>*</span>
             </label>
             <div className="relative">
-              <input type={show ? "text" : "password"} required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 8 characters"
+              <input type={show ? "text" : "password"} required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 pr-11 rounded-[11px] text-sm outline-none"
                 style={{ background: "var(--bg)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }} />
               <button type="button" onClick={() => setShow(v => !v)}
@@ -148,7 +148,7 @@ export default function ResetPasswordPage() {
             <label className="block text-[.72rem] tracking-[.14em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
               Confirm Password <span style={{ color: "var(--accent)" }}>*</span>
             </label>
-            <input type={show ? "text" : "password"} required minLength={8} value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Re-enter password"
+            <input type={show ? "text" : "password"} required minLength={8} value={confirm} onChange={(e) => setConfirm(e.target.value)}
               className="w-full px-4 py-3 rounded-[11px] text-sm outline-none"
               style={{ background: "var(--bg)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }} />
           </div>

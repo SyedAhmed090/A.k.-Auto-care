@@ -233,7 +233,7 @@ export default function EmailTemplatesPage() {
                     type="email"
                     value={testEmail}
                     onChange={(e) => setTestEmail(e.target.value)}
-                    placeholder="you@example.com"
+
                     className={inputCls}
                     style={{ ...inputStyle, maxWidth: 280 }}
                   />

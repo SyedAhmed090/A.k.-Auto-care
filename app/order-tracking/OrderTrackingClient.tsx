@@ -124,7 +124,7 @@ export default function OrderTrackingClient() {
                   type="text"
                   value={orderId}
                   onChange={(e) => setOrderId(e.target.value)}
-                  placeholder="e.g. AK-A1B2C3D4"
+
                   required
                   style={{ ...inputStyle, padding: "10px 14px", borderRadius: 10, fontSize: ".9rem" }}
                 />
@@ -137,7 +137,7 @@ export default function OrderTrackingClient() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your@email.com"
+
                   required
                   style={{ ...inputStyle, padding: "10px 14px", borderRadius: 10, fontSize: ".9rem" }}
                 />

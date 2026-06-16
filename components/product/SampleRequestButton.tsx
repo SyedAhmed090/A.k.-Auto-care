@@ -180,12 +180,12 @@ export default function SampleRequestButton({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className={labelCls} style={labelStyle}>Name *</label>
-                <input {...register("name")} placeholder="Your name" className={inputCls} style={{ ...inputStyle, borderColor: errors.name ? "#ef4444" : "var(--line-2)" }} />
+                <input {...register("name")} className={inputCls} style={{ ...inputStyle, borderColor: errors.name ? "#ef4444" : "var(--line-2)" }} />
                 {errors.name && <p className="text-xs mt-1" style={{ color: "#ef4444" }}>{errors.name.message}</p>}
               </div>
               <div>
                 <label className={labelCls} style={labelStyle}>Phone / WhatsApp *</label>
-                <input {...register("phone")} placeholder="03xx xxxxxxx" className={inputCls} style={{ ...inputStyle, borderColor: errors.phone ? "#ef4444" : "var(--line-2)" }} />
+                <input {...register("phone")} className={inputCls} style={{ ...inputStyle, borderColor: errors.phone ? "#ef4444" : "var(--line-2)" }} />
                 {errors.phone && <p className="text-xs mt-1" style={{ color: "#ef4444" }}>{errors.phone.message}</p>}
               </div>
             </div>
@@ -193,11 +193,11 @@ export default function SampleRequestButton({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className={labelCls} style={labelStyle}>Business / Shop (optional)</label>
-                <input {...register("business_name")} placeholder="Business name" className={inputCls} style={inputStyle} />
+                <input {...register("business_name")} className={inputCls} style={inputStyle} />
               </div>
               <div>
                 <label className={labelCls} style={labelStyle}>Email (optional)</label>
-                <input {...register("email")} type="email" placeholder="you@example.com" className={inputCls} style={{ ...inputStyle, borderColor: errors.email ? "#ef4444" : "var(--line-2)" }} />
+                <input {...register("email")} type="email" className={inputCls} style={{ ...inputStyle, borderColor: errors.email ? "#ef4444" : "var(--line-2)" }} />
                 {errors.email && <p className="text-xs mt-1" style={{ color: "#ef4444" }}>{errors.email.message}</p>}
               </div>
             </div>
@@ -205,11 +205,11 @@ export default function SampleRequestButton({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className={labelCls} style={labelStyle}>City (optional)</label>
-                <input {...register("city")} placeholder="e.g. Karachi" className={inputCls} style={inputStyle} />
+                <input {...register("city")} className={inputCls} style={inputStyle} />
               </div>
               <div>
                 <label className={labelCls} style={labelStyle}>Address (optional)</label>
-                <input {...register("address")} placeholder="Shipping address" className={inputCls} style={inputStyle} />
+                <input {...register("address")} className={inputCls} style={inputStyle} />
               </div>
             </div>
 

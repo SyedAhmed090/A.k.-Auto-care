@@ -284,7 +284,7 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
                 type="text"
                 value={tracking}
                 onChange={(e) => setTracking(e.target.value)}
-                placeholder="e.g. TCS-123456789"
+
                 style={inputStyle}
               />
             </div>

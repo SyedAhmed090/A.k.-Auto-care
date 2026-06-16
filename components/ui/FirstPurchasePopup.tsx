@@ -159,7 +159,7 @@ export default function FirstPurchasePopup() {
                 value={email}
                 onChange={(e) => { setEmail(e.target.value); if (state === "error") { setState("idle"); setError(""); } }}
                 onKeyDown={(e) => e.key === "Enter" && submit()}
-                placeholder="your@email.com"
+
                 className="w-full px-4 py-3 rounded-[12px] text-sm outline-none mb-3 transition-all focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
                 style={{ background: "var(--bg)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }}
               />

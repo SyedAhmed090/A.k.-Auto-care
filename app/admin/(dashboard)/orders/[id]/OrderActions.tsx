@@ -50,12 +50,12 @@ export default function OrderActions({ order }: { order: any }) {
 
       <div>
         <label className="block text-[.65rem] tracking-[.12em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Tracking Number (TCS / Leopards)</label>
-        <input value={tracking} onChange={(e) => setTracking(e.target.value)} className={inputCls} style={inputStyle} placeholder="e.g. TCS-123456789" />
+        <input value={tracking} onChange={(e) => setTracking(e.target.value)} className={inputCls} style={inputStyle} />
       </div>
 
       <div>
         <label className="block text-[.65rem] tracking-[.12em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Internal Notes</label>
-        <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} className={inputCls} style={{ ...inputStyle, resize: "vertical" }} placeholder="Courier contacted, customer notified…" />
+        <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} className={inputCls} style={{ ...inputStyle, resize: "vertical" }} />
       </div>
 
       <button

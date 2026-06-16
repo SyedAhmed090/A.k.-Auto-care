@@ -207,7 +207,7 @@ function InventoryInner() {
                         type="number"
                         min="0"
                         value={row.stock ?? ""}
-                        placeholder="∞"
+
                         onChange={(e) => {
                           const val = e.target.value === "" ? null : parseInt(e.target.value, 10);
                           markDirty(p.id, { stock: isNaN(val as number) ? null : val });
