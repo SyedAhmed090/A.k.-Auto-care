@@ -7,6 +7,10 @@ import CategoryPageClient from "./CategoryPageClient";
 
 const BASE_URL = "https://www.akautocare.pk";
 
+// Revalidate hourly so category listings pick up product/price/stock changes
+// (consistent with the product detail pages).
+export const revalidate = 3600;
+
 export function generateStaticParams() {
   return categories.map((c) => ({ slug: c.slug }));
 }

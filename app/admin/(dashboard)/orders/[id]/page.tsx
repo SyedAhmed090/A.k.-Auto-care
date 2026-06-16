@@ -1,6 +1,7 @@
 "use client";
 import { use, useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import type { Order } from "@/types/order";
 import ConfirmDialog from "@/app/admin/ConfirmDialog";
 import { ORDER_STATUS_COLORS as STATUS_COLORS } from "@/lib/orderStatus";
@@ -191,7 +192,7 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
                     <td style={{ padding: "14px 16px" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                         {item.image && (
-                          <img src={item.image} alt={item.productName} style={{ width: 44, height: 44, borderRadius: 8, objectFit: "cover", border: "1px solid var(--line)", flexShrink: 0 }} />
+                          <Image src={item.image} alt={item.productName} width={44} height={44} style={{ borderRadius: 8, objectFit: "cover", border: "1px solid var(--line)", flexShrink: 0 }} />
                         )}
                         <span style={{ fontWeight: 600, fontSize: ".88rem" }}>{item.productName}</span>
                       </div>
