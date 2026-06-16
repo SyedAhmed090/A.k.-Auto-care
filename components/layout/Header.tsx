@@ -99,6 +99,9 @@ export default function Header() {
                 <img
                   src="/logo-mark.png"
                   alt="A.K. Auto Care"
+                  width={40}
+                  height={40}
+                  decoding="async"
                   onError={() => setLogoError(true)}
                   className="w-[40px] h-[40px] object-contain"
                 />

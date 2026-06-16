@@ -59,6 +59,10 @@ export default function Footer() {
               <img
                 src="/logo.png"
                 alt="A.K. Auto Care"
+                width={126}
+                height={58}
+                loading="lazy"
+                decoding="async"
                 onError={() => setLogoError(true)}
                 className="h-[58px] w-auto object-contain mb-4"
               />
@@ -179,6 +183,8 @@ export default function Footer() {
                 <div className="flex gap-2">
                   <input
                     type="email"
+                    aria-label="Email address"
+                    placeholder="you@email.com"
                     value={nlEmail}
                     onChange={(e) => { setNlEmail(e.target.value); if (nlState === "error") setNlState("idle"); }}
 

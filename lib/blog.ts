@@ -1,3 +1,5 @@
+import type { Product, Variant } from "@/data/products";
+
 export interface BlogPost {
   slug: string;
   title: string;
@@ -8,6 +10,26 @@ export interface BlogPost {
   cover: string;       // image URL
   readingMinutes: number;
   content: string;     // markdown (rendered by components/ui/Markdown)
+}
+
+/** A product resolved for an inline [[product:SKU]] embed. */
+export interface ProductEmbed {
+  product: Product;
+  variant: Variant;
+}
+export type ProductEmbedMap = Record<string, ProductEmbed>;
+
+// Matches a standalone product-embed token line, e.g. `[[product:PROCUT-1KG]]`.
+export const PRODUCT_TOKEN = /^\[\[product:([A-Za-z0-9_-]+)\]\]$/;
+
+/** Pull the unique product SKUs referenced by [[product:SKU]] tokens in post content. */
+export function extractProductSkus(content: string): string[] {
+  const skus = new Set<string>();
+  for (const raw of content.split("\n")) {
+    const m = raw.trim().match(PRODUCT_TOKEN);
+    if (m) skus.add(m[1]);
+  }
+  return [...skus];
 }
 
 // Starter posts. Add new entries here — the listing, post pages, sitemap,
@@ -94,9 +116,15 @@ If you've ever seen fine, circular scratches in your paint under direct sunlight
 
 > Less is more. Removing too much clear coat to chase one deep scratch can do permanent damage. Correct what's safe, then protect the rest.
 
+For light swirls and compounding haze, a dedicated finishing polish gives the safest, clearest result:
+
+[[product:FINEGRADE-1KG]]
+
 ## Lock in your results
 
 Once the paint is corrected, it's bare and vulnerable. Immediately follow up with a **sealant or ceramic coating** to protect your hard work — otherwise the swirls will return with the next wash.
+
+[[product:ULTPOLISH-1KG]]
 
 Take your time, keep your towels clean, and your paint will reward you with a mirror finish.
     `,

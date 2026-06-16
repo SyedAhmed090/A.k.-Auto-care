@@ -13,6 +13,7 @@ import QuantityStepper from "@/components/ui/QuantityStepper";
 import WishlistButton from "@/components/ui/WishlistButton";
 import SampleRequestButton from "@/components/product/SampleRequestButton";
 import ReviewsSection from "@/components/product/ReviewsSection";
+import CompleteSystem, { type SystemStepView } from "@/components/product/CompleteSystem";
 import { trackViewContent, trackAddToCart } from "@/components/analytics/MetaPixel";
 import { useSettings } from "@/components/providers/SettingsProvider";
 
@@ -28,7 +29,7 @@ const TRUST = [
   { icon: MessageCircle, label: "WhatsApp support", sub: "Reply in minutes" },
 ];
 
-export default function ProductPageClient({ product, related }: { product: Product; related: Product[] }) {
+export default function ProductPageClient({ product, related, systemView }: { product: Product; related: Product[]; systemView?: { name: string; description: string; steps: SystemStepView[] } | null }) {
   const { store } = useSettings();
   const [activeImg, setActiveImg]           = useState(0);
   const [selectedVariant, setSelectedVariant] = useState(0);
@@ -368,6 +369,15 @@ export default function ProductPageClient({ product, related }: { product: Produ
             )}
           </div>
         </div>
+
+        {/* Complete the System — frequently-bought-together kit cross-sell */}
+        {systemView && (
+          <CompleteSystem
+            name={systemView.name}
+            description={systemView.description}
+            steps={systemView.steps}
+          />
+        )}
 
         {/* Related */}
         {related.length > 0 && (

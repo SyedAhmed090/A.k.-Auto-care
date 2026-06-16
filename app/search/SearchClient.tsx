@@ -4,19 +4,8 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Search, SearchX, X } from "lucide-react";
 import type { Product } from "@/data/products";
 import ProductCard from "@/components/product/ProductCard";
+import { searchAndRank } from "@/lib/search";
 import Link from "next/link";
-
-function clientSearch(allProducts: Product[], query: string): Product[] {
-  const q = query.trim().toLowerCase();
-  if (!q) return allProducts;
-  return allProducts.filter(
-    (p) =>
-      p.name.toLowerCase().includes(q) ||
-      p.tagline.toLowerCase().includes(q) ||
-      p.description.toLowerCase().includes(q) ||
-      p.categorySlug.toLowerCase().includes(q)
-  );
-}
 
 function SearchResults({ allProducts }: { allProducts: Product[] }) {
   const params = useSearchParams();
@@ -24,7 +13,7 @@ function SearchResults({ allProducts }: { allProducts: Product[] }) {
   const initialQ = params.get("q") ?? "";
   const [query, setQuery] = useState(initialQ);
 
-  const results = clientSearch(allProducts, query);
+  const results = searchAndRank(allProducts, query);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

@@ -388,8 +388,9 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
           </div>
 
           <div>
-            <label style={labelStyle}>Your Name</label>
+            <label htmlFor="rv-name" style={labelStyle}>Your Name</label>
             <input
+              id="rv-name"
               style={inputStyle}
               onFocus={onFieldFocus}
               onBlur={onFieldBlur}
@@ -402,8 +403,9 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
           </div>
 
           <div>
-            <label style={labelStyle}>Email (optional, for verified purchase badge)</label>
+            <label htmlFor="rv-email" style={labelStyle}>Email (optional, for verified purchase badge)</label>
             <input
+              id="rv-email"
               style={inputStyle}
               onFocus={onFieldFocus}
               onBlur={onFieldBlur}
@@ -416,8 +418,9 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
           </div>
 
           <div>
-            <label style={labelStyle}>Review Title</label>
+            <label htmlFor="rv-title" style={labelStyle}>Review Title</label>
             <input
+              id="rv-title"
               style={inputStyle}
               onFocus={onFieldFocus}
               onBlur={onFieldBlur}
@@ -430,8 +433,9 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
           </div>
 
           <div>
-            <label style={labelStyle}>Your Review</label>
+            <label htmlFor="rv-body" style={labelStyle}>Your Review</label>
             <textarea
+              id="rv-body"
               style={{ ...inputStyle, minHeight: "110px", maxHeight: "320px", resize: "vertical" }}
               onFocus={onFieldFocus}
               onBlur={onFieldBlur}
