@@ -117,7 +117,7 @@ export default function OrderTrackingClient() {
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label style={{ display: "block", fontFamily: "var(--font-space-mono)", fontSize: ".65rem", letterSpacing: ".12em", textTransform: "uppercase", color: "var(--muted)", marginBottom: 8 }}>
+                <label style={{ display: "block", fontFamily: "var(--font-hanken)", fontSize: ".82rem", letterSpacing: ".01em", color: "var(--muted)", marginBottom: 8 }}>
                   Order ID
                 </label>
                 <input
@@ -130,7 +130,7 @@ export default function OrderTrackingClient() {
                 />
               </div>
               <div>
-                <label style={{ display: "block", fontFamily: "var(--font-space-mono)", fontSize: ".65rem", letterSpacing: ".12em", textTransform: "uppercase", color: "var(--muted)", marginBottom: 8 }}>
+                <label style={{ display: "block", fontFamily: "var(--font-hanken)", fontSize: ".82rem", letterSpacing: ".01em", color: "var(--muted)", marginBottom: 8 }}>
                   Email Address
                 </label>
                 <input
