@@ -6,6 +6,7 @@ import { Search, ShoppingCart, Heart, User, Menu, X } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { useWishlistStore } from "@/store/wishlist";
 import { useFocusTrap } from "@/lib/useFocusTrap";
+import { useMounted } from "@/lib/useMounted";
 import { cn } from "@/lib/utils";
 
 export default function Header() {
@@ -13,7 +14,7 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const count = useCartStore((s) => s.itemCount());
   const openCart = useCartStore((s) => s.openCart);
   const wishlistCount = useWishlistStore((s) => s.items.length);
@@ -23,8 +24,6 @@ export default function Header() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const searchOverlayRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => { setMounted(true); }, []);
 
   // Focus-trap both overlays: moves focus in on open, cycles Tab, Escape closes,
   // and restores focus to the trigger on close.

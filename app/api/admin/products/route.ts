@@ -3,6 +3,7 @@ import { z } from "zod";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { requireAdmin } from "@/lib/adminAuth";
 import { checkCsrf } from "@/lib/csrf";
+import type { TablesInsert } from "@/types/supabase";
 
 const variantSchema = z.object({
   label:      z.string().min(1).max(80),
@@ -69,7 +70,7 @@ export async function POST(req: NextRequest) {
     const insertData = id ? { id, ...productData } : productData;
     const { data: product, error: productError } = await sb
       .from("products")
-      .insert(insertData as any)
+      .insert(insertData as TablesInsert<"products">)
       .select("id")
       .single();
     if (productError) throw productError;

@@ -55,7 +55,6 @@ export default function FirstPurchasePopup() {
       document.body.style.overflow = prevOverflow;
       window.removeEventListener("keydown", onKeyDown);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, hidden, state]);
 
   const submit = async () => {

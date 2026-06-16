@@ -78,8 +78,6 @@ export default function ProductForm({
   const { fields: imageFields,   append: appendImage,   remove: removeImage, move: moveImage } = useFieldArray({ control, name: "images" });
   const { fields: variantFields, append: appendVariant, remove: removeVariant } = useFieldArray({ control, name: "variants" });
 
-  const nameVal = watch("name");
-
   const uploadFiles = async (files: FileList | File[]) => {
     const list = Array.from(files).filter((f) => f.type.startsWith("image/"));
     if (!list.length) {

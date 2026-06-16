@@ -69,10 +69,12 @@ async function activeIdentity(): Promise<AdminIdentity | null> {
 
   // Legacy shared-secret session is always a valid owner — no DB lookup needed.
   if (identity.via === "secret") return identity;
+  // Per-user tokens always carry a uid; guard satisfies the type and fails closed.
+  if (!identity.uid) return null;
 
   try {
     const sb = createAdminClient();
-    const { data, error } = await (sb as any)
+    const { data, error } = await sb
       .from("admin_users")
       .select("role, active")
       .eq("id", identity.uid)

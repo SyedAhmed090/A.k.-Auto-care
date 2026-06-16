@@ -57,7 +57,7 @@ export async function PATCH(req: NextRequest) {
     const { key, subject, body } = parsed.data;
 
     const sb = createAdminClient();
-    const { error } = await (sb as any)
+    const { error } = await sb
       .from("email_templates")
       .upsert({ key, subject, body, updated_at: new Date().toISOString() }, { onConflict: "key" });
     if (error) throw error;

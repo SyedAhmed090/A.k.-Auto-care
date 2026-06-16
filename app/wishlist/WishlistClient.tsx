@@ -1,17 +1,16 @@
 "use client";
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, X } from "lucide-react";
 import { useWishlistStore } from "@/store/wishlist";
 import { formatPrice } from "@/lib/utils";
 import StarRating from "@/components/ui/StarRating";
+import { useMounted } from "@/lib/useMounted";
 
 export default function WishlistClient() {
   const items = useWishlistStore((s) => s.items);
   const remove = useWishlistStore((s) => s.remove);
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const mounted = useMounted();
 
   return (
     <div style={{ background: "var(--bg)", minHeight: "100vh" }}>

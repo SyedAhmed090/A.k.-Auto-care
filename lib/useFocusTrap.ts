@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, type RefObject } from "react";
+import { useEffect, useInsertionEffect, useRef, type RefObject } from "react";
 
 const FOCUSABLE =
   'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
@@ -19,8 +19,13 @@ export function useFocusTrap(
   active: boolean,
   onClose?: () => void
 ) {
+  // Keep the latest onClose in a ref without re-running the trap effect. Writing the
+  // ref during render is unsafe (and flagged by react-hooks/refs); useInsertionEffect
+  // commits it synchronously before passive effects/event handlers read it.
   const onCloseRef = useRef(onClose);
-  onCloseRef.current = onClose;
+  useInsertionEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   useEffect(() => {
     if (!active) return;

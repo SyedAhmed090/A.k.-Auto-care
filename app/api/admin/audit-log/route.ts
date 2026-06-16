@@ -13,25 +13,26 @@ export async function GET(req: NextRequest) {
     const limit = Math.min(parseInt(searchParams.get("limit") ?? "200", 10) || 200, 500);
 
     const sb = createAdminClient();
-    let query = (sb as any)
+    const base = sb
       .from("audit_log")
-      .select("id, admin_user_id, admin_via, action, entity, entity_id, meta, created_at")
+      .select("id, admin_user_id, admin_via, action, entity, entity_id, meta, created_at");
+    // Filter before ordering/limiting (filters must precede transforms).
+    const filteredQuery = action ? base.ilike("action", `%${action}%`) : base;
+
+    const { data: entries, error } = await filteredQuery
       .order("created_at", { ascending: false })
       .limit(limit);
-    if (action) query = query.ilike("action", `%${action}%`);
-
-    const { data: entries, error } = await query;
     if (error) throw error;
 
     // Resolve admin_user_id -> email for display (small set).
-    const ids = [...new Set((entries ?? []).map((e: { admin_user_id: string | null }) => e.admin_user_id).filter(Boolean))];
+    const ids = [...new Set((entries ?? []).map((e) => e.admin_user_id).filter(Boolean))];
     const emails = new Map<string, string>();
     if (ids.length > 0) {
-      const { data: users } = await (sb as any).from("admin_users").select("id, email").in("id", ids);
+      const { data: users } = await sb.from("admin_users").select("id, email").in("id", ids as string[]);
       for (const u of (users ?? []) as { id: string; email: string }[]) emails.set(u.id, u.email);
     }
 
-    const rows = (entries ?? []).map((e: { admin_user_id: string | null; admin_via: string }) => ({
+    const rows = (entries ?? []).map((e) => ({
       ...e,
       actor: e.admin_user_id ? emails.get(e.admin_user_id) ?? "unknown user" : e.admin_via === "secret" ? "Owner (shared key)" : "system",
     }));

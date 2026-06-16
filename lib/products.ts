@@ -49,7 +49,6 @@ function mapVariants(product_variants: DbVariant[]): Variant[] {
 }
 
 function mapProductCard(db: DbProductCard): Product {
-  const row = db as any;
   return {
     id: db.id,
     slug: db.slug,
@@ -62,7 +61,7 @@ function mapProductCard(db: DbProductCard): Product {
     price: db.price,
     samplePrice: db.sample_price ?? undefined,
     variants: mapVariants(db.product_variants),
-    images: (row.images as string[]) ?? [],
+    images: (db.images as unknown as string[]) ?? [],
     stock: db.stock ?? undefined,
     inStock: db.in_stock,
     featured: db.featured,
@@ -74,7 +73,6 @@ function mapProductCard(db: DbProductCard): Product {
 }
 
 function mapProduct(db: DbProduct): Product {
-  const row = db as any;
   return {
     id: db.id,
     slug: db.slug,
@@ -83,11 +81,11 @@ function mapProduct(db: DbProduct): Product {
     tagline: db.tagline,
     description: db.description,
     howToUse: db.how_to_use,
-    specs: (row.specs as { label: string; value: string }[]) ?? [],
+    specs: (db.specs as unknown as { label: string; value: string }[]) ?? [],
     price: db.price,
     samplePrice: db.sample_price ?? undefined,
     variants: mapVariants(db.product_variants),
-    images: (row.images as string[]) ?? [],
+    images: (db.images as unknown as string[]) ?? [],
     stock: db.stock ?? undefined,
     inStock: db.in_stock,
     featured: db.featured,

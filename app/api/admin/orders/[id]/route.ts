@@ -65,7 +65,13 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       .eq("id", id)
       .single() as { data: CurrentOrder | null; error: unknown };
 
-    const updates: Record<string, unknown> = { updated_at: new Date().toISOString() };
+    const updates: {
+      updated_at: string;
+      status?: string;
+      tracking_number?: string;
+      tracking_carrier?: string;
+      notes?: string;
+    } = { updated_at: new Date().toISOString() };
     if (parsed.data.status            !== undefined) updates.status            = parsed.data.status;
     if (parsed.data.tracking_number   !== undefined) updates.tracking_number   = parsed.data.tracking_number;
     if (parsed.data.tracking_carrier  !== undefined) updates.tracking_carrier  = parsed.data.tracking_carrier;
@@ -73,7 +79,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
     const { data, error } = await supabase
       .from("orders")
-      .update(updates as any)
+      .update(updates)
       .eq("id", id)
       .select()
       .single();

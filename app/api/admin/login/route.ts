@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     // ── Per-user login (#12): email + password against admin_users ──
     if (email && typeof email === "string") {
       const sb = createAdminClient();
-      const { data: user } = await (sb as any)
+      const { data: user } = await sb
         .from("admin_users")
         .select("id, password_hash, role, active")
         .eq("email", email.trim().toLowerCase())

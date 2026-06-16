@@ -1,8 +1,8 @@
 "use client";
-import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
 import type { Product } from "@/data/products";
 import { useWishlistStore } from "@/store/wishlist";
+import { useMounted } from "@/lib/useMounted";
 
 /**
  * Heart toggle for saving a product to the wishlist.
@@ -18,8 +18,7 @@ export default function WishlistButton({
 }) {
   const toggle = useWishlistStore((s) => s.toggle);
   const items = useWishlistStore((s) => s.items);
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const mounted = useMounted();
 
   const active = mounted && items.some((i) => i.id === product.id);
 

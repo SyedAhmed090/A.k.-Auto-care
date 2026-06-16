@@ -53,7 +53,6 @@ export default async function OrderConfirmationPage({
 
   const displayId = orderId ? `AK-${orderId.slice(0, 8).toUpperCase()}` : "AK-XXXXXX";
   const total = order?.total ? formatPrice(order.total) : "—";
-  const name = order ? `${order.first_name} ${order.last_name}` : null;
   // Redact email — show only first char + *** + domain to avoid exposing PII
   // to anyone who might guess the order UUID.
   const redactedEmail = order?.email

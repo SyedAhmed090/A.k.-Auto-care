@@ -189,6 +189,7 @@ export type Database = {
           status: string | null
           subtotal: number
           total: number
+          tracking_carrier: string | null
           tracking_number: string | null
           updated_at: string | null
         }
@@ -213,6 +214,7 @@ export type Database = {
           status?: string | null
           subtotal: number
           total: number
+          tracking_carrier?: string | null
           tracking_number?: string | null
           updated_at?: string | null
         }
@@ -237,6 +239,7 @@ export type Database = {
           status?: string | null
           subtotal?: number
           total?: number
+          tracking_carrier?: string | null
           tracking_number?: string | null
           updated_at?: string | null
         }
@@ -447,9 +450,162 @@ export type Database = {
           },
         ]
       }
+      admin_users: {
+        Row: {
+          active: boolean
+          created_at: string
+          email: string
+          id: string
+          password_hash: string
+          role: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          email: string
+          id?: string
+          password_hash: string
+          role?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          email?: string
+          id?: string
+          password_hash?: string
+          role?: string
+        }
+        Relationships: []
+      }
+      audit_log: {
+        Row: {
+          action: string
+          admin_user_id: string | null
+          admin_via: string | null
+          created_at: string
+          entity: string | null
+          entity_id: string | null
+          id: string
+          meta: Json
+        }
+        Insert: {
+          action: string
+          admin_user_id?: string | null
+          admin_via?: string | null
+          created_at?: string
+          entity?: string | null
+          entity_id?: string | null
+          id?: string
+          meta?: Json
+        }
+        Update: {
+          action?: string
+          admin_user_id?: string | null
+          admin_via?: string | null
+          created_at?: string
+          entity?: string | null
+          entity_id?: string | null
+          id?: string
+          meta?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_log_admin_user_id_fkey"
+            columns: ["admin_user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      email_templates: {
+        Row: {
+          body: string
+          key: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          key: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          key?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          address: string | null
+          city: string | null
+          country: string | null
+          full_name: string | null
+          id: string
+          phone: string | null
+          postcode: string | null
+          province: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          country?: string | null
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          postcode?: string | null
+          province?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          country?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          postcode?: string | null
+          province?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      customer_summary: {
+        Row: {
+          average_order_value: number | null
+          city: string | null
+          email: string | null
+          first_name: string | null
+          first_order_at: string | null
+          last_name: string | null
+          last_order_at: string | null
+          order_count: number | null
+          phone: string | null
+          total_spend: number | null
+        }
+        Relationships: []
+      }
+      customer_profiles: {
+        Row: {
+          address: string | null
+          city: string | null
+          country: string | null
+          email: string | null
+          full_name: string | null
+          phone: string | null
+          postcode: string | null
+          province: string | null
+          updated_at: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       increment_promo_uses: { Args: { promo_id: string }; Returns: undefined }

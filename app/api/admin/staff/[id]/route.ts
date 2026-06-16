@@ -31,7 +31,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       return NextResponse.json({ error: "You can't change your own role or status." }, { status: 400 });
     }
 
-    const updates: Record<string, unknown> = {};
+    const updates: { role?: string; active?: boolean; password_hash?: string } = {};
     if (parsed.data.role !== undefined) updates.role = parsed.data.role;
     if (parsed.data.active !== undefined) updates.active = parsed.data.active;
     if (parsed.data.password !== undefined) updates.password_hash = await hashPassword(parsed.data.password);
@@ -40,7 +40,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     }
 
     const sb = createAdminClient();
-    const { data, error } = await (sb as any)
+    const { data, error } = await sb
       .from("admin_users")
       .update(updates)
       .eq("id", id)
@@ -76,7 +76,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     }
 
     const sb = createAdminClient();
-    const { error } = await (sb as any).from("admin_users").delete().eq("id", id);
+    const { error } = await sb.from("admin_users").delete().eq("id", id);
     if (error) throw error;
 
     await logAudit(identity, { action: "staff.delete", entity: "admin_user", entityId: id });

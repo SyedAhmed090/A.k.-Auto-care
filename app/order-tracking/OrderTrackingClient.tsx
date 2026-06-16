@@ -5,7 +5,6 @@ import { ORDER_STATUS_COLORS as STATUS_COLORS } from "@/lib/orderStatus";
 import { formatPrice } from "@/lib/utils";
 
 const STATUSES = ["pending", "confirmed", "processing", "shipped", "delivered"] as const;
-type OrderStatus = typeof STATUSES[number] | "cancelled" | "refunded";
 
 const STATUS_LABELS: Record<string, string> = {
   pending: "Pending",
@@ -201,7 +200,6 @@ export default function OrderTrackingClient() {
                       {STATUSES.map((step, i) => {
                         const isCompleted = i <= activeStep;
                         const isActive = i === activeStep;
-                        const stepColor = isCompleted ? "var(--accent)" : "var(--muted)";
                         return (
                           <div key={step} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", position: "relative" }}>
                             {i < STATUSES.length - 1 && (

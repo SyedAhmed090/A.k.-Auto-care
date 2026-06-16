@@ -66,24 +66,21 @@ export async function GET(req: NextRequest) {
       "total_spend";
 
     const sb = createAdminClient();
-    let query = (sb as any)
+    const base = sb
       .from("customer_summary")
       .select(
         "email, first_name, last_name, phone, city, order_count, total_spend, average_order_value, first_order_at, last_order_at"
-      )
+      );
+
+    // Apply the search filter before ordering/paginating (filters must precede transforms).
+    const searchTerm = search ? sanitizeSearchTerm(search) : "";
+    const filteredQuery = searchTerm
+      ? base.or(`email.ilike.%${searchTerm}%,first_name.ilike.%${searchTerm}%,last_name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%`)
+      : base;
+
+    const { data, error } = await filteredQuery
       .order(sortColumn, { ascending: false })
       .range(0, 499);
-
-    if (search) {
-      const q = sanitizeSearchTerm(search);
-      if (q) {
-        query = query.or(
-          `email.ilike.%${q}%,first_name.ilike.%${q}%,last_name.ilike.%${q}%,phone.ilike.%${q}%`
-        );
-      }
-    }
-
-    const { data, error } = await query;
     if (error) throw error;
 
     const rows = (data ?? []) as SummaryRow[];
@@ -92,7 +89,7 @@ export async function GET(req: NextRequest) {
     const emails = rows.map((r) => r.email).filter(Boolean);
     const profiles = new Map<string, ProfileRow>();
     if (emails.length > 0) {
-      const { data: profData, error: profErr } = await (sb as any)
+      const { data: profData, error: profErr } = await sb
         .from("customer_profiles")
         .select("email, full_name, phone, address, city, province, postcode, country")
         .in("email", emails);

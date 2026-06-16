@@ -3,6 +3,7 @@
 // failure can't break the underlying action.
 import { createAdminClient } from "@/utils/supabase/admin";
 import type { AdminIdentity } from "@/lib/adminToken";
+import type { Json } from "@/types/supabase";
 
 export type AuditEntry = {
   action: string;            // e.g. "order.status_change", "product.delete", "login"
@@ -14,13 +15,13 @@ export type AuditEntry = {
 export async function logAudit(identity: AdminIdentity | null, entry: AuditEntry): Promise<void> {
   try {
     const sb = createAdminClient();
-    await (sb as any).from("audit_log").insert({
+    await sb.from("audit_log").insert({
       admin_user_id: identity?.uid ?? null,
       admin_via: identity?.via ?? "unknown",
       action: entry.action,
       entity: entry.entity ?? null,
       entity_id: entry.entityId ?? null,
-      meta: entry.meta ?? {},
+      meta: (entry.meta ?? {}) as Json,
       created_at: new Date().toISOString(),
     });
   } catch (err) {

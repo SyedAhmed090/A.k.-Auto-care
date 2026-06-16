@@ -4,6 +4,7 @@ import { createAdminClient } from "@/utils/supabase/admin";
 import { requireAdmin, requireRole, getAdminSession } from "@/lib/adminAuth";
 import { checkCsrf } from "@/lib/csrf";
 import { logAudit } from "@/lib/audit";
+import type { TablesUpdate } from "@/types/supabase";
 
 const variantSchema = z.object({
   label:      z.string().min(1).max(80),
@@ -76,7 +77,7 @@ export async function PATCH(
     const sb = createAdminClient();
 
     if (Object.keys(productData).length > 0) {
-      const { error } = await sb.from("products").update(productData as any).eq("id", id);
+      const { error } = await sb.from("products").update(productData as TablesUpdate<"products">).eq("id", id);
       if (error) throw error;
     }
 

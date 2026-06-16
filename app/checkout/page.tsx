@@ -13,6 +13,7 @@ import { getShippingOptions, gstAmount } from "@/lib/commerce";
 import { useSettings } from "@/components/providers/SettingsProvider";
 import { trackInitiateCheckout } from "@/components/analytics/MetaPixel";
 import { saveCartToServer } from "@/lib/cart-session";
+import Field from "@/components/ui/Field";
 
 const schema = z.object({
   email: z.string().email("Enter a valid email"),
@@ -38,29 +39,6 @@ const inputStyle = (err?: string) => ({
   fontSize: ".9rem",
   outline: "none",
 });
-
-const Field = ({ label, error, required, children }: { label: string; error?: string; required?: boolean; children: React.ReactNode }) => {
-  const id = React.useId();
-  const errId = `${id}-err`;
-  // Tie the visible label to the control (htmlFor/id) and point the control at its
-  // error message so screen readers announce both. The control is always a single element.
-  const control = React.isValidElement(children)
-    ? React.cloneElement(children as React.ReactElement<{ id?: string; "aria-describedby"?: string }>, {
-        id,
-        "aria-describedby": error ? errId : undefined,
-      })
-    : children;
-  return (
-    <div>
-      <label htmlFor={id} className="block text-[.82rem] tracking-[.01em] font-medium mb-2" style={{ fontFamily: "var(--font-hanken)", color: "var(--muted)" }}>
-        {label}
-        {required && <span aria-hidden="true" style={{ color: "var(--accent)", marginLeft: "3px" }}>*</span>}
-      </label>
-      {control}
-      {error && <p id={errId} role="alert" className="text-xs mt-1" style={{ color: "#ef4444" }}>{error}</p>}
-    </div>
-  );
-};
 
 const CheckoutSteps = () => {
   const steps = ["Cart", "Details", "Payment"];

@@ -128,7 +128,7 @@ export async function getTemplates(): Promise<Record<EmailTemplateKey, EmailTemp
     const merged: Record<string, EmailTemplate> = { ...DEFAULT_TEMPLATES };
     try {
       const sb = createAdminClient();
-      const { data, error } = await (sb as any)
+      const { data, error } = await sb
         .from("email_templates")
         .select("key, subject, body");
       if (error) throw error;

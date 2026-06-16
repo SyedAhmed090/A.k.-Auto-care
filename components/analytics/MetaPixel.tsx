@@ -29,7 +29,7 @@ export default function MetaPixel() {
         queue: unknown[][];
       }
       const stub = function (...args: unknown[]) {
-        stub.callMethod ? stub.callMethod(...args) : stub.queue.push(args);
+        if (stub.callMethod) stub.callMethod(...args); else stub.queue.push(args);
       } as unknown as FbqStub;
       stub.push = stub;
       stub.loaded = true;

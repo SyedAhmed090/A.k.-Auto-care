@@ -18,7 +18,7 @@ export async function GET() {
 
   try {
     const sb = createAdminClient();
-    const { data, error } = await (sb as any)
+    const { data, error } = await sb
       .from("admin_users")
       .select("id, email, role, active, created_at")
       .order("created_at", { ascending: true });
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
     const password_hash = await hashPassword(parsed.data.password);
 
     const sb = createAdminClient();
-    const { data, error } = await (sb as any)
+    const { data, error } = await sb
       .from("admin_users")
       .insert({ email, password_hash, role: parsed.data.role })
       .select("id, email, role, active, created_at")

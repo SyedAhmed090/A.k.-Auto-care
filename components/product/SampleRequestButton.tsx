@@ -7,6 +7,7 @@ import { z } from "zod";
 import { FlaskConical, X, CheckCircle } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import { MONTHLY_USAGE_OPTIONS } from "@/lib/sampleRequest";
+import { useMounted } from "@/lib/useMounted";
 
 const schema = z.object({
   name: z.string().min(2, "Name required"),
@@ -39,14 +40,12 @@ export default function SampleRequestButton({
   variant?: "detail" | "card";
 }) {
   const [open, setOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
 
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } =
     useForm<FormData>({ resolver: zodResolver(schema) });
-
-  useEffect(() => setMounted(true), []);
 
   // Lock body scroll while the modal is open.
   useEffect(() => {
