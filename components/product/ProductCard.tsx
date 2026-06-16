@@ -27,7 +27,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const isLowStock = product.inStock && product.stock != null && product.stock <= LOW_STOCK_THRESHOLD;
 
   return (
-    <Link href={`/products/${product.slug}`} className="group block h-full">
+    <Link href={`/products/${product.slug}`} className="group block h-full cv-card">
       <article
         className="product-card rounded-[var(--r)] overflow-hidden flex flex-col h-full transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl group-hover:shadow-black/30 group-hover:border-[var(--accent)]"
       >

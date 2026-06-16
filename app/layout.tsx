@@ -17,18 +17,24 @@ const anton = Anton({
   variable: "--font-anton",
   subsets: ["latin"],
   weight: "400",
+  display: "swap", // show fallback immediately, swap when loaded — avoids FOIT on the LCP hero <h1>
+  preload: true,
 });
 
+// All four Hanken weights are kept: it's the body font (globals.css body) and 400/500/600/700
+// are all used via font-medium/semibold/bold across the site — trimming would cause faux-bold.
 const hanken = Hanken_Grotesk({
   variable: "--font-hanken",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 const spaceMono = Space_Mono({
   variable: "--font-space-mono",
   subsets: ["latin"],
   weight: ["400", "700"],
+  display: "swap",
 });
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;

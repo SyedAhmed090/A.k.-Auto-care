@@ -58,6 +58,11 @@
 .font-anton { font-family: var(--font-anton), sans-serif; }
 .font-mono-custom { font-family: var(--font-space-mono), monospace; }
 
+/* Skip rendering/layout work for off-screen product cards until they're near the viewport.
+   Applied per-card (the grid container is in-view, so only individual off-screen cards
+   skip). `auto <size>` reserves an estimated card height first, then remembers the real one. */
+.cv-card { content-visibility: auto; contain-intrinsic-size: auto 380px; }
+
 .chrome-text {
   background: linear-gradient(170deg,#fff 0%,#e7eaef 18%,#9aa0ab 46%,#fff 60%,#aeb4be 78%,#5b606b 100%);
   -webkit-background-clip: text;
