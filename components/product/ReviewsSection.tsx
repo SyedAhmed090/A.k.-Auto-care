@@ -396,7 +396,7 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="John Doe"
+
               maxLength={80}
             />
           </div>
@@ -410,7 +410,7 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
+
               maxLength={254}
             />
           </div>
@@ -424,7 +424,7 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
               type="text"
               value={titleVal}
               onChange={(e) => setTitleVal(e.target.value)}
-              placeholder="Sum it up in a line"
+
               maxLength={120}
             />
           </div>
@@ -437,7 +437,7 @@ export default function ReviewsSection({ productId, initialRating, initialCount 
               onBlur={onFieldBlur}
               value={bodyVal}
               onChange={(e) => setBodyVal(e.target.value)}
-              placeholder="Tell others what you think about this product…"
+
               maxLength={2000}
             />
           </div>

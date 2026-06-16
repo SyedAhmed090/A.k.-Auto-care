@@ -181,7 +181,7 @@ export default function Footer() {
                     type="email"
                     value={nlEmail}
                     onChange={(e) => { setNlEmail(e.target.value); if (nlState === "error") setNlState("idle"); }}
-                    placeholder="your@email.com"
+
                     className="flex-1 min-w-0 px-3 py-2.5 rounded-[9px] text-xs outline-none"
                     style={{ background: "var(--bg)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }}
                     onKeyDown={(e) => e.key === "Enter" && handleNewsletter()}

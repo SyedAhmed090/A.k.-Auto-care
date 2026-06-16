@@ -131,23 +131,23 @@ export default function ContactClient() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-[.72rem] tracking-[.14em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Name</label>
-                    <input {...register("name")} placeholder="Your name" className={inputCls} style={{ ...inputStyle, borderColor: errors.name ? "#ef4444" : "var(--line-2)" }} />
+                    <input {...register("name")} className={inputCls} style={{ ...inputStyle, borderColor: errors.name ? "#ef4444" : "var(--line-2)" }} />
                     {errors.name && <p className="text-xs mt-1" style={{ color: "#ef4444" }}>{errors.name.message}</p>}
                   </div>
                   <div>
                     <label className="block text-[.72rem] tracking-[.14em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Email</label>
-                    <input {...register("email")} type="email" placeholder="you@example.com" className={inputCls} style={{ ...inputStyle, borderColor: errors.email ? "#ef4444" : "var(--line-2)" }} />
+                    <input {...register("email")} type="email" className={inputCls} style={{ ...inputStyle, borderColor: errors.email ? "#ef4444" : "var(--line-2)" }} />
                     {errors.email && <p className="text-xs mt-1" style={{ color: "#ef4444" }}>{errors.email.message}</p>}
                   </div>
                 </div>
                 <div>
                   <label className="block text-[.72rem] tracking-[.14em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Subject</label>
-                  <input {...register("subject")} placeholder="How can we help?" className={inputCls} style={{ ...inputStyle, borderColor: errors.subject ? "#ef4444" : "var(--line-2)" }} />
+                  <input {...register("subject")} className={inputCls} style={{ ...inputStyle, borderColor: errors.subject ? "#ef4444" : "var(--line-2)" }} />
                   {errors.subject && <p className="text-xs mt-1" style={{ color: "#ef4444" }}>{errors.subject.message}</p>}
                 </div>
                 <div>
                   <label className="block text-[.72rem] tracking-[.14em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Message</label>
-                  <textarea {...register("message")} rows={5} placeholder="Tell us more…" className={inputCls} style={{ ...inputStyle, borderColor: errors.message ? "#ef4444" : "var(--line-2)", resize: "vertical" }} />
+                  <textarea {...register("message")} rows={5} className={inputCls} style={{ ...inputStyle, borderColor: errors.message ? "#ef4444" : "var(--line-2)", resize: "vertical" }} />
                   {errors.message && <p className="text-xs mt-1" style={{ color: "#ef4444" }}>{errors.message.message}</p>}
                 </div>
                 {error && (

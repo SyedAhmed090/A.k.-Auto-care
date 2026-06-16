@@ -547,7 +547,7 @@ export default function HomeClient({ featured, newArrivals }: { featured: Produc
                       value={nlEmail}
                       onChange={(e) => { setNlEmail(e.target.value); if (nlState === "error") setNlState("idle"); }}
                       onKeyDown={(e) => e.key === "Enter" && handleNewsletter()}
-                      placeholder="your@email.com"
+
                       className="flex-1 min-w-[220px] px-5 py-4 rounded-[13px] text-[1rem] outline-none transition-all"
                       style={{ background: "rgba(10, 11, 13,.6)", border: `1px solid ${nlState === "error" ? "#ef4444" : "var(--line-2)"}`, color: "var(--text)", fontFamily: "var(--font-hanken)" }}
                     />
