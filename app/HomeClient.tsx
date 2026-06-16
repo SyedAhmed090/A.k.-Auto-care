@@ -11,7 +11,7 @@ const MARQUEE_ITEMS = [
   "Polish & Compound", "Wax & Sealant", "Microfiber", "Pro-Grade Chemistry",
 ];
 
-export default function HomeClient({ featured }: { featured: Product[] }) {
+export default function HomeClient({ featured, newArrivals }: { featured: Product[]; newArrivals: Product[] }) {
   const heroRef = useRef<HTMLElement>(null);
   const [nlEmail, setNlEmail] = useState("");
   const [nlState, setNlState] = useState<"idle" | "submitting" | "ok" | "error">("idle");
@@ -330,6 +330,33 @@ export default function HomeClient({ featured }: { featured: Product[] }) {
           </div>
         </div>
       </section>
+
+      {/* ── NEW ARRIVALS ── */}
+      {newArrivals.length > 0 && (
+        <section style={{ borderTop: "1px solid var(--line)", background: "var(--bg-2)" }} className="py-[120px]">
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-end justify-between gap-7 mb-12 flex-wrap reveal">
+              <div>
+                <div className="flex items-center gap-2.5 mb-4 text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+                  <span className="w-7 h-[1px]" style={{ background: "var(--accent)" }} />
+                  Just Landed
+                </div>
+                <h2 className="uppercase leading-[.96] tracking-[.01em]" style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(2.2rem,5vw,4rem)" }}>
+                  New<br />arrivals
+                </h2>
+              </div>
+              <Link href="/shop" className="btn-ghost inline-flex items-center gap-2.5 px-6 py-3 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5">
+                View all products <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {newArrivals.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── CATEGORY SHOWCASE ── */}
       <section style={{ borderTop: "1px solid var(--line)", background: "var(--bg-2)" }} className="py-[120px]">

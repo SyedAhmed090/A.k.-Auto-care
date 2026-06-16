@@ -120,6 +120,18 @@ export async function getFeaturedProducts(): Promise<Product[]> {
   return (data ?? []).map(mapProductCard);
 }
 
+export async function getNewArrivals(limit = 8): Promise<Product[]> {
+  const sb = createPublicClient();
+  const { data, error } = await sb
+    .from("products")
+    .select(SELECT_CARD)
+    .order("created_at", { ascending: false })
+    .limit(limit)
+    .order("sort_order", { referencedTable: "product_variants" });
+  if (error) { console.error("[products] getNewArrivals DB error:", error); return []; }
+  return (data ?? []).map(mapProductCard);
+}
+
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   const sb = createPublicClient();
   const { data, error } = await sb
