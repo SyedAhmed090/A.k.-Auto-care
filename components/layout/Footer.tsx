@@ -8,7 +8,7 @@ import { whatsappDisplay } from "@/lib/settings";
 
 export default function Footer() {
   const { store } = useSettings();
-  const [logoLoaded, setLogoLoaded] = useState(false);
+  const [logoError, setLogoError] = useState(false);
   const [nlEmail, setNlEmail] = useState("");
   const [nlState, setNlState] = useState<"idle" | "submitting" | "ok" | "error">("idle");
   const [nlError, setNlError] = useState("");
@@ -51,17 +51,18 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-16">
           {/* Brand */}
           <div className="col-span-1 sm:col-span-2 lg:col-span-1">
-            {/* Full lockup. Drop public/logo.png and it reveals automatically;
-                until then (or if it 404s) the text wordmark below shows.
-                Plain <img> so a missing file degrades gracefully with no flash. */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/logo.png"
-              alt="A.K. Auto Care"
-              onLoad={() => setLogoLoaded(true)}
-              className={logoLoaded ? "h-[58px] w-auto object-contain mb-4" : "hidden"}
-            />
-            {!logoLoaded && (
+            {/* Full lockup at public/logo.png. Shown by default; if missing/404s the
+                onError handler swaps in the text wordmark. Gating on onError (not onLoad)
+                avoids the cached-image race that could leave the logo permanently hidden. */}
+            {!logoError ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src="/logo.png"
+                alt="A.K. Auto Care"
+                onError={() => setLogoError(true)}
+                className="h-[58px] w-auto object-contain mb-4"
+              />
+            ) : (
               <div
                 className="text-[1.8rem] tracking-[.06em] mb-4"
                 style={{ fontFamily: "var(--font-anton)" }}
