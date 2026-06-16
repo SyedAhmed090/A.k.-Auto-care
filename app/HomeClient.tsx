@@ -1,10 +1,13 @@
-"use client";
-import { useEffect, useRef, useState } from "react";
+// Server component: the homepage markup is static and renders on the server. The only
+// interactive pieces are small client islands — <ScrollReveal> (scroll animations) and
+// <NewsletterSignup> (the CTA form) — so the bulk of the page is never shipped as JS.
 import Link from "next/link";
 import { ArrowUpRight, ChevronRight, Truck, RotateCcw, Shield, MessageCircle } from "lucide-react";
 import type { Product } from "@/data/products";
 import categories from "@/data/categories";
 import ProductCard from "@/components/product/ProductCard";
+import ScrollReveal from "@/components/home/ScrollReveal";
+import NewsletterSignup from "@/components/home/NewsletterSignup";
 
 const MARQUEE_ITEMS = [
   "Surface Prep", "Paint Correction", "Ceramic Coatings",
@@ -12,50 +15,10 @@ const MARQUEE_ITEMS = [
 ];
 
 export default function HomeClient({ featured, newArrivals }: { featured: Product[]; newArrivals: Product[] }) {
-  const heroRef = useRef<HTMLElement>(null);
-  const [nlEmail, setNlEmail] = useState("");
-  const [nlState, setNlState] = useState<"idle" | "submitting" | "ok" | "error">("idle");
-  const [nlError, setNlError] = useState("");
-
-  const handleNewsletter = async () => {
-    if (!nlEmail.trim() || nlState === "submitting") return;
-    setNlState("submitting");
-    try {
-      const res = await fetch("/api/newsletter", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: nlEmail }),
-      });
-      const data = await res.json();
-      if (data.ok) {
-        setNlState("ok");
-      } else {
-        setNlError(data.error ?? "Something went wrong.");
-        setNlState("error");
-      }
-    } catch {
-      setNlError("Network error. Please try again.");
-      setNlState("error");
-    }
-  };
-
-  // Scroll reveal
-  useEffect(() => {
-    const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }),
-      { threshold: 0.12 }
-    );
-    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
-    document.querySelectorAll("#hero .reveal").forEach((el) =>
-      requestAnimationFrame(() => el.classList.add("in"))
-    );
-    return () => io.disconnect();
-  }, []);
-
   return (
-    <>
+    <ScrollReveal>
       {/* ── HERO ── */}
-      <section id="hero" ref={heroRef} className="flex flex-col">
+      <section id="hero" className="flex flex-col">
 
         {/* ── VIDEO BLOCK ── */}
         <div
@@ -546,41 +509,11 @@ export default function HomeClient({ featured, newArrivals }: { featured: Produc
               <p className="max-w-[460px] mx-auto mb-8 text-[.97rem]" style={{ color: "var(--muted)" }}>
                 Get early access to new products and pro how-tos. No spam — just gloss.
               </p>
-              {nlState === "ok" ? (
-                <p className="text-[1rem] font-semibold" style={{ color: "var(--accent)", fontFamily: "var(--font-space-mono)" }}>
-                  You&apos;re on the list. Welcome to the garage.
-                </p>
-              ) : (
-                <div className="w-full max-w-[480px] mx-auto">
-                  <div className="flex gap-3 flex-wrap justify-center">
-                    <input
-                      type="email"
-                      aria-label="Email address"
-                      placeholder="you@email.com"
-                      value={nlEmail}
-                      onChange={(e) => { setNlEmail(e.target.value); if (nlState === "error") setNlState("idle"); }}
-                      onKeyDown={(e) => e.key === "Enter" && handleNewsletter()}
-
-                      className="flex-1 min-w-[220px] px-5 py-4 rounded-[13px] text-[1rem] outline-none transition-all"
-                      style={{ background: "rgba(10, 11, 13,.6)", border: `1px solid ${nlState === "error" ? "#ef4444" : "var(--line-2)"}`, color: "var(--text)", fontFamily: "var(--font-hanken)" }}
-                    />
-                    <button
-                      onClick={handleNewsletter}
-                      disabled={nlState === "submitting"}
-                      className="btn-accent px-7 py-4 rounded-[13px] font-semibold transition-all hover:-translate-y-0.5 cursor-pointer disabled:opacity-60"
-                    >
-                      {nlState === "submitting" ? "…" : "Subscribe"}
-                    </button>
-                  </div>
-                  {nlState === "error" && (
-                    <p className="mt-2 text-sm text-center" style={{ color: "#ef4444" }}>{nlError}</p>
-                  )}
-                </div>
-              )}
+              <NewsletterSignup />
             </div>
           </div>
         </div>
       </section>
-    </>
+    </ScrollReveal>
   );
 }

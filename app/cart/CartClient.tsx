@@ -143,7 +143,8 @@ function CartPageInner({ allProducts }: { allProducts: Product[] }) {
                       </span>
                       <button
                         onClick={() => removeItem(item.product.id, item.variant.sku)}
-                        className="flex items-center justify-center w-7 h-7 rounded-md cursor-pointer hover-danger"
+                        aria-label={`Remove ${item.product.name} from cart`}
+                        className="flex items-center justify-center w-9 h-9 rounded-md cursor-pointer hover-danger"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

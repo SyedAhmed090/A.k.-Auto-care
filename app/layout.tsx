@@ -7,7 +7,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import MiniCart from "@/components/layout/MiniCart";
 import WhatsAppButton from "@/components/ui/WhatsAppButton";
-import CookieConsent from "@/components/ui/CookieConsent";
+import CookieConsent from "@/components/ui/DeferredCookieConsent";
 // import FirstPurchasePopup from "@/components/ui/FirstPurchasePopup"; // disabled for now
 import MetaPixel from "@/components/analytics/MetaPixel";
 import { SettingsProvider } from "@/components/providers/SettingsProvider";

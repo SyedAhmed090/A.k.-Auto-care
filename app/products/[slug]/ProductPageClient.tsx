@@ -3,7 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Zap, CheckCircle, Truck, RotateCcw, Shield, MessageCircle, Share2, ZoomIn, X, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import dynamic from "next/dynamic";
+import { Zap, CheckCircle, Truck, RotateCcw, Shield, MessageCircle, Share2, ZoomIn, ArrowRight } from "lucide-react";
 import type { Product } from "@/data/products";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
@@ -16,6 +17,8 @@ import ReviewsSection from "@/components/product/ReviewsSection";
 import CompleteSystem, { type SystemStepView } from "@/components/product/CompleteSystem";
 import { trackViewContent, trackAddToCart } from "@/components/analytics/MetaPixel";
 import { useSettings } from "@/components/providers/SettingsProvider";
+
+const ProductLightbox = dynamic(() => import("@/components/product/ProductLightbox"), { ssr: false });
 
 const TABS = ["Description", "How to Use", "Specs"] as const;
 type Tab = typeof TABS[number];
@@ -252,6 +255,8 @@ export default function ProductPageClient({ product, related, systemView }: { pr
                     <button
                       key={v.sku}
                       onClick={() => setSelectedVariant(i)}
+                      aria-pressed={selectedVariant === i}
+                      aria-label={`${v.label} — ${formatPrice(v.price)}`}
                       className="inline-flex items-center px-4 py-2.5 rounded-[11px] text-sm font-semibold transition-all cursor-pointer"
                       style={{
                         border: selectedVariant === i ? "1px solid var(--accent)" : "1px solid var(--line-2)",
@@ -330,11 +335,27 @@ export default function ProductPageClient({ product, related, systemView }: { pr
 
         {/* Tabs */}
         <div className="mt-20" style={{ borderTop: "1px solid var(--line)" }}>
-          <div className="flex items-end gap-0" style={{ borderBottom: "1px solid var(--line)" }}>
-            {TABS.map((t) => (
+          <div role="tablist" aria-label="Product details" className="flex items-end gap-0" style={{ borderBottom: "1px solid var(--line)" }}>
+            {TABS.map((t, i) => (
               <button
                 key={t}
+                id={`pdp-tab-${i}`}
+                role="tab"
+                aria-selected={tab === t}
+                aria-controls={`pdp-tabpanel-${i}`}
+                tabIndex={tab === t ? 0 : -1}
                 onClick={() => setTab(t)}
+                onKeyDown={(e) => {
+                  if (!["ArrowRight", "ArrowLeft", "Home", "End"].includes(e.key)) return;
+                  e.preventDefault();
+                  const last = TABS.length - 1;
+                  const next =
+                    e.key === "ArrowRight" ? (i === last ? 0 : i + 1)
+                    : e.key === "ArrowLeft" ? (i === 0 ? last : i - 1)
+                    : e.key === "Home" ? 0 : last;
+                  setTab(TABS[next]);
+                  document.getElementById(`pdp-tab-${next}`)?.focus();
+                }}
                 className="inline-flex items-center px-6 py-4 text-sm font-semibold transition-colors cursor-pointer border-b-2 -mb-px whitespace-nowrap"
                 style={{
                   borderBottomColor: tab === t ? "var(--accent)" : "transparent",
@@ -349,7 +370,13 @@ export default function ProductPageClient({ product, related, systemView }: { pr
               </button>
             ))}
           </div>
-          <div className="py-8 max-w-3xl">
+          <div
+            role="tabpanel"
+            id={`pdp-tabpanel-${TABS.indexOf(tab)}`}
+            aria-labelledby={`pdp-tab-${TABS.indexOf(tab)}`}
+            tabIndex={0}
+            className="py-8 max-w-3xl"
+          >
             {tab === "Description" && <p className="leading-relaxed text-[.97rem]" style={{ color: "var(--muted)" }}>{product.description}</p>}
             {tab === "How to Use" && <p className="leading-relaxed text-[.97rem]" style={{ color: "var(--muted)" }}>{product.howToUse}</p>}
             {tab === "Specs" && (
@@ -406,62 +433,16 @@ export default function ProductPageClient({ product, related, systemView }: { pr
         </div>
       </div>
 
-      {/* Image lightbox */}
+      {/* Image lightbox — lazy-loaded; only fetched when opened */}
       {lightboxOpen && (
-        <div
-          className="fixed inset-0 z-[130] flex items-center justify-center p-4 sm:p-10"
-          style={{ background: "rgba(6,5,4,.94)", backdropFilter: "blur(8px)" }}
-          onClick={() => setLightboxOpen(false)}
-          role="dialog"
-          aria-modal="true"
-          aria-label={`${product.name} image viewer`}
-        >
-          <button
-            onClick={() => setLightboxOpen(false)}
-            aria-label="Close"
-            className="absolute top-5 right-5 w-11 h-11 rounded-full grid place-items-center cursor-pointer z-10"
-            style={{ background: "rgba(255,255,255,.06)", border: "1px solid var(--line-2)", color: "#fff" }}
-          >
-            <X className="w-5 h-5" />
-          </button>
-
-          <div className="relative w-full h-full max-w-4xl max-h-[80vh]" onClick={(e) => e.stopPropagation()}>
-            <Image
-              src={product.images[activeImg] || "/placeholder.svg"}
-              alt={`${product.name} — view ${activeImg + 1}`}
-              fill
-              className="object-contain"
-              sizes="90vw"
-            />
-          </div>
-
-          {imgCount > 1 && (
-            <>
-              <button
-                onClick={(e) => { e.stopPropagation(); showPrev(); }}
-                aria-label="Previous image"
-                className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full grid place-items-center cursor-pointer"
-                style={{ background: "rgba(255,255,255,.06)", border: "1px solid var(--line-2)", color: "#fff" }}
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-              <button
-                onClick={(e) => { e.stopPropagation(); showNext(); }}
-                aria-label="Next image"
-                className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full grid place-items-center cursor-pointer"
-                style={{ background: "rgba(255,255,255,.06)", border: "1px solid var(--line-2)", color: "#fff" }}
-              >
-                <ChevronRight className="w-6 h-6" />
-              </button>
-              <div
-                className="absolute bottom-6 left-1/2 -translate-x-1/2 text-xs px-3 py-1.5 rounded-full"
-                style={{ background: "rgba(255,255,255,.06)", color: "#fff", fontFamily: "var(--font-space-mono)" }}
-              >
-                {activeImg + 1} / {imgCount}
-              </div>
-            </>
-          )}
-        </div>
+        <ProductLightbox
+          images={product.images}
+          index={activeImg}
+          productName={product.name}
+          onClose={() => setLightboxOpen(false)}
+          onPrev={showPrev}
+          onNext={showNext}
+        />
       )}
 
       {/* Sticky mobile CTA */}
