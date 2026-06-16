@@ -68,7 +68,7 @@ export default function ProductForm({
     defaultValues: {
       name: "", slug: "", category_slug: "surface-correction",
       tagline: "", badge: "", description: "", how_to_use: "",
-      price: 0, sample_price: null, stock: null, in_stock: true, featured: false, sort_order: 0,
+      price: 0, sample_price: null, stock: null, in_stock: true, featured: true, sort_order: 0,
       specs: [], images: [], variants: [{ label: "Standard", price: 0, sku: "", sort_order: 0 }],
       ...defaultValues,
     },
