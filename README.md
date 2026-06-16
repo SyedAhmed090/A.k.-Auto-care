@@ -1,5 +1,7 @@
 # A.K. Auto Care — E-Commerce Website
 
+[![CI](https://github.com/SyedAhmed090/A.k.-Auto-care/actions/workflows/ci.yml/badge.svg)](https://github.com/SyedAhmed090/A.k.-Auto-care/actions/workflows/ci.yml)
+
 A production-ready e-commerce site for professional car care and detailing products, built for the Pakistani market. Built with Next.js 16 (App Router), Tailwind CSS v4, Zustand cart state, and Supabase order persistence.
 
 ## Features
@@ -64,6 +66,28 @@ npm run build
 npm start
 ```
 
+## Testing & Quality
+
+The same four checks run in CI (`.github/workflows/ci.yml`) on every PR and on
+push to `main`. Run them locally before pushing:
+
+```bash
+npm run lint        # eslint
+npx tsc --noEmit    # TypeScript typecheck (strict)
+npm test            # Vitest unit tests (lib/__tests__)
+npm run build       # production build
+```
+
+Unit tests focus on the framework-free domain logic in `lib/` — pricing/GST,
+shipping, promos, search sanitisation, and admin auth tokens. Add tests there for
+any new pure logic. See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full workflow.
+
+## Database migrations
+
+SQL migrations live in `supabase/migrations/` (`NNN_description.sql`), applied by
+hand in the Supabase SQL editor. They're idempotent. When changing the schema,
+add a new numbered migration **and** update `types/supabase.ts` to match.
+
 ## Customising Content
 
 ### Add / edit products
@@ -84,7 +108,10 @@ Payment details (JazzCash/EasyPaisa account numbers, bank details) are in `app/c
 Search for `923000000000` to find and update the WhatsApp business number.
 
 ### Shipping rates & free-shipping threshold
-Edit `lib/commerce.ts` — `FREE_SHIPPING_THRESHOLD` and `getShippingOptions()`.
+Shipping rates, the free-shipping threshold, and GST are configured from the
+**admin Settings page** (stored in the `settings` table). The code defaults live
+in `lib/settings.ts` (`DEFAULT_SETTINGS.shipping`), consumed by
+`getShippingOptions()` in `lib/commerce.ts`.
 
 ### Promo codes
 Edit `lib/promos.ts` — server-side only, never exposed to the browser.
