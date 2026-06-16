@@ -107,6 +107,20 @@ export async function getProducts(): Promise<Product[]> {
   return (data ?? []).map(mapProductCard);
 }
 
+export type SitemapProduct = { slug: string; categorySlug: string; updatedAt: string | null };
+
+/** Lightweight projection for sitemap generation: real updated_at timestamps so
+ *  <lastmod> reflects actual content changes rather than the build time. */
+export async function getSitemapProducts(): Promise<SitemapProduct[]> {
+  const sb = createPublicClient();
+  const { data, error } = await sb
+    .from("products")
+    .select("slug, category_slug, updated_at")
+    .order("sort_order");
+  if (error) { console.error("[products] getSitemapProducts DB error:", error); return []; }
+  return (data ?? []).map((r) => ({ slug: r.slug, categorySlug: r.category_slug, updatedAt: r.updated_at }));
+}
+
 export async function getFeaturedProducts(): Promise<Product[]> {
   const sb = createPublicClient();
   const { data, error } = await sb
