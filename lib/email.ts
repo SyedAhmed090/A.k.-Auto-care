@@ -1,6 +1,7 @@
 import { getTemplate, renderEmail, escapeHtml, type EmailTemplateKey } from "@/lib/email-templates";
 
 const RESEND_URL = "https://api.resend.com/emails";
+const SITE_URL = "https://www.akautocare.pk";
 
 type StatusKey = "confirmed" | "shipped" | "delivered" | "cancelled" | "processing" | "refunded";
 
@@ -106,6 +107,10 @@ export function buildOrderConfirmationHtml(d: OrderEmailData): string {
         Delivery to: ${escapeHtml(d.address)}, ${escapeHtml(d.city)}
       </p>
       ${d.paymentMethod !== "cod" ? `<p style="color:#4fa8e6;font-size:.85rem">Please send your payment screenshot to our WhatsApp to confirm your order.</p>` : ""}
+      <div style="text-align:center;margin:24px 0 8px">
+        <a href="${SITE_URL}/order-tracking" style="display:inline-block;background:#4fa8e6;color:#000;text-decoration:none;font-weight:700;padding:12px 28px;border-radius:10px;font-size:.9rem">Track your order</a>
+      </div>
+      <p style="color:#777;font-size:.75rem;text-align:center;margin:4px 0 0">Track your delivery anytime with Order ID <strong style="color:#aaa">#${orderId}</strong> and this email address.</p>
       <p style="color:#555;font-size:.75rem;margin-top:24px">A.K. Auto Care · Karachi, Pakistan · hello@akautocare.pk</p>
     </div>
   </div>

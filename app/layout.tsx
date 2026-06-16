@@ -103,6 +103,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <noscript><style>{`.reveal { opacity: 1 !important; transform: none !important; }`}</style></noscript>
       </head>
       <body className="min-h-screen flex flex-col">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-md focus:font-semibold focus:bg-[var(--accent)] focus:text-black"
+        >
+          Skip to main content
+        </a>
         {GA_ID && (
           <>
             <Script
@@ -125,7 +131,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <SettingsProvider value={settings}>
           <Header />
           <MiniCart />
-          <main className="flex-1 pt-[var(--header-offset)]">{children}</main>
+          <main id="main-content" className="flex-1 pt-[var(--header-offset)]">{children}</main>
           <Footer />
           <WhatsAppButton />
           <CookieConsent />
