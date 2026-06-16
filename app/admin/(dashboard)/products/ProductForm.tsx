@@ -5,12 +5,9 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { Plus, Trash2, Loader2, UploadCloud, ChevronUp, ChevronDown, ImageOff } from "lucide-react";
 
 const CATEGORIES = [
-  { slug: "cleaners-degreasers",  label: "Cleaners & Degreasers" },
-  { slug: "polishes-compounds",   label: "Polishes & Compounds" },
-  { slug: "waxes-sealants",       label: "Waxes & Sealants" },
-  { slug: "ceramic-coatings",     label: "Ceramic Coatings" },
-  { slug: "towels-applicators",   label: "Towels & Applicators" },
-  { slug: "kits-bundles",         label: "Kits & Bundles" },
+  { slug: "surface-correction", label: "Surface Correction" },
+  { slug: "refinement-polish",  label: "Refinement & Polish" },
+  { slug: "automotive-utility", label: "Automotive Utility" },
 ];
 
 export type FormValues = {
@@ -68,7 +65,7 @@ export default function ProductForm({
 
   const { register, control, handleSubmit, watch, setValue, formState: { isSubmitting, errors } } = useForm<FormValues>({
     defaultValues: {
-      name: "", slug: "", category_slug: "cleaners-degreasers",
+      name: "", slug: "", category_slug: "surface-correction",
       tagline: "", badge: "", description: "", how_to_use: "",
       price: 0, stock: null, in_stock: true, featured: false, sort_order: 0,
       specs: [], images: [], variants: [{ label: "Standard", price: 0, sku: "", sort_order: 0 }],

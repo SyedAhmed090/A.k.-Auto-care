@@ -84,7 +84,7 @@ function SearchResults({ allProducts }: { allProducts: Product[] }) {
             <p className="text-[2rem] uppercase mb-2" style={{ fontFamily: "var(--font-anton)" }}>No results</p>
             <p className="mb-6 text-sm" style={{ color: "var(--muted)" }}>Try different keywords or browse our categories.</p>
             <div className="flex flex-wrap justify-center gap-3">
-              {["All Products:/shop", "Ceramic Coatings:/categories/ceramic-coatings", "Polishes:/categories/polishes-compounds", "Kits:/categories/kits-bundles"].map((item) => {
+              {["All Products:/shop", "Surface Correction:/categories/surface-correction", "Refinement & Polish:/categories/refinement-polish", "Automotive Utility:/categories/automotive-utility"].map((item) => {
                 const [label, href] = item.split(":");
                 return (
                   <Link
