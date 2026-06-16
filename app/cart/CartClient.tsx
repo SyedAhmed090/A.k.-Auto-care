@@ -4,13 +4,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { Trash2, ShoppingCart, ArrowRight, Tag, Truck } from "lucide-react";
+import type { Product } from "@/data/products";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
 import { gstAmount, getShippingOptions } from "@/lib/commerce";
 import { useSettings } from "@/components/providers/SettingsProvider";
 import QuantityStepper from "@/components/ui/QuantityStepper";
+import CartUpsell from "@/components/product/CartUpsell";
 
-function CartPageInner() {
+function CartPageInner({ allProducts }: { allProducts: Product[] }) {
   const settings = useSettings();
   const { items, removeItem, updateQty, subtotal, promoCode, promoDiscount, applyPromo, removePromo, clearCart, addItem } = useCartStore();
   const searchParams = useSearchParams();
@@ -157,6 +159,7 @@ function CartPageInner() {
                 <Trash2 className="w-3 h-3" /> Clear cart
               </button>
             </div>
+            <CartUpsell allProducts={allProducts} />
           </div>
 
           {/* Clear cart confirmation */}
@@ -336,10 +339,10 @@ function CartPageInner() {
   );
 }
 
-export default function CartClient() {
+export default function CartClient({ allProducts }: { allProducts: Product[] }) {
   return (
     <Suspense>
-      <CartPageInner />
+      <CartPageInner allProducts={allProducts} />
     </Suspense>
   );
 }

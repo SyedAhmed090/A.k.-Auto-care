@@ -67,10 +67,18 @@ export default function HomeClient({ featured, newArrivals }: { featured: Produc
             muted
             loop
             playsInline
+            preload="metadata"
+            aria-hidden="true"
             className="absolute inset-0 w-full h-full object-cover hidden md:block"
             style={{ zIndex: 0 }}
-            src="/mixkit-close-up-of-a-man-polishing-a-newly-polished-car-47833-hd-ready.mp4"
-          />
+          >
+            {/* media-gated so phones never download the ~1.9 MB clip (CSS `hidden` alone wouldn't stop the fetch) */}
+            <source
+              src="/mixkit-close-up-of-a-man-polishing-a-newly-polished-car-47833-hd-ready.mp4"
+              type="video/mp4"
+              media="(min-width: 768px)"
+            />
+          </video>
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -547,6 +555,8 @@ export default function HomeClient({ featured, newArrivals }: { featured: Produc
                   <div className="flex gap-3 flex-wrap justify-center">
                     <input
                       type="email"
+                      aria-label="Email address"
+                      placeholder="you@email.com"
                       value={nlEmail}
                       onChange={(e) => { setNlEmail(e.target.value); if (nlState === "error") setNlState("idle"); }}
                       onKeyDown={(e) => e.key === "Enter" && handleNewsletter()}

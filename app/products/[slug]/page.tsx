@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getProducts, getProductBySlug, getRelatedProducts } from "@/lib/products";
+import { getProducts, getProductBySlug, getRelatedProducts, getProductsBySlugs } from "@/lib/products";
+import { getSystemForProduct } from "@/data/bundles";
+import { getCategoryBySlug } from "@/data/categories";
+import type { SystemStepView } from "@/components/product/CompleteSystem";
 import ProductPageClient from "./ProductPageClient";
 
 export const revalidate = 3600;
@@ -68,6 +71,39 @@ export default async function ProductPage({
   if (!product) notFound();
   const related = await getRelatedProducts(product);
 
+  // Resolve the "Complete the System" kit this product belongs to (if any).
+  const sys = getSystemForProduct(product.slug);
+  let systemView: { name: string; description: string; steps: SystemStepView[] } | null = null;
+  if (sys) {
+    const companionSlugs = sys.steps.filter((s) => !s.isCurrent).map((s) => s.slug);
+    const companions = await getProductsBySlugs(companionSlugs);
+    const steps = sys.steps
+      .map((s) => ({
+        step: s.step,
+        note: s.note,
+        isCurrent: s.isCurrent,
+        product: s.isCurrent ? product : companions.find((c) => c.slug === s.slug) ?? null,
+      }))
+      .filter((s): s is SystemStepView => s.product !== null);
+    if (steps.length > 1) {
+      systemView = { name: sys.system.name, description: sys.system.description, steps };
+    }
+  }
+
+  const category = getCategoryBySlug(product.categorySlug);
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+      { "@type": "ListItem", position: 2, name: "Shop", item: `${BASE_URL}/shop` },
+      ...(category
+        ? [{ "@type": "ListItem", position: 3, name: category.name, item: `${BASE_URL}/categories/${product.categorySlug}` }]
+        : []),
+      { "@type": "ListItem", position: category ? 4 : 3, name: product.name, item: `${BASE_URL}/products/${product.slug}` },
+    ],
+  };
+
   const productSchema = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -104,7 +140,11 @@ export default async function ProductPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
       />
-      <ProductPageClient product={product} related={related} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <ProductPageClient product={product} related={related} systemView={systemView} />
     </>
   );
 }

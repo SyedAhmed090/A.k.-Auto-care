@@ -65,5 +65,24 @@ export default async function CategoryPage({
   const category = getCategoryBySlug(slug);
   if (!category) notFound();
   const products = await getProductsByCategory(slug);
-  return <CategoryPageClient category={category} products={products} />;
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+      { "@type": "ListItem", position: 2, name: "Shop", item: `${BASE_URL}/shop` },
+      { "@type": "ListItem", position: 3, name: category.name, item: `${BASE_URL}/categories/${category.slug}` },
+    ],
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <CategoryPageClient category={category} products={products} />
+    </>
+  );
 }

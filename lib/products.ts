@@ -196,3 +196,15 @@ export async function getProductsByIds(ids: string[]): Promise<Product[]> {
   if (error) { console.error("[products] getProductsByIds DB error:", error); return []; }
   return (data ?? []).map(mapProductCard);
 }
+
+export async function getProductsBySlugs(slugs: string[]): Promise<Product[]> {
+  if (!slugs.length) return [];
+  const sb = createPublicClient();
+  const { data, error } = await sb
+    .from("products")
+    .select(SELECT_CARD)
+    .in("slug", slugs)
+    .order("sort_order", { referencedTable: "product_variants" });
+  if (error) { console.error("[products] getProductsBySlugs DB error:", error); return []; }
+  return (data ?? []).map(mapProductCard);
+}

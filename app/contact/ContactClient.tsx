@@ -130,25 +130,25 @@ export default function ContactClient() {
               >
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-[.82rem] tracking-[.01em] font-medium mb-2" style={{ fontFamily: "var(--font-hanken)", color: "var(--muted)" }}>Name</label>
-                    <input {...register("name")} className={inputCls} style={{ ...inputStyle, borderColor: errors.name ? "#ef4444" : "var(--line-2)" }} />
-                    {errors.name && <p className="text-xs mt-1" style={{ color: "#ef4444" }}>{errors.name.message}</p>}
+                    <label htmlFor="contact-name" className="block text-[.82rem] tracking-[.01em] font-medium mb-2" style={{ fontFamily: "var(--font-hanken)", color: "var(--muted)" }}>Name</label>
+                    <input id="contact-name" {...register("name")} aria-invalid={!!errors.name} aria-describedby={errors.name ? "contact-name-err" : undefined} className={inputCls} style={{ ...inputStyle, borderColor: errors.name ? "#ef4444" : "var(--line-2)" }} />
+                    {errors.name && <p id="contact-name-err" role="alert" className="text-xs mt-1" style={{ color: "#ef4444" }}>{errors.name.message}</p>}
                   </div>
                   <div>
-                    <label className="block text-[.82rem] tracking-[.01em] font-medium mb-2" style={{ fontFamily: "var(--font-hanken)", color: "var(--muted)" }}>Email</label>
-                    <input {...register("email")} type="email" className={inputCls} style={{ ...inputStyle, borderColor: errors.email ? "#ef4444" : "var(--line-2)" }} />
-                    {errors.email && <p className="text-xs mt-1" style={{ color: "#ef4444" }}>{errors.email.message}</p>}
+                    <label htmlFor="contact-email" className="block text-[.82rem] tracking-[.01em] font-medium mb-2" style={{ fontFamily: "var(--font-hanken)", color: "var(--muted)" }}>Email</label>
+                    <input id="contact-email" {...register("email")} type="email" aria-invalid={!!errors.email} aria-describedby={errors.email ? "contact-email-err" : undefined} className={inputCls} style={{ ...inputStyle, borderColor: errors.email ? "#ef4444" : "var(--line-2)" }} />
+                    {errors.email && <p id="contact-email-err" role="alert" className="text-xs mt-1" style={{ color: "#ef4444" }}>{errors.email.message}</p>}
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[.82rem] tracking-[.01em] font-medium mb-2" style={{ fontFamily: "var(--font-hanken)", color: "var(--muted)" }}>Subject</label>
-                  <input {...register("subject")} className={inputCls} style={{ ...inputStyle, borderColor: errors.subject ? "#ef4444" : "var(--line-2)" }} />
-                  {errors.subject && <p className="text-xs mt-1" style={{ color: "#ef4444" }}>{errors.subject.message}</p>}
+                  <label htmlFor="contact-subject" className="block text-[.82rem] tracking-[.01em] font-medium mb-2" style={{ fontFamily: "var(--font-hanken)", color: "var(--muted)" }}>Subject</label>
+                  <input id="contact-subject" {...register("subject")} aria-invalid={!!errors.subject} aria-describedby={errors.subject ? "contact-subject-err" : undefined} className={inputCls} style={{ ...inputStyle, borderColor: errors.subject ? "#ef4444" : "var(--line-2)" }} />
+                  {errors.subject && <p id="contact-subject-err" role="alert" className="text-xs mt-1" style={{ color: "#ef4444" }}>{errors.subject.message}</p>}
                 </div>
                 <div>
-                  <label className="block text-[.82rem] tracking-[.01em] font-medium mb-2" style={{ fontFamily: "var(--font-hanken)", color: "var(--muted)" }}>Message</label>
-                  <textarea {...register("message")} rows={5} className={inputCls} style={{ ...inputStyle, borderColor: errors.message ? "#ef4444" : "var(--line-2)", resize: "vertical" }} />
-                  {errors.message && <p className="text-xs mt-1" style={{ color: "#ef4444" }}>{errors.message.message}</p>}
+                  <label htmlFor="contact-message" className="block text-[.82rem] tracking-[.01em] font-medium mb-2" style={{ fontFamily: "var(--font-hanken)", color: "var(--muted)" }}>Message</label>
+                  <textarea id="contact-message" {...register("message")} rows={5} aria-invalid={!!errors.message} aria-describedby={errors.message ? "contact-message-err" : undefined} className={inputCls} style={{ ...inputStyle, borderColor: errors.message ? "#ef4444" : "var(--line-2)", resize: "vertical" }} />
+                  {errors.message && <p id="contact-message-err" role="alert" className="text-xs mt-1" style={{ color: "#ef4444" }}>{errors.message.message}</p>}
                 </div>
                 {error && (
                   <p className="text-sm px-4 py-2 rounded-[11px]" style={{ color: "#ef4444", background: "rgba(239,68,68,.08)", border: "1px solid rgba(239,68,68,.2)" }}>
