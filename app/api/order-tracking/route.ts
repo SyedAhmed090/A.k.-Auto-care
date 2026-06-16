@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { rateLimit, getIP } from "@/lib/rateLimit";
 import { checkCsrf } from "@/lib/csrf";
+
+const schema = z.object({
+  orderId: z.string().trim().min(1).max(60),
+  email: z.string().trim().email().max(254),
+});
 
 export async function POST(req: NextRequest) {
   const csrfError = checkCsrf(req);
@@ -13,13 +19,11 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const body = await req.json();
-    const orderId = String(body.orderId ?? "").trim();
-    const email = String(body.email ?? "").trim();
-
-    if (!orderId || !email) {
-      return NextResponse.json({ error: "Order ID and email are required." }, { status: 400 });
+    const parsed = schema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Order ID and a valid email are required." }, { status: 400 });
     }
+    const { orderId, email } = parsed.data;
 
     const normalized = orderId.startsWith("AK-") ? orderId.slice(3).toLowerCase() : orderId.toLowerCase();
 

@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { PROMOS } from "@/lib/promos";
 import { rateLimit, getIP } from "@/lib/rateLimit";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { checkCsrf } from "@/lib/csrf";
+
+const schema = z.object({
+  code: z.string().min(1).max(30),
+  subtotal: z.number().nonnegative().max(100_000_000),
+});
 
 export async function POST(req: NextRequest) {
   const csrfError = checkCsrf(req);
@@ -14,8 +20,12 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { code, subtotal } = await req.json();
-    const upperCode = String(code).toUpperCase().slice(0, 30);
+    const parsed = schema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ valid: false, reason: "This code is not valid for your order." }, { status: 400 });
+    }
+    const { code, subtotal } = parsed.data;
+    const upperCode = code.toUpperCase().slice(0, 30);
     const invalid   = NextResponse.json({ valid: false, reason: "This code is not valid for your order." });
 
     // Try DB first (requires 002_promo_codes.sql migration)

@@ -3,7 +3,15 @@ import type { NextConfig } from "next";
 // Content-Security-Policy. 'unsafe-inline' is required for scripts (Next's bootstrap +
 // the inline GA4 init in app/layout.tsx) and styles (next/font + inline style={{}} used
 // throughout). External origins: GA/GTM, Meta Pixel, Supabase, and the image hosts in
-// `images.remotePatterns` below. To tighten script-src later, switch to nonce-based CSP.
+// `images.remotePatterns` below.
+//
+// We deliberately do NOT migrate to a nonce-based CSP: per the Next.js 16 docs, nonces
+// force every page into dynamic rendering, disabling the SSG/ISR this storefront relies
+// on (product/category/shop/home all use generateStaticParams + revalidate). It also
+// would not remove style-src 'unsafe-inline' — nonces only cover <style> elements, not
+// the inline style={{}} attributes used across the UI. Keeping the static CSP here is the
+// right trade-off; revisit only if inline styles are eliminated and dynamic rendering is
+// acceptable (or via the experimental hash-based SRI approach).
 const csp = [
   "default-src 'self'",
   "base-uri 'self'",

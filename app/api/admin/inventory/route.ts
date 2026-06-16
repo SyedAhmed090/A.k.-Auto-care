@@ -1,7 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { requireAdmin } from "@/lib/adminAuth";
 import { checkCsrf } from "@/lib/csrf";
+
+const patchSchema = z.object({
+  updates: z
+    .array(
+      z.object({
+        id: z.string().min(1).max(64),
+        stock: z.number().int().min(0).max(1_000_000).nullable(),
+        in_stock: z.boolean(),
+      })
+    )
+    .max(500),
+});
 
 export async function GET() {
   const authError = await requireAdmin();
@@ -29,8 +42,11 @@ export async function PATCH(req: NextRequest) {
   if (authError) return authError;
 
   try {
-    const body = await req.json();
-    const updates: Array<{ id: string; stock: number | null; in_stock: boolean }> = body.updates ?? [];
+    const parsed = patchSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Invalid inventory data." }, { status: 400 });
+    }
+    const { updates } = parsed.data;
     const sb = createAdminClient();
     for (const { id, stock, in_stock } of updates) {
       const { error } = await sb.from("products").update({ stock, in_stock }).eq("id", id);
