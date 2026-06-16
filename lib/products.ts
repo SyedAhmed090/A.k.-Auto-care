@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createPublicClient } from "@/utils/supabase/public";
 import type { Product, Variant } from "@/data/products";
 
@@ -132,7 +133,9 @@ export async function getNewArrivals(limit = 8): Promise<Product[]> {
   return (data ?? []).map(mapProductCard);
 }
 
-export async function getProductBySlug(slug: string): Promise<Product | null> {
+// Wrapped in React cache() so the duplicate calls within a single request — once in
+// generateMetadata and once in the page render — share one DB round-trip.
+export const getProductBySlug = cache(async (slug: string): Promise<Product | null> => {
   const sb = createPublicClient();
   const { data, error } = await sb
     .from("products")
@@ -142,7 +145,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     .single();
   if (error) { console.error("[products] getProductBySlug DB error:", error); return null; }
   return data ? mapProduct(data) : null;
-}
+});
 
 export async function getProductsByCategory(categorySlug: string): Promise<Product[]> {
   const sb = createPublicClient();

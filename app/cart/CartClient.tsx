@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
@@ -8,6 +8,7 @@ import type { Product } from "@/data/products";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
 import { gstAmount, getShippingOptions } from "@/lib/commerce";
+import { useFocusTrap } from "@/lib/useFocusTrap";
 import { useSettings } from "@/components/providers/SettingsProvider";
 import QuantityStepper from "@/components/ui/QuantityStepper";
 import CartUpsell from "@/components/product/CartUpsell";
@@ -41,6 +42,8 @@ function CartPageInner({ allProducts }: { allProducts: Product[] }) {
   const [promoLoading, setPromoLoading] = useState(false);
   const [confirmClear, setConfirmClear] = useState(false);
   const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
+  const confirmRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(confirmRef, confirmClear, () => setConfirmClear(false));
 
   const sub = subtotal();
   const discount = sub * promoDiscount;
@@ -171,6 +174,10 @@ function CartPageInner({ allProducts }: { allProducts: Product[] }) {
                 onClick={() => setConfirmClear(false)}
               >
                 <div
+                  ref={confirmRef}
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="Confirm clear cart"
                   className="w-full max-w-sm rounded-[20px] p-6 text-center"
                   style={{ background: "var(--surface)", border: "1px solid var(--line-2)" }}
                   onClick={(e) => e.stopPropagation()}
