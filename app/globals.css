@@ -23,7 +23,12 @@
     --header-offset: 114px;
   }
 
-  html { scroll-behavior: smooth; }
+  html {
+    scroll-behavior: smooth;
+    /* Offset anchor jumps (skip link, in-page #hashes) by the fixed header height
+       so the target isn't hidden behind the announcement bar + nav. */
+    scroll-padding-top: var(--header-offset);
+  }
 
   body {
     background-color: var(--bg);

@@ -129,10 +129,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {META_PIXEL_ID && <MetaPixel />}
         {/* Announcement bar */}
         <div
-          className="no-print fixed top-0 left-0 right-0 z-[60] w-full text-center py-2 px-4 text-[.7rem] font-semibold tracking-[.08em] h-9 flex items-center justify-center"
+          className="no-print fixed top-0 left-0 right-0 z-[60] w-full text-center py-2 px-4 text-[.7rem] font-semibold tracking-[.08em] h-9 flex items-center justify-center whitespace-nowrap overflow-hidden"
           style={{ background: "var(--accent)", color: "#000", fontFamily: "var(--font-space-mono)" }}
         >
-          <Truck className="inline w-3.5 h-3.5 -mt-0.5 mr-1" /> Free delivery on orders over Rs {freeShipLabel} · Ships via TCS &amp; Leopards · Cash on Delivery available
+          {/* Keep this to a single 36px-tall line on every viewport (the fixed
+              --header-offset depends on it): show only the headline on mobile and
+              reveal the shipping/COD details from sm: up. */}
+          <Truck className="inline w-3.5 h-3.5 -mt-0.5 mr-1 flex-shrink-0" /> Free delivery over Rs&nbsp;{freeShipLabel}
+          <span className="hidden sm:inline">&nbsp;· Ships via TCS &amp; Leopards · Cash on Delivery available</span>
         </div>
         <SettingsProvider value={settings}>
           <Header />
