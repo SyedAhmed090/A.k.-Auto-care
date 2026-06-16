@@ -15,6 +15,7 @@ type SampleRequest = {
   address: string | null;
   business_name: string | null;
   monthly_usage: string;
+  sample_price: number | null;
   status: SampleStatus;
   created_at: string;
 };
@@ -223,6 +224,7 @@ export default function SampleRequestsPage() {
 
                 <div className="p-6 flex-1 space-y-5">
                   <Field label="Product" value={selected.product_name} />
+                  <Field label="Sample Price" value={selected.sample_price != null ? `Rs ${selected.sample_price.toLocaleString("en-PK")}` : "Free / not set"} />
                   <Field label="Estimated Monthly Usage" value={selected.monthly_usage} highlight />
                   <Field label="Phone" value={selected.phone} mono />
                   {selected.email && <Field label="Email" value={selected.email} mono />}

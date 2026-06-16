@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { FlaskConical, X, CheckCircle } from "lucide-react";
+import { formatPrice } from "@/lib/utils";
 import { MONTHLY_USAGE_OPTIONS } from "@/lib/sampleRequest";
 
 const schema = z.object({
@@ -18,7 +19,7 @@ const schema = z.object({
 });
 type FormData = z.infer<typeof schema>;
 
-type ProductInfo = { id: string; slug: string; name: string };
+type ProductInfo = { id: string; slug: string; name: string; samplePrice?: number | null };
 
 const inputCls = "w-full px-4 py-3 rounded-[11px] text-sm outline-none transition-all";
 const inputStyle: React.CSSProperties = {
@@ -161,6 +162,20 @@ export default function SampleRequestButton({
             <p className="text-sm" style={{ color: "var(--muted)" }}>
               Request a small sample bucket. Tell us your usual monthly usage so we can prepare the right quantities for future orders.
             </p>
+
+            {product.samplePrice != null && product.samplePrice > 0 && (
+              <div
+                className="flex items-center justify-between gap-3 rounded-[12px] px-4 py-3"
+                style={{ background: "rgba(79,168,230,.08)", border: "1px solid var(--line-2)" }}
+              >
+                <span className="text-[.72rem] tracking-[.12em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+                  Sample bucket
+                </span>
+                <span className="text-[1.15rem] font-bold" style={{ fontFamily: "var(--font-hanken)", color: "var(--accent)" }}>
+                  {formatPrice(product.samplePrice)}
+                </span>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>

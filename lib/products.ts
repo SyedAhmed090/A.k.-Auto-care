@@ -23,6 +23,7 @@ type DbProductCard = {
   rating: number;
   reviews: number;
   badge: string | null;
+  sample_price: number | null;
   sort_order: number;
   product_variants: DbVariant[];
 };
@@ -35,7 +36,7 @@ type DbProduct = DbProductCard & {
 };
 
 // Card-level select: omits heavy text columns (description, how_to_use, specs)
-const SELECT_CARD = `id, slug, name, category_slug, tagline, price, images, stock, in_stock, featured, rating, reviews, badge, sort_order, product_variants(id, label, price, sku, sort_order)` as const;
+const SELECT_CARD = `id, slug, name, category_slug, tagline, price, sample_price, images, stock, in_stock, featured, rating, reviews, badge, sort_order, product_variants(id, label, price, sku, sort_order)` as const;
 
 // Detail-level select: all columns including heavy text fields
 const SELECT_DETAIL = `*, product_variants(id, label, price, sku, sort_order)` as const;
@@ -58,6 +59,7 @@ function mapProductCard(db: DbProductCard): Product {
     howToUse: "",
     specs: [],
     price: db.price,
+    samplePrice: db.sample_price ?? undefined,
     variants: mapVariants(db.product_variants),
     images: (row.images as string[]) ?? [],
     stock: db.stock ?? undefined,
@@ -82,6 +84,7 @@ function mapProduct(db: DbProduct): Product {
     howToUse: db.how_to_use,
     specs: (row.specs as { label: string; value: string }[]) ?? [],
     price: db.price,
+    samplePrice: db.sample_price ?? undefined,
     variants: mapVariants(db.product_variants),
     images: (row.images as string[]) ?? [],
     stock: db.stock ?? undefined,

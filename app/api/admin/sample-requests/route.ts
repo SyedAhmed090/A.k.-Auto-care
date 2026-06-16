@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
     const sb = createAdminClient();
     let query = sb
       .from("sample_requests")
-      .select("id, product_id, product_name, product_slug, name, phone, email, city, address, business_name, monthly_usage, status, created_at")
+      .select("id, product_id, product_name, product_slug, name, phone, email, city, address, business_name, monthly_usage, sample_price, status, created_at")
       .order("created_at", { ascending: false })
       .range(0, 999);
 

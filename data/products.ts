@@ -14,6 +14,7 @@ export interface Product {
   howToUse: string;
   specs: { label: string; value: string }[];
   price: number;
+  samplePrice?: number;
   variants: Variant[];
   images: string[];
   stock?: number;

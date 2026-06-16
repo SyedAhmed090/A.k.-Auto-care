@@ -297,7 +297,7 @@ export default function ProductPageClient({ product, related }: { product: Produ
 
             {/* Sample request — order a small sample bucket before committing to a bulk order */}
             <div className="mb-6">
-              <SampleRequestButton product={{ id: product.id, slug: product.slug, name: product.name }} variant="detail" />
+              <SampleRequestButton product={{ id: product.id, slug: product.slug, name: product.name, samplePrice: product.samplePrice }} variant="detail" />
             </div>
 
             {/* WhatsApp */}

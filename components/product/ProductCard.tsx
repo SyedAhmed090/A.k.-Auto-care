@@ -106,7 +106,7 @@ export default function ProductCard({ product }: { product: Product }) {
             </button>
           </div>
 
-          <SampleRequestButton product={{ id: product.id, slug: product.slug, name: product.name }} variant="card" />
+          <SampleRequestButton product={{ id: product.id, slug: product.slug, name: product.name, samplePrice: product.samplePrice }} variant="card" />
         </div>
       </article>
     </Link>

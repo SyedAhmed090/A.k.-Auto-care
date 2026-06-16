@@ -47,8 +47,21 @@ export async function POST(req: NextRequest) {
     const d = parsed.data;
 
     // Persist the request so a lead is never lost if the email is missed.
+    let samplePrice: number | null = null;
     try {
       const sb = createAdminClient();
+
+      // Snapshot the sample price from the product server-side — never trust a
+      // client-supplied price.
+      if (d.product_id) {
+        const { data: prod } = await sb
+          .from("products")
+          .select("sample_price")
+          .eq("id", d.product_id)
+          .maybeSingle();
+        samplePrice = prod?.sample_price ?? null;
+      }
+
       const { error } = await sb.from("sample_requests").insert({
         product_id: d.product_id ?? null,
         product_name: d.product_name,
@@ -60,6 +73,7 @@ export async function POST(req: NextRequest) {
         address: d.address ?? null,
         business_name: d.business_name ?? null,
         monthly_usage: d.monthly_usage,
+        sample_price: samplePrice,
       });
       if (error) throw error;
     } catch (err) {
@@ -76,6 +90,7 @@ export async function POST(req: NextRequest) {
       try {
         const lines = [
           `Product: ${d.product_name}`,
+          samplePrice != null ? `Sample price: Rs ${samplePrice.toLocaleString("en-PK")}` : `Sample price: (free / not set)`,
           `Estimated monthly usage: ${d.monthly_usage}`,
           ``,
           `Name: ${d.name}`,
