@@ -12,22 +12,22 @@ export default function QuantityStepper({
         onClick={() => onChange(Math.max(min, value - 1))}
         disabled={value <= min}
         aria-label="Decrease quantity"
-        className="w-8 h-8 flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed hover:bg-white/5 outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent)]"
+        className="w-10 h-10 flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed hover:bg-white/5 outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent)]"
         style={{ color: "var(--muted)" }}
       >
-        <Minus className="w-3 h-3" />
+        <Minus className="w-3.5 h-3.5" />
       </button>
-      <span className="w-8 text-center text-sm font-bold tabular-nums leading-none select-none" style={{ fontFamily: "var(--font-space-mono)" }}>
+      <span className="w-10 text-center text-sm font-bold tabular-nums leading-none select-none" style={{ fontFamily: "var(--font-space-mono)" }}>
         {value}
       </span>
       <button
         onClick={() => onChange(Math.min(max, value + 1))}
         disabled={value >= max}
         aria-label="Increase quantity"
-        className="w-8 h-8 flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed hover:bg-white/5 outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent)]"
+        className="w-10 h-10 flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed hover:bg-white/5 outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent)]"
         style={{ color: "var(--muted)" }}
       >
-        <Plus className="w-3 h-3" />
+        <Plus className="w-3.5 h-3.5" />
       </button>
     </div>
   );
