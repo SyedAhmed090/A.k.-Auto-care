@@ -41,7 +41,7 @@ const inputStyle = (err?: string) => ({
 
 const Field = ({ label, error, required, children }: { label: string; error?: string; required?: boolean; children: React.ReactNode }) => (
   <div>
-    <label className="block text-[.72rem] tracking-[.14em] uppercase mb-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
+    <label className="block text-[.82rem] tracking-[.01em] font-medium mb-2" style={{ fontFamily: "var(--font-hanken)", color: "var(--muted)" }}>
       {label}
       {required && <span aria-hidden="true" style={{ color: "var(--accent)", marginLeft: "3px" }}>*</span>}
     </label>
