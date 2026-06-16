@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import logoMark from "@/public/logo-mark.png";
 import { usePathname, useRouter } from "next/navigation";
 import { Search, ShoppingCart, Heart, User, Menu, X } from "lucide-react";
 import { useCartStore } from "@/store/cart";
@@ -72,18 +74,15 @@ export default function Header() {
           <nav className="flex items-center justify-between h-[78px]">
             {/* Brand */}
             <Link href="/" className="flex items-center gap-3">
-              {/* Shield mark at public/logo-mark.png. Shown by default; if the file is
-                  missing/404s the onError handler swaps in the CSS mark below. Gating on
-                  onError (not onLoad) avoids the race where a cached image loads before
-                  React attaches the handler, which would leave the logo permanently hidden. */}
+              {/* Shield mark statically imported from public/logo-mark.png so Next emits a
+                  content-hashed URL (/_next/static/media/…) that auto-busts browser/CDN
+                  caches whenever the logo file changes — no more stale logo on mobile.
+                  If it still fails to load, onError swaps in the CSS mark below. */}
               {!logoError ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src="/logo-mark.png"
+                <Image
+                  src={logoMark}
                   alt="A.K. Auto Care"
-                  width={40}
-                  height={40}
-                  decoding="async"
+                  priority
                   onError={() => setLogoError(true)}
                   className="w-[40px] h-[40px] object-contain"
                 />

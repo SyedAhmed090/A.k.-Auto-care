@@ -1,7 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Phone, Mail } from "lucide-react";
+import logoFull from "@/public/logo.png";
 import SocialLinks from "@/components/ui/SocialLinks";
 import { useSettings } from "@/components/providers/SettingsProvider";
 import { whatsappDisplay } from "@/lib/settings";
@@ -51,18 +53,13 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-16">
           {/* Brand */}
           <div className="col-span-1 sm:col-span-2 lg:col-span-1">
-            {/* Full lockup at public/logo.png. Shown by default; if missing/404s the
-                onError handler swaps in the text wordmark. Gating on onError (not onLoad)
-                avoids the cached-image race that could leave the logo permanently hidden. */}
+            {/* Full lockup statically imported from public/logo.png so Next emits a
+                content-hashed URL that auto-busts caches when the logo changes. If it
+                still fails to load, onError swaps in the text wordmark below. */}
             {!logoError ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src="/logo.png"
+              <Image
+                src={logoFull}
                 alt="A.K. Auto Care"
-                width={126}
-                height={58}
-                loading="lazy"
-                decoding="async"
                 onError={() => setLogoError(true)}
                 className="h-[58px] w-auto object-contain mb-4"
               />
