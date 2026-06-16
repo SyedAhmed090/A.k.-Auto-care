@@ -3,7 +3,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { getPosts, getPostBySlug } from "@/lib/blog";
+import { getPosts, getPostBySlug, extractProductSkus, type ProductEmbedMap } from "@/lib/blog";
+import { getProducts } from "@/lib/products";
 import Markdown from "@/components/ui/Markdown";
 import { WHATSAPP_NUMBER, WHATSAPP_MESSAGE } from "@/lib/constants";
 
@@ -37,6 +38,18 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const post = getPostBySlug(slug);
   if (!post) notFound();
 
+  // Resolve any [[product:SKU]] embeds server-side so the offer is in the prerendered HTML.
+  const skus = extractProductSkus(post.content);
+  const embeds: ProductEmbedMap = {};
+  if (skus.length) {
+    const all = await getProducts();
+    for (const sku of skus) {
+      const product = all.find((p) => p.variants.some((v) => v.sku === sku));
+      const variant = product?.variants.find((v) => v.sku === sku);
+      if (product && variant) embeds[sku] = { product, variant };
+    }
+  }
+
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -60,7 +73,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <article style={{ background: "var(--bg)", minHeight: "100vh" }}>
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
+        <header className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
           <Link href="/blog" className="inline-flex items-center gap-1.5 text-sm mb-8 transition-colors hover:text-[var(--accent)]" style={{ color: "var(--muted)" }}>
             <ArrowLeft className="w-4 h-4" /> All Articles
           </Link>
@@ -72,19 +85,17 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             {post.title}
           </h1>
           <p className="text-[.78rem] mb-8" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
-            By {post.author} · {new Date(post.date).toLocaleDateString("en-PK", { year: "numeric", month: "long", day: "numeric" })} · {post.readingMinutes} min read
+            By {post.author} · <time dateTime={post.date}>{new Date(post.date).toLocaleDateString("en-PK", { year: "numeric", month: "long", day: "numeric" })}</time> · {post.readingMinutes} min read
           </p>
-        </div>
 
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative w-full rounded-[18px] overflow-hidden mb-10" style={{ aspectRatio: "16/9", background: "var(--surface-2)" }}>
             <Image src={post.cover} alt={post.title} fill sizes="(max-width: 768px) 100vw, 768px" className="object-cover" priority />
           </div>
-        </div>
+        </header>
 
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-          <Markdown content={post.content} />
-        </div>
+        <section className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+          <Markdown content={post.content} embeds={embeds} />
+        </section>
 
         {/* CTA */}
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">

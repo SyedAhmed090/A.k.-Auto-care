@@ -1,8 +1,11 @@
 import React from "react";
+import BlogProductEmbed from "@/components/blog/BlogProductEmbed";
+import { PRODUCT_TOKEN, type ProductEmbedMap } from "@/lib/blog";
 
 // Minimal, dependency-free markdown renderer for blog + policy content.
 // Supports: ## / ### headings, - and 1. lists, > blockquotes, --- rules,
-// paragraphs, and inline **bold**, *italic*, `code`, and [links](url).
+// paragraphs, inline **bold**, *italic*, `code`, [links](url), and standalone
+// [[product:SKU]] tokens (rendered as <BlogProductEmbed> when an `embeds` map is given).
 
 function renderInline(text: string, keyBase: string): React.ReactNode[] {
   const nodes: React.ReactNode[] = [];
@@ -30,7 +33,7 @@ function renderInline(text: string, keyBase: string): React.ReactNode[] {
   return nodes;
 }
 
-export default function Markdown({ content }: { content: string }) {
+export default function Markdown({ content, embeds }: { content: string; embeds?: ProductEmbedMap }) {
   const lines = content.trim().split("\n");
   const elements: React.ReactNode[] = [];
   let i = 0;
@@ -38,7 +41,15 @@ export default function Markdown({ content }: { content: string }) {
   while (i < lines.length) {
     const line = lines[i].trim();
 
-    if (line.startsWith("## ")) {
+    const productMatch = line.match(PRODUCT_TOKEN);
+    if (productMatch) {
+      // Render an inline product embed when the SKU resolved server-side; otherwise skip
+      // the token silently (e.g. discontinued SKU) so a stray token never shows raw text.
+      const embed = embeds?.[productMatch[1]];
+      if (embed) {
+        elements.push(<BlogProductEmbed key={i} product={embed.product} variant={embed.variant} />);
+      }
+    } else if (line.startsWith("## ")) {
       elements.push(<h2 key={i} className="text-xl sm:text-2xl font-black mt-8 sm:mt-10 mb-3" style={{ color: "var(--text)", fontFamily: "var(--font-anton)" }}>{line.slice(3)}</h2>);
     } else if (line.startsWith("### ")) {
       elements.push(<h3 key={i} className="text-base sm:text-lg font-bold mt-6 mb-2" style={{ color: "var(--text)" }}>{line.slice(4)}</h3>);
