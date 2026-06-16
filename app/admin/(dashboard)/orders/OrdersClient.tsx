@@ -3,12 +3,9 @@ import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect, useCallback, useTransition } from "react";
 import { Search, Download, CheckCircle } from "lucide-react";
 import Link from "next/link";
+import { ORDER_STATUS_COLORS as STATUS_COLORS } from "@/lib/orderStatus";
 
 const STATUSES = ["all","pending","confirmed","processing","shipped","delivered","cancelled","refunded"];
-const STATUS_COLORS: Record<string, string> = {
-  pending:"#f59e0b", confirmed:"#3b82f6", processing:"#8b5cf6",
-  shipped:"#06b6d4",  delivered:"#4ade80",  cancelled:"#ef4444", refunded:"#9ca3af",
-};
 
 export type AdminOrder = {
   id: string; first_name: string; last_name: string; email: string;

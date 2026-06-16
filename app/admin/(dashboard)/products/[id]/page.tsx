@@ -26,6 +26,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
           description:  p.description,
           how_to_use:   p.how_to_use,
           price:        p.price,
+          sample_price: p.sample_price ?? null,
           stock:        p.stock,
           in_stock:     p.in_stock,
           featured:     p.featured,

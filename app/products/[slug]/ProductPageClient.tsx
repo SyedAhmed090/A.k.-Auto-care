@@ -11,6 +11,7 @@ import StarRating from "@/components/ui/StarRating";
 import ProductCard from "@/components/product/ProductCard";
 import QuantityStepper from "@/components/ui/QuantityStepper";
 import WishlistButton from "@/components/ui/WishlistButton";
+import SampleRequestButton from "@/components/product/SampleRequestButton";
 import ReviewsSection from "@/components/product/ReviewsSection";
 import { trackViewContent, trackAddToCart } from "@/components/analytics/MetaPixel";
 import { useSettings } from "@/components/providers/SettingsProvider";
@@ -292,6 +293,11 @@ export default function ProductPageClient({ product, related }: { product: Produ
               <div className="self-stretch flex items-center">
                 <WishlistButton product={product} variant="inline" />
               </div>
+            </div>
+
+            {/* Sample request — order a small sample bucket before committing to a bulk order */}
+            <div className="mb-6">
+              <SampleRequestButton product={{ id: product.id, slug: product.slug, name: product.name, samplePrice: product.samplePrice }} variant="detail" />
             </div>
 
             {/* WhatsApp */}

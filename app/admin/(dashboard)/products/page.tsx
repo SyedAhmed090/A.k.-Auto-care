@@ -5,12 +5,9 @@ import { Plus, Edit, Trash2, Package, Star, StarOff, Tag, Percent, CheckCircle2,
 import ConfirmDialog from "@/app/admin/ConfirmDialog";
 
 const CATEGORIES = [
-  { slug: "cleaners-degreasers",  label: "Cleaners & Degreasers" },
-  { slug: "polishes-compounds",   label: "Polishes & Compounds" },
-  { slug: "waxes-sealants",       label: "Waxes & Sealants" },
-  { slug: "ceramic-coatings",     label: "Ceramic Coatings" },
-  { slug: "towels-applicators",   label: "Towels & Applicators" },
-  { slug: "kits-bundles",         label: "Kits & Bundles" },
+  { slug: "surface-correction", label: "Surface Correction" },
+  { slug: "refinement-polish",  label: "Refinement & Polish" },
+  { slug: "automotive-utility", label: "Automotive Utility" },
 ];
 
 type Variant = { id: string; label: string; price: number; sku: string };

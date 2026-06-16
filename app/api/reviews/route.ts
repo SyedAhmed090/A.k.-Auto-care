@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/utils/supabase/admin";
-import { checkRateLimit, getIP } from "@/lib/rateLimit";
+import { rateLimit, getIP } from "@/lib/rateLimit";
 import { checkCsrf } from "@/lib/csrf";
 
 const reviewSchema = z.object({
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
   if (csrfError) return csrfError;
 
   const ip = getIP(req.headers);
-  if (!checkRateLimit(`reviews:${ip}`, 3, 60 * 60 * 1000)) {
+  if (!(await rateLimit(`reviews:${ip}`, 3, 60 * 60 * 1000))) {
     return NextResponse.json({ error: "Too many requests. Try again later." }, { status: 429 });
   }
 

@@ -5,7 +5,7 @@ import { getShippingOptions } from "@/lib/commerce";
 import { getSettings } from "@/lib/settings";
 import { PROMOS } from "@/lib/promos";
 import { createAdminClient } from "@/utils/supabase/admin";
-import { checkRateLimit, getIP } from "@/lib/rateLimit";
+import { rateLimit, getIP } from "@/lib/rateLimit";
 import { checkCsrf } from "@/lib/csrf";
 import { buildOrderConfirmationHtml } from "@/lib/email";
 
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
   if (csrfError) return csrfError;
 
   const ip = getIP(req.headers);
-  if (!checkRateLimit(`orders:${ip}`, 5, 60_000)) {
+  if (!(await rateLimit(`orders:${ip}`, 5, 60_000))) {
     return NextResponse.json({ error: "Too many requests. Please try again shortly." }, { status: 429 });
   }
 

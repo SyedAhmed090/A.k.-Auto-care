@@ -1,12 +1,9 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { ORDER_STATUS_COLORS as STATUS_COLORS } from "@/lib/orderStatus";
 
 const STATUSES = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled", "refunded"] as const;
-const STATUS_COLORS: Record<string, string> = {
-  pending: "#f59e0b", confirmed: "#3b82f6", processing: "#8b5cf6",
-  shipped: "#06b6d4", delivered: "#4ade80", cancelled: "#ef4444", refunded: "#9ca3af",
-};
 
 export default function OrderActions({ order }: { order: any }) {
   const [status, setStatus] = useState<string>(order.status);
