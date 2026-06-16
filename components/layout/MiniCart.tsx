@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -7,6 +7,7 @@ import { X, ShoppingCart, ArrowRight, Trash2, Truck, Tag } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
 import { getShippingOptions } from "@/lib/commerce";
+import { useFocusTrap } from "@/lib/useFocusTrap";
 import { useSettings } from "@/components/providers/SettingsProvider";
 import QuantityStepper from "@/components/ui/QuantityStepper";
 
@@ -14,6 +15,8 @@ export default function MiniCart() {
   const router = useRouter();
   const settings = useSettings();
   const { isOpen, closeCart, items, removeItem, updateQty, subtotal, promoDiscount, promoCode, applyPromo, removePromo } = useCartStore();
+  const drawerRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(drawerRef, isOpen, closeCart);
   const [promoInput, setPromoInput] = useState("");
   const [promoMsg, setPromoMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [promoLoading, setPromoLoading] = useState(false);
@@ -47,6 +50,12 @@ export default function MiniCart() {
       )}
 
       <div
+        ref={drawerRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Shopping cart"
+        aria-hidden={!isOpen}
+        inert={!isOpen || undefined}
         className={`fixed top-0 right-0 h-full w-full max-w-sm z-[80] flex flex-col transition-transform duration-300 ease-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}
         style={{ background: "var(--surface)", borderLeft: "1px solid var(--line-2)" }}
       >
@@ -66,6 +75,7 @@ export default function MiniCart() {
           </div>
           <button
             onClick={closeCart}
+            aria-label="Close cart"
             className="w-8 h-8 grid place-items-center rounded-lg transition-colors hover:bg-white/5 cursor-pointer"
             style={{ color: "var(--muted)" }}
           >

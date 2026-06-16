@@ -1,10 +1,11 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Search, ShoppingCart, Heart, User, Menu, X } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { useWishlistStore } from "@/store/wishlist";
+import { useFocusTrap } from "@/lib/useFocusTrap";
 import { cn } from "@/lib/utils";
 
 export default function Header() {
@@ -21,34 +22,16 @@ export default function Header() {
   const router = useRouter();
   const searchInputRef = useRef<HTMLInputElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const searchOverlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { setMounted(true); }, []);
 
-  // Escape-to-close for the mobile menu and search overlay
-  useEffect(() => {
-    if (!mobileOpen && !searchOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setMobileOpen(false);
-        setSearchOpen(false);
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [mobileOpen, searchOpen]);
-
-  // Focus the search input when the overlay opens
-  useEffect(() => {
-    if (searchOpen) searchInputRef.current?.focus();
-  }, [searchOpen]);
-
-  // Move focus into the mobile menu so it's keyboard navigable on open
-  useEffect(() => {
-    if (mobileOpen) {
-      const first = mobileMenuRef.current?.querySelector<HTMLElement>("a, button");
-      first?.focus();
-    }
-  }, [mobileOpen]);
+  // Focus-trap both overlays: moves focus in on open, cycles Tab, Escape closes,
+  // and restores focus to the trigger on close.
+  const closeMobile = useCallback(() => setMobileOpen(false), []);
+  const closeSearch = useCallback(() => setSearchOpen(false), []);
+  useFocusTrap(mobileMenuRef, mobileOpen, closeMobile);
+  useFocusTrap(searchOverlayRef, searchOpen, closeSearch);
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 30);
@@ -235,6 +218,7 @@ export default function Header() {
         aria-modal="true"
         aria-label="Menu"
         aria-hidden={!mobileOpen}
+        inert={!mobileOpen || undefined}
         className={cn(
           "fixed inset-0 z-[99] flex flex-col justify-center items-start gap-2 px-8 transition-transform duration-500",
           mobileOpen ? "translate-y-0" : "-translate-y-full"
@@ -267,6 +251,10 @@ export default function Header() {
       {/* Search overlay */}
       {searchOpen && (
         <div
+          ref={searchOverlayRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Search products"
           className="fixed inset-0 z-[70] flex items-start justify-center pt-24 px-4"
           style={{ background: "rgba(10, 11, 13,.85)", backdropFilter: "blur(12px)" }}
           onClick={() => setSearchOpen(false)}
@@ -295,6 +283,7 @@ export default function Header() {
               <button
                 type="button"
                 onClick={() => setSearchOpen(false)}
+                aria-label="Close search"
                 className="absolute right-5 top-1/2 -translate-y-1/2"
                 style={{ color: "var(--muted)" }}
               >
