@@ -355,7 +355,7 @@ export default function ProductForm({
             >
               {watch(`images.${i}.url`) ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={watch(`images.${i}.url`)} alt="" className="w-full h-full object-cover" />
+                <img src={watch(`images.${i}.url`)} alt={`Product image ${i + 1} preview`} className="w-full h-full object-cover" />
               ) : (
                 <ImageOff className="w-5 h-5" style={{ color: "var(--muted)" }} />
               )}

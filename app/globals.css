@@ -95,6 +95,10 @@
     opacity: 1;
     transform: none;
   }
+  /* Respect users who prefer reduced motion: stop the continuously-scrolling
+     marquee and the smooth-scroll behaviour (both can trigger vestibular issues). */
+  .marquee-track { animation: none; }
+  html { scroll-behavior: auto; }
 }
 
 /* ── Marquee ── */

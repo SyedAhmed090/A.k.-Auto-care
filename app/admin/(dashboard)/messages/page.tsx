@@ -196,7 +196,7 @@ export default function MessagesPage() {
                       {new Date(selected.created_at).toLocaleString("en-PK")}
                     </div>
                   </div>
-                  <button onClick={closeDrawer} className="p-2 rounded-[8px] transition-colors hover:bg-white/10 cursor-pointer flex-shrink-0" style={{ color: "var(--muted)" }}>
+                  <button onClick={closeDrawer} aria-label="Close" className="p-2 rounded-[8px] transition-colors hover:bg-white/10 cursor-pointer flex-shrink-0" style={{ color: "var(--muted)" }}>
                     <X className="w-5 h-5" />
                   </button>
                 </div>
