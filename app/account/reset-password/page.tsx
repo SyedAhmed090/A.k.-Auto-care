@@ -89,7 +89,7 @@ export default function ResetPasswordPage() {
           </p>
           <button onClick={() => { router.push("/account/login"); router.refresh(); }}
             className="inline-block mt-6 px-6 py-3 rounded-[13px] font-semibold cursor-pointer"
-            style={{ background: "var(--accent)", color: "#000" }}>
+            style={{ background: "var(--accent)", color: "var(--on-accent)" }}>
             Go to Sign In
           </button>
         </div>
@@ -107,7 +107,7 @@ export default function ResetPasswordPage() {
           <p className="text-sm" style={{ color: "var(--muted)" }}>
             This reset link is invalid or has expired. Request a new one to continue.
           </p>
-          <Link href="/account/forgot-password" className="inline-block mt-6 px-6 py-3 rounded-[13px] font-semibold" style={{ background: "var(--accent)", color: "#000" }}>
+          <Link href="/account/forgot-password" className="inline-block mt-6 px-6 py-3 rounded-[13px] font-semibold" style={{ background: "var(--accent)", color: "var(--on-accent)" }}>
             Request New Link
           </Link>
         </div>
@@ -155,7 +155,7 @@ export default function ResetPasswordPage() {
           {error && <p className="text-sm px-4 py-2 rounded-[11px]" style={{ color: "#ef4444", background: "rgba(239,68,68,.08)", border: "1px solid rgba(239,68,68,.2)" }}>{error}</p>}
           <button type="submit" disabled={loading || !ready}
             className="w-full py-3.5 rounded-[13px] font-semibold cursor-pointer disabled:opacity-60"
-            style={{ background: "var(--accent)", color: "#000" }}>
+            style={{ background: "var(--accent)", color: "var(--on-accent)" }}>
             {loading ? "Updating…" : !ready ? "Verifying link…" : "Update Password"}
           </button>
         </form>

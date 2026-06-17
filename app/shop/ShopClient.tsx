@@ -57,7 +57,7 @@ const FilterPanel = ({ priceMax, setPriceMax, inStockOnly, setInStockOnly }: Fil
         >
           {inStockOnly && (
             <svg className="w-2.5 h-2.5" viewBox="0 0 10 10" fill="none">
-              <path d="M1.5 5l2.5 2.5L8.5 2" stroke="#000" strokeWidth="1.5" strokeLinecap="round" />
+              <path d="M1.5 5l2.5 2.5L8.5 2" stroke="var(--on-accent)" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
           )}
         </div>
@@ -151,7 +151,7 @@ export default function ShopClient({ allProducts }: { allProducts: Product[] }) 
                 {activeFilterCount > 0 && (
                   <span
                     className="grid place-items-center w-5 h-5 rounded-full text-[.65rem] font-bold leading-none"
-                    style={{ background: "var(--accent)", color: "#000", fontFamily: "var(--font-space-mono)" }}
+                    style={{ background: "var(--accent)", color: "var(--on-accent)", fontFamily: "var(--font-space-mono)" }}
                   >
                     {activeFilterCount}
                   </span>
@@ -184,7 +184,7 @@ export default function ShopClient({ allProducts }: { allProducts: Product[] }) 
                   <button
                     onClick={clearFilters}
                     className="inline-flex items-center gap-1.5 px-6 py-3 rounded-[13px] font-semibold transition-all cursor-pointer hover:-translate-y-0.5"
-                    style={{ background: "var(--accent)", color: "#000" }}
+                    style={{ background: "var(--accent)", color: "var(--on-accent)" }}
                   >
                     <X className="w-4 h-4" /> Clear all filters
                   </button>
@@ -209,7 +209,7 @@ export default function ShopClient({ allProducts }: { allProducts: Product[] }) 
 
       {filtersOpen && (
         <>
-          <div className="fixed inset-0 z-50" style={{ background: "rgba(10, 11, 13,.8)" }} onClick={() => setFiltersOpen(false)} />
+          <div className="fixed inset-0 z-50" style={{ background: "var(--scrim)" }} onClick={() => setFiltersOpen(false)} />
           <div
             className="fixed bottom-0 left-0 right-0 z-[70] rounded-t-[20px] p-6 max-h-[80vh] overflow-y-auto"
             style={{ background: "var(--surface)", border: "1px solid var(--line-2)" }}
@@ -227,7 +227,7 @@ export default function ShopClient({ allProducts }: { allProducts: Product[] }) 
             <button
               onClick={() => setFiltersOpen(false)}
               className="w-full mt-6 py-3.5 rounded-[13px] font-semibold cursor-pointer"
-              style={{ background: "var(--accent)", color: "#000" }}
+              style={{ background: "var(--accent)", color: "var(--on-accent)" }}
             >
               Apply Filters
             </button>

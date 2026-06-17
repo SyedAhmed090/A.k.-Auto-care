@@ -129,7 +129,7 @@ export default function ProductPageClient({ product, related, systemView }: { pr
           <div className="space-y-3 lg:sticky lg:top-28">
             <div
               className="relative aspect-square rounded-[20px] overflow-hidden group"
-              style={{ background: "radial-gradient(70% 70% at 50% 40%,#16191f,#0a0b0d)", border: "1px solid var(--line)" }}
+              style={{ background: "radial-gradient(70% 70% at 50% 40%, var(--surface), var(--bg-2))", border: "1px solid var(--line)" }}
             >
               <button
                 type="button"
@@ -146,14 +146,14 @@ export default function ProductPageClient({ product, related, systemView }: { pr
               />
               <span
                 className="absolute bottom-4 left-4 z-[2] inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[.62rem] font-semibold opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
-                style={{ background: "rgba(10, 11, 13,.7)", backdropFilter: "blur(8px)", border: "1px solid var(--line-2)", color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}
+                style={{ background: "var(--surface)", backdropFilter: "blur(8px)", border: "1px solid var(--line-2)", color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}
               >
                 <ZoomIn className="w-3 h-3" /> Click to zoom
               </span>
               {product.badge && (
                 <span
                   className="absolute top-4 left-4 text-[.6rem] font-bold px-2.5 py-1 rounded-full tracking-[.12em] uppercase"
-                  style={{ background: "var(--accent)", color: "#000", fontFamily: "var(--font-space-mono)" }}
+                  style={{ background: "var(--accent)", color: "var(--on-accent)", fontFamily: "var(--font-space-mono)" }}
                 >
                   {product.badge}
                 </span>
@@ -170,7 +170,7 @@ export default function ProductPageClient({ product, related, systemView }: { pr
                 onClick={handleShare}
                 aria-label="Share product"
                 className="absolute bottom-4 right-4 z-[3] w-9 h-9 rounded-full grid place-items-center transition-all opacity-0 group-hover:opacity-100 focus-visible:opacity-100 cursor-pointer"
-                style={{ background: "rgba(10, 11, 13,.7)", backdropFilter: "blur(8px)", border: "1px solid var(--line-2)" }}
+                style={{ background: "var(--surface)", backdropFilter: "blur(8px)", border: "1px solid var(--line-2)" }}
               >
                 <Share2 className="w-4 h-4" style={{ color: "var(--muted)" }} />
               </button>

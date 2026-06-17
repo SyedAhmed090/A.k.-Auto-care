@@ -171,7 +171,7 @@ export default function AdminProductsPage() {
         <Link
           href="/admin/products/new"
           className="flex items-center gap-2 px-5 py-2.5 rounded-[12px] font-semibold text-sm transition-all hover:-translate-y-0.5"
-          style={{ background: "var(--accent)", color: "#000" }}
+          style={{ background: "var(--accent)", color: "var(--on-accent)" }}
         >
           <Plus className="w-4 h-4" /> Add Product
         </Link>
@@ -266,7 +266,7 @@ export default function AdminProductsPage() {
             </thead>
             <tbody>
               {products.map((p) => (
-                <tr key={p.id} style={{ borderBottom: "1px solid var(--line)", background: selected.has(p.id) ? "rgba(79, 168, 230,.08)" : undefined }} className="transition-colors hover:bg-white/[.02]">
+                <tr key={p.id} style={{ borderBottom: "1px solid var(--line)", background: selected.has(p.id) ? "rgba(79, 168, 230,.08)" : undefined }} className="transition-colors hover:bg-black/[.02]">
                   <td className="px-5 py-4">
                     <input type="checkbox" checked={selected.has(p.id)} onChange={() => toggleOne(p.id)}
                       className="cursor-pointer w-4 h-4" style={{ accentColor: "var(--accent)" }} />
@@ -307,7 +307,7 @@ export default function AdminProductsPage() {
                     <div className="flex items-center gap-2 justify-end">
                       <Link
                         href={`/admin/products/${p.id}`}
-                        className="p-2 rounded-[8px] transition-all hover:bg-white/10 cursor-pointer"
+                        className="p-2 rounded-[8px] transition-all hover:bg-black/10 cursor-pointer"
                         style={{ color: "var(--muted)" }}
                       >
                         <Edit className="w-4 h-4" />

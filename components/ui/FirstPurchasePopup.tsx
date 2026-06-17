@@ -97,7 +97,7 @@ export default function FirstPurchasePopup() {
   return (
     <div
       className="fixed inset-0 z-[120] flex items-center justify-center p-4"
-      style={{ background: "rgba(10, 11, 13,.7)", backdropFilter: "blur(6px)" }}
+      style={{ background: "var(--scrim)", backdropFilter: "blur(6px)" }}
       onClick={dismiss}
       role="dialog"
       aria-modal="true"
@@ -167,7 +167,7 @@ export default function FirstPurchasePopup() {
                 onClick={submit}
                 disabled={state === "submitting"}
                 className="w-full py-3.5 rounded-[12px] font-semibold cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface)]"
-                style={{ background: "var(--accent)", color: "#000" }}
+                style={{ background: "var(--accent)", color: "var(--on-accent)" }}
               >
                 {state === "submitting" ? "…" : "Reveal My Code"}
               </button>

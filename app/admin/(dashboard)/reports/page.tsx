@@ -130,7 +130,7 @@ export default function ReportsPage() {
         <a
           href={csvHref}
           className="flex items-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-semibold transition-all cursor-pointer hover:opacity-90"
-          style={{ background: "var(--accent)", color: "#000" }}
+          style={{ background: "var(--accent)", color: "var(--on-accent)" }}
         >
           <Download className="w-4 h-4" />
           Download CSV
@@ -214,7 +214,7 @@ export default function ReportsPage() {
             </thead>
             <tbody>
               {rows.map((r) => (
-                <tr key={r.period} className="transition-colors hover:bg-white/[.03]" style={{ borderBottom: "1px solid var(--line)" }}>
+                <tr key={r.period} className="transition-colors hover:bg-black/[.03]" style={{ borderBottom: "1px solid var(--line)" }}>
                   <td className="px-5 py-4 text-xs font-semibold whitespace-nowrap" style={{ fontFamily: "var(--font-space-mono)", color: "var(--text)" }}>{r.period}</td>
                   <td className="px-5 py-4 text-right" style={{ color: "var(--muted)" }}>{r.orders}</td>
                   <td className="px-5 py-4 text-right font-semibold whitespace-nowrap">{money(r.gross)}</td>

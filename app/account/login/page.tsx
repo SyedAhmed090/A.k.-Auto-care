@@ -71,7 +71,7 @@ export default function LoginPage() {
           {error && <p className="text-sm px-4 py-2 rounded-[11px]" style={{ color: "#ef4444", background: "rgba(239,68,68,.08)", border: "1px solid rgba(239,68,68,.2)" }}>{error}</p>}
           <button type="submit" disabled={loading}
             className="w-full py-3.5 rounded-[13px] font-semibold cursor-pointer disabled:opacity-60"
-            style={{ background: "var(--accent)", color: "#000" }}>
+            style={{ background: "var(--accent)", color: "var(--on-accent)" }}>
             {loading ? "Signing in…" : "Sign In"}
           </button>
         </form>

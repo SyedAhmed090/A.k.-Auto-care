@@ -120,7 +120,7 @@ export default function AccountClient({
 
       <button onClick={save} disabled={state === "saving"}
         className="w-full mt-5 py-3 rounded-[12px] font-semibold cursor-pointer disabled:opacity-60"
-        style={{ background: "var(--accent)", color: "#000" }}>
+        style={{ background: "var(--accent)", color: "var(--on-accent)" }}>
         {state === "saving" ? "Saving…" : state === "saved" ? "Saved ✓" : "Save Details"}
       </button>
 

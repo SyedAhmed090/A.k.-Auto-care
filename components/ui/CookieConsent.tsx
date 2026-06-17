@@ -28,7 +28,7 @@ export default function CookieConsent() {
       <button
         onClick={dismiss}
         aria-label="Dismiss — decide later"
-        className="absolute top-2 right-2 sm:top-3 sm:right-3 w-8 h-8 grid place-items-center rounded-lg transition-colors hover:bg-white/5 cursor-pointer"
+        className="absolute top-2 right-2 sm:top-3 sm:right-3 w-8 h-8 grid place-items-center rounded-lg transition-colors hover:bg-black/5 cursor-pointer"
         style={{ color: "var(--muted)" }}
       >
         <X className="w-4 h-4" />

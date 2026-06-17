@@ -85,7 +85,7 @@ export default async function AccountPage() {
           {orders.length === 0 ? (
             <div className="rounded-[16px] p-8 text-center" style={{ background: "var(--surface)", border: "1px solid var(--line)" }}>
               <p className="text-sm mb-4" style={{ color: "var(--muted)" }}>You haven&apos;t placed any orders yet.</p>
-              <Link href="/shop" className="inline-block px-5 py-2.5 rounded-[12px] font-semibold text-sm" style={{ background: "var(--accent)", color: "#000" }}>
+              <Link href="/shop" className="inline-block px-5 py-2.5 rounded-[12px] font-semibold text-sm" style={{ background: "var(--accent)", color: "var(--on-accent)" }}>
                 Start Shopping
               </Link>
             </div>
@@ -99,7 +99,7 @@ export default async function AccountPage() {
                       <span className="font-semibold" style={{ fontFamily: "var(--font-space-mono)", fontSize: ".8rem" }}>
                         #AK-{o.id.slice(0, 8).toUpperCase()}
                       </span>
-                      <span className="text-[.7rem] font-bold uppercase px-2.5 py-1 rounded-full" style={{ color: STATUS_COLORS[o.status] ?? "var(--muted)", background: "rgba(255,255,255,.04)", fontFamily: "var(--font-space-mono)" }}>
+                      <span className="text-[.7rem] font-bold uppercase px-2.5 py-1 rounded-full" style={{ color: STATUS_COLORS[o.status] ?? "var(--muted)", background: "var(--surface-2)", fontFamily: "var(--font-space-mono)" }}>
                         {o.status}
                       </span>
                     </div>

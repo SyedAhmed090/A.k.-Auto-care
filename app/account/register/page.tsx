@@ -94,7 +94,7 @@ export default function RegisterPage() {
             {resendState === "sending" ? "Sending…" : resendState === "sent" ? "Email sent ✓" : "Resend confirmation email"}
           </button>
           <div>
-            <Link href="/account/login" className="inline-block mt-6 px-6 py-3 rounded-[13px] font-semibold" style={{ background: "var(--accent)", color: "#000" }}>
+            <Link href="/account/login" className="inline-block mt-6 px-6 py-3 rounded-[13px] font-semibold" style={{ background: "var(--accent)", color: "var(--on-accent)" }}>
               Go to Sign In
             </Link>
           </div>
@@ -151,7 +151,7 @@ export default function RegisterPage() {
           {error && <p className="text-sm px-4 py-2 rounded-[11px]" style={{ color: "#ef4444", background: "rgba(239,68,68,.08)", border: "1px solid rgba(239,68,68,.2)" }}>{error}</p>}
           <button type="submit" disabled={loading}
             className="w-full py-3.5 rounded-[13px] font-semibold cursor-pointer disabled:opacity-60"
-            style={{ background: "var(--accent)", color: "#000" }}>
+            style={{ background: "var(--accent)", color: "var(--on-accent)" }}>
             {loading ? "Creating…" : "Create Account"}
           </button>
         </form>

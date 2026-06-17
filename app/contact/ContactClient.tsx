@@ -159,7 +159,7 @@ export default function ContactClient() {
                   type="submit"
                   disabled={isSubmitting}
                   className="w-full sm:w-auto px-7 py-4 rounded-[13px] font-semibold transition-all cursor-pointer disabled:opacity-50 hover:-translate-y-0.5 flex items-center justify-center gap-2"
-                  style={{ background: "var(--accent)", color: "#000" }}
+                  style={{ background: "var(--accent)", color: "var(--on-accent)" }}
                 >
                   {isSubmitting ? "Sending…" : "Send Message"}
                 </button>

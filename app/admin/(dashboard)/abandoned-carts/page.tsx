@@ -128,7 +128,7 @@ export default function AbandonedCartsPage() {
                   <Fragment key={c.id}>
                     <tr
                       onClick={() => setExpanded(open ? null : c.id)}
-                      className="transition-colors hover:bg-white/[.03] cursor-pointer"
+                      className="transition-colors hover:bg-black/[.03] cursor-pointer"
                       style={{ borderBottom: open ? "none" : "1px solid var(--line)" }}
                     >
                       <td className="px-5 py-4" style={{ color: "var(--muted)" }}>

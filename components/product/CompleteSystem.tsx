@@ -186,7 +186,7 @@ export default function CompleteSystem({
                 onClick={addAll}
                 disabled={selectedSteps.length === 0}
                 className="w-full px-4 py-3 rounded-[11px] font-semibold cursor-pointer transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:translate-y-0 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                style={{ background: "var(--accent)", color: "#000" }}
+                style={{ background: "var(--accent)", color: "var(--on-accent)" }}
               >
                 {justAdded ? (
                   <><Check className="w-4 h-4" /> Added to cart</>

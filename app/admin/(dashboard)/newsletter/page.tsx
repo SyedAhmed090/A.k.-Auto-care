@@ -51,7 +51,7 @@ export default function NewsletterPage() {
         <a
           href={exportUrl()}
           className="flex items-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-semibold transition-all hover:opacity-90"
-          style={{ background: "var(--accent)", color: "#000" }}
+          style={{ background: "var(--accent)", color: "var(--on-accent)" }}
         >
           <Download className="w-4 h-4" /> Export CSV
         </a>
@@ -101,7 +101,7 @@ export default function NewsletterPage() {
             </thead>
             <tbody>
               {subscribers.map((s) => (
-                <tr key={s.id} className="transition-colors hover:bg-white/[.03]" style={{ borderBottom: "1px solid var(--line)" }}>
+                <tr key={s.id} className="transition-colors hover:bg-black/[.03]" style={{ borderBottom: "1px solid var(--line)" }}>
                   <td className="px-5 py-4 font-semibold" style={{ color: "var(--text)" }}>{s.email}</td>
                   <td className="px-5 py-4 text-xs" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>{s.source || "—"}</td>
                   <td className="px-5 py-4 text-xs" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>

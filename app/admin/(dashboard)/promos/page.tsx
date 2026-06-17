@@ -160,7 +160,7 @@ export default function PromosPage() {
               </thead>
               <tbody>
                 {promos.map(p => (
-                  <tr key={p.id} className="border-t hover:bg-white/[.015] transition-colors" style={{ borderColor: "var(--line)" }}>
+                  <tr key={p.id} className="border-t hover:bg-black/[.015] transition-colors" style={{ borderColor: "var(--line)" }}>
                     <td className="px-4 py-3.5 font-bold" style={{ fontFamily: "var(--font-space-mono)", color: "var(--accent)" }}>{p.code}</td>
                     <td className="px-4 py-3.5 font-semibold">{(p.discount * 100).toFixed(0)}% off</td>
                     <td className="px-4 py-3.5" style={{ color: "var(--muted)" }}>

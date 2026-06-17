@@ -134,7 +134,7 @@ export default function CartUpsell({ allProducts }: { allProducts: Product[] }) 
                 onClick={() => handleAdd(p)}
                 aria-label={`Add ${p.name} to cart`}
                 className="flex-shrink-0 w-9 h-9 rounded-[9px] grid place-items-center cursor-pointer transition-all hover:-translate-y-0.5"
-                style={{ background: added[p.id] ? "var(--surface-2)" : "var(--accent)", color: added[p.id] ? "var(--accent)" : "#000" }}
+                style={{ background: added[p.id] ? "var(--surface-2)" : "var(--accent)", color: added[p.id] ? "var(--accent)" : "var(--on-accent)" }}
               >
                 {added[p.id] ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
               </button>

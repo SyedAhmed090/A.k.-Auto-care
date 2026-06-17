@@ -90,7 +90,7 @@ export default function BlogProductEmbed({
             disabled={!product.inStock}
             aria-label={`Add ${product.name} to cart`}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-[11px] font-semibold cursor-pointer transition-all hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0 outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface)]"
-            style={{ background: added ? "var(--surface-2)" : "var(--accent)", color: added ? "var(--accent)" : "#000" }}
+            style={{ background: added ? "var(--surface-2)" : "var(--accent)", color: added ? "var(--accent)" : "var(--on-accent)" }}
           >
             {added ? (
               <><Check className="w-4 h-4" /> Added</>

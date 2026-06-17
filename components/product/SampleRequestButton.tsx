@@ -134,7 +134,7 @@ export default function SampleRequestButton({
               {product.name}
             </h3>
           </div>
-          <button onClick={close} aria-label="Close" className="p-2 -mr-2 rounded-[8px] transition-colors hover:bg-white/10 cursor-pointer flex-shrink-0" style={{ color: "var(--muted)" }}>
+          <button onClick={close} aria-label="Close" className="p-2 -mr-2 rounded-[8px] transition-colors hover:bg-black/10 cursor-pointer flex-shrink-0" style={{ color: "var(--muted)" }}>
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -151,7 +151,7 @@ export default function SampleRequestButton({
             <button
               onClick={close}
               className="px-6 py-3 rounded-[12px] font-semibold cursor-pointer transition-all hover:-translate-y-0.5"
-              style={{ background: "var(--accent)", color: "#000" }}
+              style={{ background: "var(--accent)", color: "var(--on-accent)" }}
             >
               Done
             </button>
@@ -238,7 +238,7 @@ export default function SampleRequestButton({
               type="submit"
               disabled={isSubmitting}
               className="w-full py-4 rounded-[13px] font-semibold transition-all cursor-pointer disabled:opacity-50 hover:-translate-y-0.5 flex items-center justify-center gap-2"
-              style={{ background: "var(--accent)", color: "#000" }}
+              style={{ background: "var(--accent)", color: "var(--on-accent)" }}
             >
               {isSubmitting ? "Sending…" : "Submit Sample Request"}
             </button>

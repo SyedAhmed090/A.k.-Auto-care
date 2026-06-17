@@ -53,9 +53,9 @@ export default function WishlistButton({
       aria-pressed={active}
       aria-label={active ? "Remove from wishlist" : "Add to wishlist"}
       className="absolute top-3.5 right-3.5 z-20 w-9 h-9 rounded-full grid place-items-center transition-all cursor-pointer backdrop-blur-md hover:scale-110 outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]"
-      style={{ background: "rgba(10, 11, 13,.55)", border: "1px solid var(--line-2)" }}
+      style={{ background: "var(--surface)", border: "1px solid var(--line-2)" }}
     >
-      <Heart className="w-[17px] h-[17px]" style={{ color: active ? "var(--accent)" : "#fff", fill: active ? "var(--accent)" : "transparent" }} />
+      <Heart className="w-[17px] h-[17px]" style={{ color: active ? "var(--accent)" : "var(--muted)", fill: active ? "var(--accent)" : "transparent" }} />
     </button>
   );
 }

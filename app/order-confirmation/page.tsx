@@ -174,7 +174,7 @@ export default async function OrderConfirmationPage({
         <Link
           href="/shop"
           className="no-print w-full py-4 rounded-[13px] font-semibold flex items-center justify-center gap-2.5 transition-all hover:-translate-y-0.5"
-          style={{ background: "var(--accent)", color: "#000", display: "flex" }}
+          style={{ background: "var(--accent)", color: "var(--on-accent)", display: "flex" }}
         >
           Continue Shopping <ArrowRight className="w-[18px] h-[18px]" />
         </Link>

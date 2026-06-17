@@ -57,7 +57,7 @@ const CheckoutSteps = () => {
                   className="w-6 h-6 rounded-full grid place-items-center text-[.7rem] font-bold flex-shrink-0"
                   style={{
                     background: active ? "var(--accent)" : "var(--surface-2)",
-                    color: active ? "#000" : "var(--muted)",
+                    color: active ? "var(--on-accent)" : "var(--muted)",
                     border: `1px solid ${active ? "var(--accent)" : "var(--line-2)"}`,
                     fontFamily: "var(--font-space-mono)",
                   }}

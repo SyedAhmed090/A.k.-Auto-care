@@ -55,7 +55,7 @@ const statusColors: Record<string, { bg: string; color: string }> = {
 };
 
 function statusStyle(status: string) {
-  return statusColors[status] ?? { bg: "rgba(255,255,255,.08)", color: "var(--muted)" };
+  return statusColors[status] ?? { bg: "var(--surface-2)", color: "var(--muted)" };
 }
 
 const SEGMENTS: { key: string; label: string }[] = [
@@ -78,7 +78,7 @@ const segmentLabel: Record<string, string> = {
 };
 
 function SegmentBadge({ seg }: { seg: string }) {
-  const c = segmentColors[seg] ?? { bg: "rgba(255,255,255,.08)", color: "var(--muted)" };
+  const c = segmentColors[seg] ?? { bg: "var(--surface-2)", color: "var(--muted)" };
   return (
     <span
       className="text-[.6rem] px-2 py-0.5 rounded-full uppercase font-bold whitespace-nowrap"
@@ -223,7 +223,7 @@ export default function CustomersPage() {
                 <tr
                   key={c.email}
                   onClick={() => openDrawer(c)}
-                  className="transition-colors hover:bg-white/[.03] cursor-pointer"
+                  className="transition-colors hover:bg-black/[.03] cursor-pointer"
                   style={{ borderBottom: "1px solid var(--line)" }}
                 >
                   <td className="px-5 py-4">
@@ -290,7 +290,7 @@ export default function CustomersPage() {
                         className="text-[.6rem] px-2 py-0.5 rounded-full uppercase font-bold"
                         style={{
                           fontFamily: "var(--font-space-mono)",
-                          background: selected.registered ? "rgba(34,197,94,.15)" : "rgba(255,255,255,.08)",
+                          background: selected.registered ? "rgba(34,197,94,.15)" : "var(--surface-2)",
                           color: selected.registered ? "#22c55e" : "var(--muted)",
                         }}
                       >
@@ -303,7 +303,7 @@ export default function CustomersPage() {
               </div>
               <button
                 onClick={closeDrawer}
-                className="p-2 rounded-[8px] transition-colors hover:bg-white/10 cursor-pointer flex-shrink-0"
+                className="p-2 rounded-[8px] transition-colors hover:bg-black/10 cursor-pointer flex-shrink-0"
                 style={{ color: "var(--muted)" }}
               >
                 <X className="w-5 h-5" />
@@ -389,7 +389,7 @@ export default function CustomersPage() {
                       <Link
                         key={o.id}
                         href={`/admin/orders/${o.id}`}
-                        className="flex items-center justify-between px-4 py-3 rounded-[10px] transition-colors hover:bg-white/[.04] cursor-pointer"
+                        className="flex items-center justify-between px-4 py-3 rounded-[10px] transition-colors hover:bg-black/[.04] cursor-pointer"
                         style={{ background: "var(--surface)", border: "1px solid var(--line)" }}
                       >
                         <div>

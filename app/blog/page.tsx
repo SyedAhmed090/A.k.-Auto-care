@@ -35,7 +35,7 @@ export default function BlogPage() {
             <Link key={post.slug} href={`/blog/${post.slug}`} className="group block rounded-[var(--r)] overflow-hidden product-card h-full">
               <div className="relative w-full overflow-hidden" style={{ aspectRatio: "16/10", background: "var(--surface-2)" }}>
                 <Image src={post.cover} alt={post.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
-                <span className="absolute top-3.5 left-3.5 text-[.6rem] font-bold px-2.5 py-1 rounded-full tracking-[.12em] uppercase" style={{ background: "var(--accent)", color: "#000", fontFamily: "var(--font-space-mono)" }}>
+                <span className="absolute top-3.5 left-3.5 text-[.6rem] font-bold px-2.5 py-1 rounded-full tracking-[.12em] uppercase" style={{ background: "var(--accent)", color: "var(--on-accent)", fontFamily: "var(--font-space-mono)" }}>
                   {post.category}
                 </span>
               </div>

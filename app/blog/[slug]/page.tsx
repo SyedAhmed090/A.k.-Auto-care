@@ -107,7 +107,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               Browse our range or ask us for a personal recommendation.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3">
-              <Link href="/shop" className="px-6 py-3 rounded-[13px] font-semibold" style={{ background: "var(--accent)", color: "#000" }}>
+              <Link href="/shop" className="px-6 py-3 rounded-[13px] font-semibold" style={{ background: "var(--accent)", color: "var(--on-accent)" }}>
                 Shop Products
               </Link>
               <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`} target="_blank" rel="noopener noreferrer" className="px-6 py-3 rounded-[13px] font-semibold" style={{ background: "#25D366", color: "#fff" }}>

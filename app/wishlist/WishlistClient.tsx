@@ -40,7 +40,7 @@ export default function WishlistClient() {
             <p className="text-sm mb-6" style={{ color: "var(--muted)" }}>
               Tap the heart on any product to save it here for later.
             </p>
-            <Link href="/shop" className="px-6 py-3 rounded-[13px] font-semibold" style={{ background: "var(--accent)", color: "#000" }}>
+            <Link href="/shop" className="px-6 py-3 rounded-[13px] font-semibold" style={{ background: "var(--accent)", color: "var(--on-accent)" }}>
               Browse Products
             </Link>
           </div>
@@ -60,7 +60,7 @@ export default function WishlistClient() {
                   <X className="w-[17px] h-[17px]" />
                 </button>
                 <Link href={`/products/${item.slug}`} className="block">
-                  <div className="relative w-full overflow-hidden" style={{ aspectRatio: "4/3", background: "radial-gradient(70% 70% at 50% 40%,#16191f,#0a0b0d)" }}>
+                  <div className="relative w-full overflow-hidden" style={{ aspectRatio: "4/3", background: "radial-gradient(70% 70% at 50% 40%, var(--surface), var(--bg-2))" }}>
                     <Image src={item.image} alt={item.name} fill sizes="(max-width: 640px) 100vw, 25vw" className="object-cover transition-all duration-500 group-hover:scale-105" />
                   </div>
                   <div className="p-5 flex flex-col gap-1.5">

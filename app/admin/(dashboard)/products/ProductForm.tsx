@@ -439,7 +439,7 @@ export default function ProductForm({
           type="submit"
           disabled={isSubmitting}
           className="flex items-center gap-2 px-7 py-3.5 rounded-[12px] font-semibold text-sm cursor-pointer disabled:opacity-60 transition-all hover:-translate-y-0.5"
-          style={{ background: "var(--accent)", color: "#000" }}
+          style={{ background: "var(--accent)", color: "var(--on-accent)" }}
         >
           {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
           {isSubmitting ? "Saving…" : isEdit ? "Save Changes" : "Create Product"}

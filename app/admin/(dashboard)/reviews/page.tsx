@@ -155,7 +155,7 @@ export default function AdminReviewsPage() {
               letterSpacing: ".1em",
               textTransform: "uppercase",
               background: activeTab === key ? "var(--accent)" : "transparent",
-              color: activeTab === key ? "#000" : "var(--muted)",
+              color: activeTab === key ? "var(--on-accent)" : "var(--muted)",
               transition: "background .15s, color .15s",
               fontWeight: activeTab === key ? 700 : 400,
             }}
@@ -219,7 +219,7 @@ export default function AdminReviewsPage() {
                   key={r.id}
                   onClick={() => setViewing(r)}
                   style={{ borderBottom: "1px solid var(--line)", cursor: "pointer" }}
-                  className="transition-colors hover:bg-white/[.02]"
+                  className="transition-colors hover:bg-black/[.02]"
                 >
                   <td style={{ padding: "14px 20px" }}>
                     <div style={{ fontFamily: "var(--font-hanken)", color: "var(--text)", fontWeight: 600, fontSize: ".85rem" }}>
@@ -424,7 +424,7 @@ export default function AdminReviewsPage() {
               <button
                 onClick={() => setViewing(null)}
                 aria-label="Close"
-                className="p-2 rounded-[8px] cursor-pointer transition-colors hover:bg-white/10 flex-shrink-0"
+                className="p-2 rounded-[8px] cursor-pointer transition-colors hover:bg-black/10 flex-shrink-0"
                 style={{ color: "var(--muted)" }}
               >
                 <X style={{ width: 18, height: 18 }} />

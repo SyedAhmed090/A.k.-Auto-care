@@ -26,7 +26,7 @@ const statusColors: Record<string, { bg: string; color: string }> = {
 };
 
 function statusStyle(s: string) {
-  return statusColors[s] ?? { bg: "rgba(255,255,255,.08)", color: "var(--muted)" };
+  return statusColors[s] ?? { bg: "var(--surface-2)", color: "var(--muted)" };
 }
 
 const FILTERS = [
@@ -150,7 +150,7 @@ export default function MessagesPage() {
                   <tr
                     key={m.id}
                     onClick={() => openDrawer(m)}
-                    className="transition-colors hover:bg-white/[.03] cursor-pointer"
+                    className="transition-colors hover:bg-black/[.03] cursor-pointer"
                     style={{ borderBottom: "1px solid var(--line)" }}
                   >
                     <td className="px-5 py-4">
@@ -196,7 +196,7 @@ export default function MessagesPage() {
                       {new Date(selected.created_at).toLocaleString("en-PK")}
                     </div>
                   </div>
-                  <button onClick={closeDrawer} aria-label="Close" className="p-2 rounded-[8px] transition-colors hover:bg-white/10 cursor-pointer flex-shrink-0" style={{ color: "var(--muted)" }}>
+                  <button onClick={closeDrawer} aria-label="Close" className="p-2 rounded-[8px] transition-colors hover:bg-black/10 cursor-pointer flex-shrink-0" style={{ color: "var(--muted)" }}>
                     <X className="w-5 h-5" />
                   </button>
                 </div>
@@ -212,7 +212,7 @@ export default function MessagesPage() {
                   <a
                     href={`mailto:${selected.email}?subject=${encodeURIComponent("Re: " + selected.subject)}`}
                     className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-semibold transition-all hover:opacity-90"
-                    style={{ background: "var(--accent)", color: "#000" }}
+                    style={{ background: "var(--accent)", color: "var(--on-accent)" }}
                   >
                     <Mail className="w-4 h-4" /> Reply by Email
                   </a>

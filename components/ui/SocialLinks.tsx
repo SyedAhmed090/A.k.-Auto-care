@@ -61,7 +61,7 @@ export default function SocialLinks({ className = "" }: { className?: string }) 
             rel="noopener noreferrer"
             aria-label={name}
             className="w-9 h-9 rounded-[10px] grid place-items-center transition-all hover:bg-[var(--accent)] hover:text-black"
-            style={{ background: "rgba(255,255,255,.02)", border: "1px solid var(--line-2)", color: "var(--text)" }}
+            style={{ background: "var(--hover)", border: "1px solid var(--line-2)", color: "var(--text)" }}
           >
             <Icon className="w-[17px] h-[17px]" />
           </a>

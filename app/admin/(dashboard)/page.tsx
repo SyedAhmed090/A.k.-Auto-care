@@ -138,7 +138,7 @@ export default async function AdminDashboard() {
           )}
           {recent.map((o) => (
             <Link key={o.id} href={`/admin/orders/${o.id}`}
-              className="flex items-center justify-between px-5 py-4 border-t hover:bg-white/[.02] transition-colors"
+              className="flex items-center justify-between px-5 py-4 border-t hover:bg-black/[.02] transition-colors"
               style={{ borderColor: "var(--line)" }}>
               <div>
                 <p className="text-sm font-semibold">{o.first_name} {o.last_name}</p>

@@ -89,7 +89,7 @@ export default function CategoryPageClient({ category, products }: { category: C
               >
                 {inStockOnly && (
                   <svg className="w-2.5 h-2.5" viewBox="0 0 10 10" fill="none">
-                    <path d="M1.5 5l2.5 2.5L8.5 2" stroke="#000" strokeWidth="1.5" strokeLinecap="round" />
+                    <path d="M1.5 5l2.5 2.5L8.5 2" stroke="var(--on-accent)" strokeWidth="1.5" strokeLinecap="round" />
                   </svg>
                 )}
               </div>
@@ -130,7 +130,7 @@ export default function CategoryPageClient({ category, products }: { category: C
               <button
                 onClick={clearFilters}
                 className="inline-flex items-center gap-1.5 px-6 py-3 rounded-[13px] font-semibold transition-all cursor-pointer hover:-translate-y-0.5"
-                style={{ background: "var(--accent)", color: "#000" }}
+                style={{ background: "var(--accent)", color: "var(--on-accent)" }}
               >
                 <X className="w-4 h-4" /> Clear filters
               </button>
@@ -138,7 +138,7 @@ export default function CategoryPageClient({ category, products }: { category: C
               <Link
                 href="/shop"
                 className="inline-flex items-center px-6 py-3 rounded-[13px] font-semibold transition-all hover:-translate-y-0.5"
-                style={{ background: "var(--accent)", color: "#000" }}
+                style={{ background: "var(--accent)", color: "var(--on-accent)" }}
               >
                 Browse all products
               </Link>

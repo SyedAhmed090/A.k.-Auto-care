@@ -74,7 +74,7 @@ export default function AdminNav() {
         <button
           onClick={() => setOpen(false)}
           aria-label="Close menu"
-          className="lg:hidden p-2 -mr-2 rounded-[8px] cursor-pointer transition-all hover:bg-white/10"
+          className="lg:hidden p-2 -mr-2 rounded-[8px] cursor-pointer transition-all hover:bg-black/10"
           style={{ color: "var(--muted)" }}
         >
           <X className="w-5 h-5" />
@@ -95,7 +95,7 @@ export default function AdminNav() {
               {showBadge && (
                 <span
                   className="text-[.62rem] font-bold rounded-full px-1.5 min-w-[18px] text-center"
-                  style={{ background: "var(--accent)", color: "#000", fontFamily: "var(--font-space-mono)" }}
+                  style={{ background: "var(--accent)", color: "var(--on-accent)", fontFamily: "var(--font-space-mono)" }}
                 >
                   {badgeCount}
                 </span>
@@ -125,7 +125,7 @@ export default function AdminNav() {
           onClick={() => setOpen(true)}
           aria-label="Open menu"
           aria-expanded={open}
-          className="p-2 -ml-2 rounded-[8px] cursor-pointer transition-all hover:bg-white/10"
+          className="p-2 -ml-2 rounded-[8px] cursor-pointer transition-all hover:bg-black/10"
           style={{ color: "var(--text)" }}
         >
           <Menu className="w-5 h-5" />

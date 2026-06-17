@@ -133,7 +133,7 @@ function InventoryInner() {
             onClick={handleSave}
             disabled={dirty.size === 0 || saving}
             className="px-5 py-2.5 rounded-[12px] font-semibold text-sm transition-all hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0"
-            style={{ background: "var(--accent)", color: "#000" }}
+            style={{ background: "var(--accent)", color: "var(--on-accent)" }}
           >
             {saving ? "Saving…" : `Save Changes${dirty.size > 0 ? ` (${dirty.size})` : ""}`}
           </button>
@@ -172,7 +172,7 @@ function InventoryInner() {
                       background: isDirty ? "rgba(79, 168, 230,.12)" : undefined,
                       boxShadow: isDirty ? "inset 3px 0 0 0 var(--accent)" : undefined,
                     }}
-                    className={isDirty ? "" : "transition-colors hover:bg-white/[.02]"}
+                    className={isDirty ? "" : "transition-colors hover:bg-black/[.02]"}
                   >
                     <td className="px-5 py-4">
                       <div className="font-semibold flex items-center gap-2" style={{ color: "var(--text)" }}>
@@ -193,7 +193,7 @@ function InventoryInner() {
                       <div className="flex flex-wrap gap-1">
                         {p.product_variants.map((v) => (
                           <span key={v.id} className="text-[.65rem] px-1.5 py-0.5 rounded-[4px]"
-                            style={{ background: "rgba(255,255,255,.06)", color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
+                            style={{ background: "var(--surface-2)", color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
                             {v.label}
                           </span>
                         ))}

@@ -54,7 +54,7 @@ export default function AboutClient() {
               </div>
               <div
                 className="absolute bottom-4 left-4 sm:-bottom-4 sm:-left-4 rounded-[14px] px-5 py-4"
-                style={{ background: "var(--accent)", color: "#000" }}
+                style={{ background: "var(--accent)", color: "var(--on-accent)" }}
               >
                 <div className="text-[2rem]" style={{ fontFamily: "var(--font-anton)" }}>4.9★</div>
                 <div className="text-xs font-semibold opacity-70">Average Rating</div>

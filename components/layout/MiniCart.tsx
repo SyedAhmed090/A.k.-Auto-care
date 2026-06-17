@@ -76,7 +76,7 @@ export default function MiniCart() {
           <button
             onClick={closeCart}
             aria-label="Close cart"
-            className="w-8 h-8 grid place-items-center rounded-lg transition-colors hover:bg-white/5 cursor-pointer"
+            className="w-8 h-8 grid place-items-center rounded-lg transition-colors hover:bg-black/5 cursor-pointer"
             style={{ color: "var(--muted)" }}
           >
             <X className="w-[18px] h-[18px]" />

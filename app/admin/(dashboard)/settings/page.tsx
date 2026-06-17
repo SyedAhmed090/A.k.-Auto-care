@@ -96,7 +96,7 @@ export default function SettingsPage() {
           onClick={save}
           disabled={saving || loading}
           className="flex items-center gap-2 px-5 py-2.5 rounded-[10px] text-sm font-semibold transition-all hover:opacity-90 disabled:opacity-50"
-          style={{ background: saved ? "#22c55e" : "var(--accent)", color: "#000" }}
+          style={{ background: saved ? "#22c55e" : "var(--accent)", color: "var(--on-accent)" }}
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <Check className="w-4 h-4" /> : <SettingsIcon className="w-4 h-4" />}
           {saving ? "Saving…" : saved ? "Saved" : "Save Changes"}

@@ -169,7 +169,7 @@ function CartPageInner({ allProducts }: { allProducts: Product[] }) {
           {/* Clear cart confirmation */}
           {confirmClear && (
             <>
-              <div className="fixed inset-0 z-50" style={{ background: "rgba(10, 11, 13,.8)" }} onClick={() => setConfirmClear(false)} />
+              <div className="fixed inset-0 z-50" style={{ background: "var(--scrim)" }} onClick={() => setConfirmClear(false)} />
               <div
                 className="fixed inset-0 z-[60] flex items-center justify-center p-4"
                 onClick={() => setConfirmClear(false)}

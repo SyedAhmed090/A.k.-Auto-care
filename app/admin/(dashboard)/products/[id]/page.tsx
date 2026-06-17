@@ -47,7 +47,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
   return (
     <div>
       <div className="flex items-center gap-4 mb-8">
-        <Link href="/admin/products" className="p-2 rounded-[8px] transition-all hover:bg-white/10" style={{ color: "var(--muted)" }}>
+        <Link href="/admin/products" className="p-2 rounded-[8px] transition-all hover:bg-black/10" style={{ color: "var(--muted)" }}>
           <ChevronLeft className="w-5 h-5" />
         </Link>
         <div>

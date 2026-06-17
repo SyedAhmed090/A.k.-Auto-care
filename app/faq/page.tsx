@@ -88,7 +88,7 @@ export default function FaqPage() {
               <Link
                 href="/contact"
                 className="px-6 py-3 rounded-[13px] font-semibold"
-                style={{ background: "var(--accent)", color: "#000" }}
+                style={{ background: "var(--accent)", color: "var(--on-accent)" }}
               >
                 Contact Us
               </Link>

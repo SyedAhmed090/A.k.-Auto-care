@@ -198,7 +198,7 @@ export default function OrdersClient({ orders, total, page, totalPages, filters 
               </thead>
               <tbody>
                 {orders.map(o => (
-                  <tr key={o.id} className="border-t hover:bg-white/[.015] transition-colors"
+                  <tr key={o.id} className="border-t hover:bg-black/[.015] transition-colors"
                     style={{ borderColor: "var(--line)", background: selected.has(o.id) ? "rgba(79, 168, 230,.08)" : undefined }}>
                     <td className="px-4 py-3.5">
                       <input type="checkbox" checked={selected.has(o.id)} onChange={() => toggleOne(o.id)}

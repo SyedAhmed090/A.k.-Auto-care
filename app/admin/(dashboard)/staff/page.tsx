@@ -15,7 +15,7 @@ const ROLES = ["owner", "manager", "staff"] as const;
 const roleColors: Record<string, { bg: string; color: string }> = {
   owner:   { bg: "rgba(234,179,8,.15)",  color: "#eab308" },
   manager: { bg: "rgba(59,130,246,.15)", color: "#3b82f6" },
-  staff:   { bg: "rgba(255,255,255,.08)", color: "var(--muted)" },
+  staff:   { bg: "var(--surface-2)", color: "var(--muted)" },
 };
 
 const thStyle: React.CSSProperties = {
