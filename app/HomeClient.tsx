@@ -2,12 +2,16 @@
 // interactive pieces are small client islands — <ScrollReveal> (scroll animations) and
 // <NewsletterSignup> (the CTA form) — so the bulk of the page is never shipped as JS.
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowUpRight, ChevronRight, Truck, RotateCcw, Shield, MessageCircle } from "lucide-react";
 import type { Product } from "@/data/products";
 import categories from "@/data/categories";
 import ProductCard from "@/components/product/ProductCard";
 import ScrollReveal from "@/components/home/ScrollReveal";
 import NewsletterSignup from "@/components/home/NewsletterSignup";
+// Brand emblem (transparent crest) shown on the right of the hero. Statically imported
+// so Next emits a content-hashed URL that cache-busts whenever the asset changes.
+import logoShield from "@/public/logo-shield.png";
 
 const MARQUEE_ITEMS = [
   "Surface Prep", "Paint Correction", "Ceramic Coatings",
@@ -20,30 +24,47 @@ export default function HomeClient({ featured, newArrivals }: { featured: Produc
       {/* ── HERO ── */}
       <section id="hero" style={{ borderBottom: "1px solid var(--line)" }}>
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-16 sm:pt-24 sm:pb-24">
-          <div className="reveal flex items-center gap-2.5 mb-7 text-[.72rem] tracking-[.18em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--accent)" }} data-d="0">
-            <span className="w-7 h-[1px]" style={{ background: "var(--accent)" }} />
-            Pro-grade surface science
-          </div>
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10 lg:gap-12">
+            {/* Copy */}
+            <div className="flex-1 min-w-0">
+              <div className="reveal flex items-center gap-2.5 mb-7 text-[.72rem] tracking-[.18em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--accent)" }} data-d="0">
+                <span className="w-7 h-[1px]" style={{ background: "var(--accent)" }} />
+                Pro-grade surface science
+              </div>
 
-          <h1
-            className="reveal uppercase leading-[.92] tracking-[.01em] max-w-[15ch]"
-            style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(3rem, 8vw, 7rem)", color: "var(--text)" }}
-            data-d="1"
-          >
-            Flawless finish, start to finish.
-          </h1>
+              <h1
+                className="reveal uppercase leading-[.92] tracking-[.01em] max-w-[15ch]"
+                style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(3rem, 8vw, 7rem)", color: "var(--text)" }}
+                data-d="1"
+              >
+                Flawless finish, start to finish.
+              </h1>
 
-          <p className="reveal mt-7 text-[1.12rem] max-w-[540px]" style={{ color: "var(--muted)" }} data-d="2">
-            Prep, correct, coat, protect. Engineered car care products trusted by detailers and obsessives who refuse to settle for &ldquo;good enough.&rdquo;
-          </p>
+              <p className="reveal mt-7 text-[1.12rem] max-w-[540px]" style={{ color: "var(--muted)" }} data-d="2">
+                Prep, correct, coat, protect. Engineered car care products trusted by detailers and obsessives who refuse to settle for &ldquo;good enough.&rdquo;
+              </p>
 
-          <div className="reveal flex flex-wrap gap-4 mt-9" data-d="3">
-            <Link href="/shop" className="btn-accent inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5">
-              Shop the lineup <ArrowUpRight className="w-[18px] h-[18px]" />
-            </Link>
-            <Link href="/about" className="btn-ghost inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5">
-              See the process
-            </Link>
+              <div className="reveal flex flex-wrap gap-4 mt-9" data-d="3">
+                <Link href="/shop" className="btn-accent inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5">
+                  Shop the lineup <ArrowUpRight className="w-[18px] h-[18px]" />
+                </Link>
+                <Link href="/about" className="btn-ghost inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5">
+                  See the process
+                </Link>
+              </div>
+            </div>
+
+            {/* Brand emblem — sized to roughly match the headline block, right-aligned on desktop */}
+            <div className="reveal hidden lg:flex flex-shrink-0 justify-end" data-d="2">
+              <Image
+                src={logoShield}
+                alt="A.K. Auto Care emblem"
+                priority
+                sizes="(min-width: 1024px) 440px, 0px"
+                className="w-[clamp(280px,30vw,440px)] h-auto select-none"
+                style={{ filter: "drop-shadow(0 28px 55px rgba(20,23,28,.20))" }}
+              />
+            </div>
           </div>
         </div>
 
