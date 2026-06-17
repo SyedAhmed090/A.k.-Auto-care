@@ -65,7 +65,7 @@ export default function Header() {
         className={cn(
           "fixed top-9 left-0 right-0 z-50 transition-all duration-300",
           scrolled
-            ? "border-b bg-[rgba(10,11,13,0.72)] backdrop-blur-[18px]"
+            ? "border-b bg-[var(--header-bg)] backdrop-blur-[18px]"
             : "border-b border-transparent"
         )}
         style={{ borderColor: scrolled ? "var(--line)" : "transparent" }}
@@ -91,8 +91,8 @@ export default function Header() {
                   className="w-[38px] h-[38px] rounded-[9px] grid place-items-center text-[.95rem] tracking-[.02em]"
                   style={{
                     background: "linear-gradient(145deg,#23272f,#0c0e12)",
-                    border: "1px solid var(--line-2)",
-                    boxShadow: "inset 0 1px 0 rgba(255,255,255,.12), 0 6px 18px rgba(0,0,0,.5)",
+                    color: "#fff",
+                    boxShadow: "0 6px 18px rgba(20,23,28,.18)",
                     fontFamily: "var(--font-anton)",
                   }}
                 >
@@ -139,7 +139,7 @@ export default function Header() {
               <button
                 onClick={() => setSearchOpen(true)}
                 className="w-[42px] h-[42px] rounded-[11px] grid place-items-center transition-all cursor-pointer"
-                style={{ border: "1px solid var(--line)", background: "rgba(255,255,255,.02)", color: "var(--text)" }}
+                style={{ border: "1px solid var(--line)", background: "var(--hover)", color: "var(--text)" }}
                 aria-label="Search"
               >
                 <Search className="w-[18px] h-[18px]" />
@@ -148,7 +148,7 @@ export default function Header() {
               <Link
                 href="/account"
                 className="hidden sm:grid w-[42px] h-[42px] rounded-[11px] place-items-center transition-all cursor-pointer"
-                style={{ border: "1px solid var(--line)", background: "rgba(255,255,255,.02)", color: "var(--text)" }}
+                style={{ border: "1px solid var(--line)", background: "var(--hover)", color: "var(--text)" }}
                 aria-label="My account"
               >
                 <User className="w-[18px] h-[18px]" />
@@ -157,7 +157,7 @@ export default function Header() {
               <Link
                 href="/wishlist"
                 className="hidden sm:grid w-[42px] h-[42px] rounded-[11px] place-items-center transition-all cursor-pointer relative"
-                style={{ border: "1px solid var(--line)", background: "rgba(255,255,255,.02)", color: "var(--text)" }}
+                style={{ border: "1px solid var(--line)", background: "var(--hover)", color: "var(--text)" }}
                 aria-label="Wishlist"
               >
                 <Heart className="w-[18px] h-[18px]" />
@@ -166,7 +166,7 @@ export default function Header() {
                   className="absolute -top-[7px] -right-[7px] min-w-[19px] h-[19px] rounded-full grid place-items-center px-[5px] text-[.62rem] font-bold transition-opacity duration-200"
                   style={{
                     background: "var(--accent)",
-                    color: "#000",
+                    color: "var(--on-accent)",
                     fontFamily: "var(--font-space-mono)",
                     opacity: mounted && wishlistCount > 0 ? 1 : 0,
                   }}
@@ -178,7 +178,7 @@ export default function Header() {
               <button
                 onClick={openCart}
                 className="w-[42px] h-[42px] rounded-[11px] grid place-items-center transition-all cursor-pointer relative"
-                style={{ border: "1px solid var(--line)", background: "rgba(255,255,255,.02)", color: "var(--text)" }}
+                style={{ border: "1px solid var(--line)", background: "var(--hover)", color: "var(--text)" }}
                 aria-label="Cart"
               >
                 <ShoppingCart className="w-[18px] h-[18px]" />
@@ -187,7 +187,7 @@ export default function Header() {
                   className="absolute -top-[7px] -right-[7px] min-w-[19px] h-[19px] rounded-full grid place-items-center px-[5px] text-[.62rem] font-bold transition-opacity duration-200"
                   style={{
                     background: "var(--accent)",
-                    color: "#000",
+                    color: "var(--on-accent)",
                     fontFamily: "var(--font-space-mono)",
                     opacity: mounted && count > 0 ? 1 : 0,
                   }}
@@ -199,7 +199,7 @@ export default function Header() {
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
                 className="md:hidden w-[42px] h-[42px] rounded-[11px] grid place-items-center transition-all cursor-pointer"
-                style={{ border: "1px solid var(--line)", background: "rgba(255,255,255,.02)", color: "var(--text)" }}
+                style={{ border: "1px solid var(--line)", background: "var(--hover)", color: "var(--text)" }}
                 aria-label="Menu"
               >
                 {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -221,12 +221,12 @@ export default function Header() {
           "fixed inset-0 z-[99] flex flex-col justify-center items-start gap-2 px-8 transition-transform duration-500",
           mobileOpen ? "translate-y-0" : "-translate-y-full"
         )}
-        style={{ background: "rgba(10, 11, 13,.97)", backdropFilter: "blur(20px)" }}
+        style={{ background: "var(--panel)", backdropFilter: "blur(20px)" }}
       >
         <button
           onClick={() => setMobileOpen(false)}
           className="absolute top-6 right-6 w-[42px] h-[42px] rounded-[11px] grid place-items-center cursor-pointer"
-          style={{ border: "1px solid var(--line)", background: "rgba(255,255,255,.02)", color: "var(--text)" }}
+          style={{ border: "1px solid var(--line)", background: "var(--hover)", color: "var(--text)" }}
           aria-label="Close menu"
         >
           <X className="w-5 h-5" />
@@ -254,7 +254,7 @@ export default function Header() {
           aria-modal="true"
           aria-label="Search products"
           className="fixed inset-0 z-[70] flex items-start justify-center pt-24 px-4"
-          style={{ background: "rgba(10, 11, 13,.85)", backdropFilter: "blur(12px)" }}
+          style={{ background: "var(--scrim)", backdropFilter: "blur(12px)" }}
           onClick={() => setSearchOpen(false)}
         >
           <form

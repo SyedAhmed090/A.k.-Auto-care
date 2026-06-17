@@ -130,7 +130,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {/* Announcement bar */}
         <div
           className="no-print fixed top-0 left-0 right-0 z-[60] w-full text-center py-2 px-4 text-[.7rem] font-semibold tracking-[.08em] h-9 flex items-center justify-center whitespace-nowrap overflow-hidden"
-          style={{ background: "var(--accent)", color: "#000", fontFamily: "var(--font-space-mono)" }}
+          style={{ background: "var(--accent)", color: "var(--on-accent)", fontFamily: "var(--font-space-mono)" }}
         >
           {/* Keep this to a single 36px-tall line on every viewport (the fixed
               --header-offset depends on it): show only the headline on mobile and

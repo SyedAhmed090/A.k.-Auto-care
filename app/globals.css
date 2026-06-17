@@ -2,17 +2,24 @@
 
 @layer base {
   :root {
-    --bg: #0a0b0d;
-    --bg-2: #0e1014;
-    --surface: #15181d;
-    --surface-2: #1c2026;
-    --line: rgba(150,180,215,.08);
-    --line-2: rgba(150,180,215,.16);
-    --text: #f1f4f8;
-    --muted: #b9c4d0;
-    --muted-2: #9aa7b5;
-    --accent: #4fa8e6;
-    --accent-press: #3d92cf;
+    /* Light / minimal palette */
+    --bg: #ffffff;
+    --bg-2: #f7f8fa;
+    --surface: #ffffff;
+    --surface-2: #f2f4f7;
+    --line: #e9ebef;
+    --line-2: #dfe2e7;
+    --text: #14171c;
+    --muted: #6c7480;
+    --muted-2: #8b93a0;
+    --accent: #1f7ae0;
+    --accent-press: #1668c4;
+    /* Semantic tokens so theme-dependent colours flip in one place */
+    --on-accent: #ffffff;          /* text/icons sitting on an accent fill */
+    --hover: rgba(20, 23, 28, .04); /* subtle hover wash on light surfaces */
+    --scrim: rgba(20, 23, 28, .45); /* modal/overlay backdrop */
+    --panel: #ffffff;               /* dropdown / mobile-menu panel bg */
+    --header-bg: rgba(255, 255, 255, .85);
     --r: 18px;
     --r-sm: 8px;
     --r-md: 12px;
@@ -32,8 +39,6 @@
 
   body {
     background-color: var(--bg);
-    background-image: radial-gradient(circle at 1px 1px, rgba(150,180,215,.025) 1px, transparent 0);
-    background-size: 24px 24px;
     color: var(--text);
     font-family: var(--font-hanken), system-ui, sans-serif;
     font-size: 17px;
@@ -42,18 +47,7 @@
     overflow-x: hidden;
   }
 
-  /* Film grain overlay */
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    pointer-events: none;
-    opacity: .018;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-
-  ::selection { background: var(--accent); color: #000; }
+  ::selection { background: var(--accent); color: var(--on-accent); }
 
   * { box-sizing: border-box; }
   a { color: inherit; text-decoration: none; }
@@ -68,11 +62,9 @@
    skip). `auto <size>` reserves an estimated card height first, then remembers the real one. */
 .cv-card { content-visibility: auto; contain-intrinsic-size: auto 380px; }
 
+/* Simplified: flat ink headline (was a metallic gradient). */
 .chrome-text {
-  background: linear-gradient(170deg,#fff 0%,#e7eaef 18%,#9aa0ab 46%,#fff 60%,#aeb4be 78%,#5b606b 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--text);
 }
 
 .text-accent { color: var(--accent); }
@@ -131,27 +123,28 @@ label:focus-within {
 }
 
 /* ── Scrollbar ── */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--surface-2); border-radius: 999px; }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-2); }
+::-webkit-scrollbar-thumb { background: #cfd5dd; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: #b9c0ca; }
 
 /* ── Button variants ── */
 .btn-accent {
   background: var(--accent);
-  color: #0a0b0d;
+  color: var(--on-accent);
 }
 .btn-accent:hover:not(:disabled) {
   background: var(--accent-press);
-  box-shadow: 0 14px 30px rgba(79, 168, 230,.28);
+  box-shadow: 0 12px 26px rgba(31, 122, 224,.22);
 }
 
 .btn-ghost {
-  background: rgba(255,255,255,.02);
+  background: var(--surface);
   border: 1px solid var(--line-2);
   color: var(--text);
 }
 .btn-ghost:hover:not(:disabled) {
-  background: rgba(255,255,255,.07);
+  background: var(--bg-2);
 }
 
 .btn-add-to-cart {

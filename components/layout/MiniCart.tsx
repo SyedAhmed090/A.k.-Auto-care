@@ -44,7 +44,7 @@ export default function MiniCart() {
       {isOpen && (
         <div
           className="fixed inset-0 z-[70]"
-          style={{ background: "rgba(10, 11, 13,.7)", backdropFilter: "blur(6px)" }}
+          style={{ background: "var(--scrim)", backdropFilter: "blur(6px)" }}
           onClick={closeCart}
         />
       )}
@@ -67,7 +67,7 @@ export default function MiniCart() {
             {items.length > 0 && (
               <span
                 className="text-[.6rem] font-bold px-2 py-0.5 rounded-full"
-                style={{ background: "var(--accent)", color: "#000", fontFamily: "var(--font-space-mono)" }}
+                style={{ background: "var(--accent)", color: "var(--on-accent)", fontFamily: "var(--font-space-mono)" }}
               >
                 {items.reduce((a, i) => a + i.quantity, 0)}
               </span>
@@ -97,7 +97,7 @@ export default function MiniCart() {
               <button
                 onClick={() => { closeCart(); router.push("/shop"); }}
                 className="px-5 py-2.5 rounded-[11px] text-sm font-semibold transition-all cursor-pointer"
-                style={{ background: "var(--accent)", color: "#000" }}
+                style={{ background: "var(--accent)", color: "var(--on-accent)" }}
               >
                 Browse Products
               </button>
@@ -221,7 +221,7 @@ export default function MiniCart() {
               <button
                 onClick={() => { closeCart(); router.push("/checkout"); }}
                 className="w-full py-3.5 rounded-[11px] font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer"
-                style={{ background: "var(--accent)", color: "#000" }}
+                style={{ background: "var(--accent)", color: "var(--on-accent)" }}
               >
                 Checkout <ArrowRight className="w-4 h-4 flex-shrink-0" />
               </button>

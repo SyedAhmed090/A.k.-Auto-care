@@ -18,130 +18,38 @@ export default function HomeClient({ featured, newArrivals }: { featured: Produc
   return (
     <ScrollReveal>
       {/* ── HERO ── */}
-      <section id="hero" className="flex flex-col">
+      <section id="hero" style={{ borderBottom: "1px solid var(--line)" }}>
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-16 sm:pt-24 sm:pb-24">
+          <div className="reveal flex items-center gap-2.5 mb-7 text-[.72rem] tracking-[.18em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--accent)" }} data-d="0">
+            <span className="w-7 h-[1px]" style={{ background: "var(--accent)" }} />
+            Pro-grade surface science
+          </div>
 
-        {/* ── VIDEO BLOCK ── */}
-        <div
-          className="relative overflow-hidden min-h-[85vh] flex flex-col justify-end pt-[120px] sm:pt-[140px] lg:pt-[160px] pb-20"
-          style={{ background: "radial-gradient(120% 100% at 50% 40%, #16191f, var(--bg))" }}
-        >
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            aria-hidden="true"
-            className="absolute inset-0 w-full h-full object-cover hidden md:block"
-            style={{ zIndex: 0 }}
+          <h1
+            className="reveal uppercase leading-[.92] tracking-[.01em] max-w-[15ch]"
+            style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(3rem, 8vw, 7rem)", color: "var(--text)" }}
+            data-d="1"
           >
-            {/* media-gated so phones never download the ~1.9 MB clip (CSS `hidden` alone wouldn't stop the fetch) */}
-            <source
-              src="/mixkit-close-up-of-a-man-polishing-a-newly-polished-car-47833-hd-ready.mp4"
-              type="video/mp4"
-              media="(min-width: 768px)"
-            />
-          </video>
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              zIndex: 1,
-              background: "linear-gradient(180deg, rgba(10, 11, 13,.65) 0%, rgba(10, 11, 13,.45) 40%, rgba(10, 11, 13,.80) 100%)",
-            }}
-          />
-          <div
-            className="absolute top-[-10%] left-1/2 -translate-x-1/2 pointer-events-none"
-            style={{
-              zIndex: 1,
-              width: "1100px", height: "700px",
-              background: "radial-gradient(ellipse at center, rgba(79, 168, 230,.10), transparent 60%)",
-              filter: "blur(20px)",
-            }}
-          />
-          <div
-            className="absolute inset-0 opacity-[0.08] pointer-events-none"
-            style={{
-              zIndex: 1,
-              backgroundImage: "linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px)",
-              backgroundSize: "64px 64px",
-              maskImage: "radial-gradient(ellipse 90% 70% at 50% 30%,#000 30%,transparent 75%)",
-            }}
-          />
+            Flawless finish, start to finish.
+          </h1>
 
-          <div className="relative z-[3] max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 w-full">
-            <div className="reveal flex items-center gap-2.5 mb-8" style={{ color: "var(--muted)" }}>
-              <span className="w-[7px] h-[7px] rounded-full" style={{ background: "var(--accent)", boxShadow: "0 0 12px var(--accent)" }} />
-              <span className="text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)" }}>
-                Pro-grade surface science
-              </span>
-            </div>
+          <p className="reveal mt-7 text-[1.12rem] max-w-[540px]" style={{ color: "var(--muted)" }} data-d="2">
+            Prep, correct, coat, protect. Engineered car care products trusted by detailers and obsessives who refuse to settle for &ldquo;good enough.&rdquo;
+          </p>
 
-            <h1
-              className="reveal uppercase leading-[.92] tracking-[.01em]"
-              style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(3.4rem, 9.5vw, 9rem)" }}
-              data-d="0"
-            >
-              <span className="block">FLAWLESS</span>
-              <span className="block" style={{ background: "linear-gradient(170deg,#fff 0%,#e7eaef 18%,#9aa0ab 46%,#fff 60%,#aeb4be 78%,#5b606b 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
-                FINISH,
-              </span>
-              <span className="block" style={{ WebkitTextStroke: "1.4px #c5cad2", color: "transparent", WebkitTextFillColor: "transparent" }}>
-                START
-              </span>
-              <span className="block">TO FINISH.</span>
-            </h1>
-
-            <p className="reveal mt-7 text-[1.12rem] max-w-[520px]" style={{ color: "var(--muted)" }}>
-              Prep, correct, coat, protect. Engineered car care products trusted by detailers and obsessives who refuse to settle for &ldquo;good enough.&rdquo;
-            </p>
-
-            <div className="reveal flex flex-wrap gap-4 mt-9">
-              <Link href="/shop" className="btn-accent inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5">
-                Shop the lineup <ArrowUpRight className="w-[18px] h-[18px]" />
-              </Link>
-              <Link href="/about" className="btn-ghost inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5">
-                See the process
-              </Link>
-            </div>
+          <div className="reveal flex flex-wrap gap-4 mt-9" data-d="3">
+            <Link href="/shop" className="btn-accent inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5">
+              Shop the lineup <ArrowUpRight className="w-[18px] h-[18px]" />
+            </Link>
+            <Link href="/about" className="btn-ghost inline-flex items-center gap-2.5 px-7 py-4 rounded-[13px] font-semibold text-[.97rem] transition-all duration-300 hover:-translate-y-0.5">
+              See the process
+            </Link>
           </div>
         </div>
 
-        {/* ── STAGE PANEL ── */}
-        <div className="relative max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 w-full mt-14 reveal">
-          <div
-            className="relative h-[330px] rounded-[26px] overflow-hidden"
-            style={{
-              background: "radial-gradient(120% 90% at 30% 0%,rgba(79, 168, 230,.12),transparent 55%), linear-gradient(178deg,#2a251a 0%,#131009 26%,transparent 40%,#0a0b0d 58%,#1f1b12 100%), #0a0b0d",
-              border: "1px solid var(--line-2)",
-              boxShadow: "inset 0 1px 0 rgba(255,255,255,.14), 0 40px 80px rgba(0,0,0,.6)",
-            }}
-          >
-            <div
-              className="absolute top-0 h-full w-[45%] pointer-events-none"
-              style={{
-                background: "linear-gradient(105deg,transparent,rgba(255,255,255,.16) 45%,rgba(255,255,255,.28) 50%,rgba(255,255,255,.10) 55%,transparent)",
-                transform: "skewX(-18deg)",
-                animation: "sweep 7s cubic-bezier(.22,1,.36,1) infinite",
-              }}
-            />
-            <div className="absolute left-0 right-0 top-[38%] h-[2px]" style={{ background: "linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent)" }} />
-
-            <div className="absolute bottom-6 left-5 right-5 sm:left-7 sm:right-7 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3 sm:gap-5 z-[2]">
-              <div className="text-[clamp(1.6rem,3vw,2.6rem)] tracking-[.04em] uppercase" style={{ fontFamily: "var(--font-anton)", color: "var(--text)" }}>
-                MIRROR-GRADE GLOSS
-              </div>
-              <div className="flex gap-2.5 flex-wrap">
-                {["9H Hardness", "5-Yr Protection", "Streak-Free"].map((t) => (
-                  <span key={t} className="text-[.72rem] tracking-[.14em] uppercase px-3.5 py-1.5 rounded-full" style={{ border: "1px solid var(--line-2)", background: "rgba(10, 11, 13,.4)", backdropFilter: "blur(6px)", fontFamily: "var(--font-space-mono)" }}>
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Stats bar */}
-          <div className="grid grid-cols-2 sm:grid-cols-4" style={{ borderTop: "1px solid var(--line)", borderBottom: "1px solid var(--line)" }}>
+        {/* Stats bar */}
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4" style={{ borderTop: "1px solid var(--line)" }}>
             {[
               { n: "48K+", l: "Panels coated" },
               { n: "120+", l: "Pro detailers" },
@@ -150,7 +58,7 @@ export default function HomeClient({ featured, newArrivals }: { featured: Produc
             ].map((s, i) => (
               <div
                 key={s.l}
-                className={`py-6 px-6 flex flex-col justify-center${i === 0 ? " border-r border-b sm:border-b-0" : i === 1 ? " sm:border-r border-b sm:border-b-0" : i === 2 ? " border-r" : ""}`}
+                className={`py-7 px-6 flex flex-col justify-center${i === 0 ? " border-r border-b sm:border-b-0" : i === 1 ? " sm:border-r border-b sm:border-b-0" : i === 2 ? " border-r" : ""}`}
                 style={{ borderColor: "var(--line)" }}
               >
                 <div className="text-[2.2rem] tracking-[.02em]" style={{ fontFamily: "var(--font-hanken)", fontWeight: 700, color: s.accent ? "var(--accent)" : "var(--text)" }}>
@@ -211,18 +119,18 @@ export default function HomeClient({ featured, newArrivals }: { featured: Produc
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div
               className="reveal relative h-[540px] rounded-[24px] overflow-hidden grid place-items-center"
-              style={{ background: "radial-gradient(80% 70% at 50% 35%,#16191f,#0a0b0d 70%)", border: "1px solid var(--line)" }}
+              style={{ background: "radial-gradient(80% 70% at 50% 35%, var(--surface), var(--bg-2) 70%)", border: "1px solid var(--line)" }}
             >
               <div className="relative z-[2] flex flex-col items-center">
                 <div
                   className="relative w-28 h-52 rounded-[20px] flex flex-col items-center justify-center gap-3"
                   style={{
-                    background: "linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.03))",
-                    border: "1px solid rgba(255,255,255,.18)",
-                    boxShadow: "inset 0 1px 0 rgba(255,255,255,.28),0 40px 80px rgba(0,0,0,.6),0 0 80px rgba(79, 168, 230,.10)",
+                    background: "linear-gradient(145deg,#ffffff,#eef1f5)",
+                    border: "1px solid var(--line-2)",
+                    boxShadow: "0 24px 50px rgba(20,23,28,.10)",
                   }}
                 >
-                  <div className="absolute top-0 left-[22%] w-[14%] h-[55%] rounded-full pointer-events-none" style={{ background: "linear-gradient(180deg,rgba(255,255,255,.35),transparent)" }} />
+                  <div className="absolute top-0 left-[22%] w-[14%] h-[55%] rounded-full pointer-events-none" style={{ background: "linear-gradient(180deg,rgba(20,23,28,.06),transparent)" }} />
                   <span className="text-[2.2rem] tracking-[.06em]" style={{ fontFamily: "var(--font-anton)", color: "var(--accent)" }}>BPO</span>
                   <span className="text-[.55rem] tracking-[.22em] uppercase text-center px-2" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Hardener<br />Paste</span>
                   <div className="w-8 h-[1px]" style={{ background: "var(--line-2)" }} />
@@ -232,11 +140,11 @@ export default function HomeClient({ featured, newArrivals }: { featured: Produc
               </div>
               <div className="absolute w-[380px] h-[380px] rounded-full pointer-events-none" style={{ border: "1px solid var(--line-2)", boxShadow: "0 0 80px rgba(79, 168, 230,.08)" }} />
               <div className="absolute w-[520px] h-[520px] rounded-full pointer-events-none opacity-50" style={{ border: "1px solid var(--line-2)" }} />
-              <div className="absolute top-[60px] right-[34px] rounded-[12px] px-4 py-3 z-[3]" style={{ background: "rgba(10, 11, 13,.7)", backdropFilter: "blur(8px)", border: "1px solid var(--line-2)" }}>
+              <div className="absolute top-[60px] right-[34px] rounded-[12px] px-4 py-3 z-[3]" style={{ background: "var(--surface)", backdropFilter: "blur(8px)", border: "1px solid var(--line-2)" }}>
                 <div className="text-[1.3rem]" style={{ fontFamily: "var(--font-anton)", color: "var(--text)" }}>2–3%</div>
                 <div className="text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Mix ratio</div>
               </div>
-              <div className="absolute bottom-[70px] left-[30px] rounded-[12px] px-4 py-3 z-[3]" style={{ background: "rgba(10, 11, 13,.7)", backdropFilter: "blur(8px)", border: "1px solid var(--line-2)" }}>
+              <div className="absolute bottom-[70px] left-[30px] rounded-[12px] px-4 py-3 z-[3]" style={{ background: "var(--surface)", backdropFilter: "blur(8px)", border: "1px solid var(--line-2)" }}>
                 <div className="text-[1.3rem]" style={{ fontFamily: "var(--font-anton)", color: "var(--accent)" }}>Low</div>
                 <div className="text-[.72rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>Shrinkage</div>
               </div>
@@ -429,7 +337,7 @@ export default function HomeClient({ featured, newArrivals }: { featured: Produc
               { name: "Hassan M.", role: "Professional Detailer, Lahore", text: "In Punjab's summers, paint gets destroyed by UV and dust. The Armour 9H Ceramic is the only coating I've found that actually holds up through a Pakistani summer without fading or water spotting.", rating: 5 },
               { name: "Sana R.", role: "Detailing Studio Owner, Islamabad", text: "We detail 20+ cars a month. A.K.'s compound and polish combo gives consistent, world-class results every time — and the WhatsApp support is fast and genuinely helpful.", rating: 5 },
             ].map((review) => (
-              <div key={review.name} className="reveal rounded-[16px] p-7 flex flex-col gap-4" style={{ border: "1px solid var(--line-2)", background: "rgba(255,255,255,.025)" }}>
+              <div key={review.name} className="reveal rounded-[16px] p-7 flex flex-col gap-4" style={{ border: "1px solid var(--line-2)", background: "var(--surface)" }}>
                 <div className="flex gap-0.5">
                   {Array.from({ length: review.rating }).map((_, i) => (
                     <svg key={i} className="w-4 h-4" viewBox="0 0 16 16" fill="#fbbf24">

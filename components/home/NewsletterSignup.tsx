@@ -51,7 +51,7 @@ export default function NewsletterSignup() {
           onChange={(e) => { setEmail(e.target.value); if (state === "error") setState("idle"); }}
           onKeyDown={(e) => e.key === "Enter" && submit()}
           className="flex-1 min-w-[220px] px-5 py-4 rounded-[13px] text-[1rem] outline-none transition-all"
-          style={{ background: "rgba(10, 11, 13,.6)", border: `1px solid ${state === "error" ? "#ef4444" : "var(--line-2)"}`, color: "var(--text)", fontFamily: "var(--font-hanken)" }}
+          style={{ background: "var(--surface)", border: `1px solid ${state === "error" ? "#ef4444" : "var(--line-2)"}`, color: "var(--text)", fontFamily: "var(--font-hanken)" }}
         />
         <button
           onClick={submit}

@@ -193,7 +193,7 @@ export default function Footer() {
                     onClick={handleNewsletter}
                     disabled={nlState === "submitting"}
                     className="flex-shrink-0 px-3.5 py-2.5 rounded-[9px] text-xs font-bold cursor-pointer transition-all disabled:opacity-50"
-                    style={{ background: "var(--accent)", color: "#000" }}
+                    style={{ background: "var(--accent)", color: "var(--on-accent)" }}
                   >
                     {nlState === "submitting" ? "…" : "Join"}
                   </button>

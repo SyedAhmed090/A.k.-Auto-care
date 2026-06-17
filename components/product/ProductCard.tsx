@@ -29,12 +29,12 @@ export default function ProductCard({ product }: { product: Product }) {
   return (
     <Link href={`/products/${product.slug}`} className="group block h-full cv-card">
       <article
-        className="product-card rounded-[var(--r)] overflow-hidden flex flex-col h-full transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl group-hover:shadow-black/30 group-hover:border-[var(--accent)]"
+        className="product-card rounded-[var(--r)] overflow-hidden flex flex-col h-full transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl group-hover:shadow-[rgba(20,23,28,0.12)] group-hover:border-[var(--accent)]"
       >
         {/* Thumbnail */}
         <div
           className="relative w-full overflow-hidden flex-shrink-0"
-          style={{ aspectRatio: "4/3", background: "radial-gradient(70% 70% at 50% 40%,#16191f,#0a0b0d)" }}
+          style={{ aspectRatio: "4/3", background: "radial-gradient(70% 70% at 50% 40%, var(--surface), var(--bg-2))" }}
         >
           <Image
             src={imgError ? "/placeholder.svg" : product.images[0]}
@@ -48,7 +48,7 @@ export default function ProductCard({ product }: { product: Product }) {
           {product.badge && (
             <span
               className="absolute top-3.5 left-3.5 text-[.6rem] font-bold px-2.5 py-1 rounded-full tracking-[.12em] uppercase z-10"
-              style={{ background: "var(--accent)", color: "#000", fontFamily: "var(--font-space-mono)" }}
+              style={{ background: "var(--accent)", color: "var(--on-accent)", fontFamily: "var(--font-space-mono)" }}
             >
               {product.badge}
             </span>
@@ -66,7 +66,7 @@ export default function ProductCard({ product }: { product: Product }) {
           )}
 
           {!product.inStock && (
-            <div className="absolute inset-0 flex items-center justify-center" style={{ background: "rgba(10, 11, 13,.7)" }}>
+            <div className="absolute inset-0 flex items-center justify-center" style={{ background: "rgba(255,255,255,.72)" }}>
               <span className="text-sm font-semibold" style={{ color: "var(--muted)" }}>Out of Stock</span>
             </div>
           )}
@@ -100,7 +100,7 @@ export default function ProductCard({ product }: { product: Product }) {
               disabled={!product.inStock}
               className="btn-add-to-cart w-[42px] h-[42px] rounded-[11px] grid place-items-center transition-all duration-200 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-2)]"
               aria-label={`Add ${product.name} to cart`}
-              style={added ? { background: "var(--accent)", color: "#000", border: "1px solid var(--accent)" } : undefined}
+              style={added ? { background: "var(--accent)", color: "var(--on-accent)", border: "1px solid var(--accent)" } : undefined}
             >
               {added ? <Check className="w-[18px] h-[18px]" /> : <Plus className="w-[18px] h-[18px]" />}
             </button>
