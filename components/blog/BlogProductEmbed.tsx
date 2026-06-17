@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Plus, Check, ShoppingCart } from "lucide-react";
+import { Check, ShoppingCart } from "lucide-react";
 import type { Product, Variant } from "@/data/products";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/utils";
@@ -94,8 +94,10 @@ export default function BlogProductEmbed({
           >
             {added ? (
               <><Check className="w-4 h-4" /> Added</>
+            ) : product.inStock ? (
+              <><ShoppingCart className="w-4 h-4" /> Add to Cart</>
             ) : (
-              <>{product.inStock ? <ShoppingCart className="w-4 h-4" /> : <Plus className="w-4 h-4" />} Add to Cart</>
+              <>Out of Stock</>
             )}
           </button>
         </div>

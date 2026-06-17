@@ -85,7 +85,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             {post.title}
           </h1>
           <p className="text-[.78rem] mb-8" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
-            By {post.author} · <time dateTime={post.date}>{new Date(post.date).toLocaleDateString("en-PK", { year: "numeric", month: "long", day: "numeric" })}</time> · {post.readingMinutes} min read
+            By {post.author} · <time dateTime={post.date}>{new Date(post.date + "T00:00:00").toLocaleDateString("en-PK", { year: "numeric", month: "long", day: "numeric" })}</time> · {post.readingMinutes} min read
           </p>
 
           <div className="relative w-full rounded-[18px] overflow-hidden mb-10" style={{ aspectRatio: "16/9", background: "var(--surface-2)" }}>

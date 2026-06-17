@@ -35,6 +35,11 @@ export default function BlogPage() {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {posts.length === 0 && (
+          <p className="text-center py-24 text-sm" style={{ color: "var(--muted)" }}>
+            No articles yet — check back soon.
+          </p>
+        )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
           {posts.map((post) => (
             <Link key={post.slug} href={`/blog/${post.slug}`} className="group block rounded-[var(--r)] overflow-hidden product-card h-full">
@@ -50,7 +55,7 @@ export default function BlogPage() {
                 </h2>
                 <p className="text-sm line-clamp-2" style={{ color: "var(--muted)" }}>{post.excerpt}</p>
                 <p className="text-[.72rem] mt-1" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
-                  {new Date(post.date).toLocaleDateString("en-PK", { year: "numeric", month: "short", day: "numeric" })} · {post.readingMinutes} min read
+                  {new Date(post.date + "T00:00:00").toLocaleDateString("en-PK", { year: "numeric", month: "short", day: "numeric" })} · {post.readingMinutes} min read
                 </p>
               </div>
             </Link>
