@@ -95,6 +95,7 @@ export default function MiniCart() {
                 <p className="text-sm mt-1" style={{ color: "var(--muted)" }}>Add some products to get started</p>
               </div>
               <button
+                type="button"
                 onClick={() => { closeCart(); router.push("/shop"); }}
                 className="px-5 py-2.5 rounded-[11px] text-sm font-semibold transition-all cursor-pointer"
                 style={{ background: "var(--accent)", color: "var(--on-accent)" }}
@@ -156,6 +157,7 @@ export default function MiniCart() {
                 <div className="flex items-center justify-between text-sm" style={{ color: "var(--accent)" }}>
                   <span className="flex items-center gap-1.5"><Tag className="w-3 h-3" /> {promoCode}</span>
                   <button
+                    type="button"
                     onClick={() => { removePromo(); setPromoMsg(null); setPromoInput(""); }}
                     className="text-xs cursor-pointer hover:text-[var(--text)] transition-colors"
                     style={{ color: "var(--muted)" }}

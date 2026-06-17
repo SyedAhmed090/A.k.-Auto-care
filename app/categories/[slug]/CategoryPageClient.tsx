@@ -79,13 +79,19 @@ export default function CategoryPageClient({ category, products }: { category: C
           </p>
           <div className="flex items-center gap-4 flex-wrap">
             <label className="flex items-center gap-2 text-sm cursor-pointer select-none" style={{ color: "var(--muted)" }}>
+              <input
+                type="checkbox"
+                checked={inStockOnly}
+                onChange={(e) => setInStockOnly(e.target.checked)}
+                className="sr-only"
+              />
               <div
-                className="w-4 h-4 rounded-[4px] grid place-items-center flex-shrink-0 cursor-pointer"
+                aria-hidden="true"
+                className="w-4 h-4 rounded-[4px] grid place-items-center flex-shrink-0"
                 style={{
                   border: inStockOnly ? "1px solid var(--accent)" : "1px solid var(--line-2)",
                   background: inStockOnly ? "var(--accent)" : "transparent",
                 }}
-                onClick={() => setInStockOnly(!inStockOnly)}
               >
                 {inStockOnly && (
                   <svg className="w-2.5 h-2.5" viewBox="0 0 10 10" fill="none">
@@ -93,7 +99,7 @@ export default function CategoryPageClient({ category, products }: { category: C
                   </svg>
                 )}
               </div>
-              <span onClick={() => setInStockOnly(!inStockOnly)}>In Stock</span>
+              <span>In Stock</span>
             </label>
             <div className="flex items-center gap-2">
               <span className="text-xs whitespace-nowrap" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>Max: Rs {priceMax.toLocaleString("en-PK")}</span>
@@ -128,6 +134,7 @@ export default function CategoryPageClient({ category, products }: { category: C
             </p>
             {activeFilterCount > 0 ? (
               <button
+                type="button"
                 onClick={clearFilters}
                 className="inline-flex items-center gap-1.5 px-6 py-3 rounded-[13px] font-semibold transition-all cursor-pointer hover:-translate-y-0.5"
                 style={{ background: "var(--accent)", color: "var(--on-accent)" }}

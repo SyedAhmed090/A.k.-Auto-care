@@ -92,6 +92,11 @@ export const metadata: Metadata = {
     locale: "en_PK",
     siteName: "A.K. Auto Care",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "A.K. Auto Care — Precision Car Care",
+    description: "Pro-grade surface science. Prep, correct, coat, protect.",
+  },
   robots: { index: true, follow: true },
 };
 

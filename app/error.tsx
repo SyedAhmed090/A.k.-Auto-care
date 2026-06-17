@@ -24,6 +24,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
         </p>
         <div className="flex items-center justify-center gap-3 flex-wrap">
           <button
+            type="button"
             onClick={reset}
             className="btn-accent inline-flex items-center px-6 py-3 rounded-[12px] font-semibold text-[.9rem] cursor-pointer"
           >

@@ -77,33 +77,33 @@ export default function AccountClient({
 
       <div className="space-y-3">
         <div>
-          <label className={lbl} style={lblStyle}>Full Name <span style={{ color: "var(--accent)" }}>*</span></label>
-          <input className={field} style={fieldStyle} required value={profile.full_name} onChange={(e) => update("full_name", e.target.value)} />
+          <label htmlFor="account-full-name" className={lbl} style={lblStyle}>Full Name <span style={{ color: "var(--accent)" }}>*</span></label>
+          <input id="account-full-name" className={field} style={fieldStyle} required value={profile.full_name} onChange={(e) => update("full_name", e.target.value)} />
         </div>
         <div>
-          <label className={lbl} style={lblStyle}>Phone</label>
-          <input className={field} style={fieldStyle} value={profile.phone} onChange={(e) => update("phone", e.target.value)} />
+          <label htmlFor="account-phone" className={lbl} style={lblStyle}>Phone</label>
+          <input id="account-phone" className={field} style={fieldStyle} value={profile.phone} onChange={(e) => update("phone", e.target.value)} />
         </div>
         <div>
-          <label className={lbl} style={lblStyle}>Address</label>
-          <input className={field} style={fieldStyle} value={profile.address} onChange={(e) => update("address", e.target.value)} />
+          <label htmlFor="account-address" className={lbl} style={lblStyle}>Address</label>
+          <input id="account-address" className={field} style={fieldStyle} value={profile.address} onChange={(e) => update("address", e.target.value)} />
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className={lbl} style={lblStyle}>City</label>
-            <input className={field} style={fieldStyle} value={profile.city} onChange={(e) => update("city", e.target.value)} />
+            <label htmlFor="account-city" className={lbl} style={lblStyle}>City</label>
+            <input id="account-city" className={field} style={fieldStyle} value={profile.city} onChange={(e) => update("city", e.target.value)} />
           </div>
           <div>
-            <label className={lbl} style={lblStyle}>Province</label>
-            <input className={field} style={fieldStyle} value={profile.province} onChange={(e) => update("province", e.target.value)} />
+            <label htmlFor="account-province" className={lbl} style={lblStyle}>Province</label>
+            <input id="account-province" className={field} style={fieldStyle} value={profile.province} onChange={(e) => update("province", e.target.value)} />
           </div>
           <div>
-            <label className={lbl} style={lblStyle}>Postcode</label>
-            <input className={field} style={fieldStyle} value={profile.postcode} onChange={(e) => update("postcode", e.target.value)} />
+            <label htmlFor="account-postcode" className={lbl} style={lblStyle}>Postcode</label>
+            <input id="account-postcode" className={field} style={fieldStyle} value={profile.postcode} onChange={(e) => update("postcode", e.target.value)} />
           </div>
           <div>
-            <label className={lbl} style={lblStyle}>Country</label>
-            <input className={field} style={fieldStyle} value={profile.country} onChange={(e) => update("country", e.target.value)} />
+            <label htmlFor="account-country" className={lbl} style={lblStyle}>Country</label>
+            <input id="account-country" className={field} style={fieldStyle} value={profile.country} onChange={(e) => update("country", e.target.value)} />
           </div>
         </div>
       </div>
@@ -118,13 +118,13 @@ export default function AccountClient({
         </div>
       )}
 
-      <button onClick={save} disabled={state === "saving"}
+      <button type="button" onClick={save} disabled={state === "saving"}
         className="w-full mt-5 py-3 rounded-[12px] font-semibold cursor-pointer disabled:opacity-60"
         style={{ background: "var(--accent)", color: "var(--on-accent)" }}>
         {state === "saving" ? "Saving…" : state === "saved" ? "Saved ✓" : "Save Details"}
       </button>
 
-      <button onClick={signOut}
+      <button type="button" onClick={signOut}
         className="w-full mt-3 py-3 rounded-[12px] font-semibold flex items-center justify-center gap-2 cursor-pointer"
         style={{ background: "transparent", border: "1px solid var(--line-2)", color: "var(--muted)" }}>
         <LogOut className="w-4 h-4" /> Sign Out

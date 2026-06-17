@@ -116,10 +116,11 @@ export default function OrderTrackingClient() {
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label style={{ display: "block", fontFamily: "var(--font-hanken)", fontSize: ".82rem", letterSpacing: ".01em", color: "var(--muted)", marginBottom: 8 }}>
+                <label htmlFor="track-order-id" style={{ display: "block", fontFamily: "var(--font-hanken)", fontSize: ".82rem", letterSpacing: ".01em", color: "var(--muted)", marginBottom: 8 }}>
                   Order ID
                 </label>
                 <input
+                  id="track-order-id"
                   type="text"
                   value={orderId}
                   onChange={(e) => setOrderId(e.target.value)}
@@ -129,10 +130,11 @@ export default function OrderTrackingClient() {
                 />
               </div>
               <div>
-                <label style={{ display: "block", fontFamily: "var(--font-hanken)", fontSize: ".82rem", letterSpacing: ".01em", color: "var(--muted)", marginBottom: 8 }}>
+                <label htmlFor="track-email" style={{ display: "block", fontFamily: "var(--font-hanken)", fontSize: ".82rem", letterSpacing: ".01em", color: "var(--muted)", marginBottom: 8 }}>
                   Email Address
                 </label>
                 <input
+                  id="track-email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -269,7 +271,9 @@ export default function OrderTrackingClient() {
                     )}
                   </div>
                   <button
+                    type="button"
                     onClick={copyTracking}
+                    aria-label={copied ? "Copied to clipboard" : "Copy tracking number"}
                     style={{
                       padding: "8px 16px", borderRadius: 8, border: "1px solid var(--line-2)",
                       background: copied ? "#4ade8020" : "var(--bg)", color: copied ? "#4ade80" : "var(--muted)",

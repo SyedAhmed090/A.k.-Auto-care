@@ -37,6 +37,9 @@ const securityHeaders = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
   { key: "X-DNS-Prefetch-Control", value: "on" },
+  // Additive hardening (no functional impact): tells Adobe Flash/PDF clients not to
+  // load cross-domain policy files. Defense-in-depth; safe for an all-HTML/JSON app.
+  { key: "X-Permitted-Cross-Domain-Policies", value: "none" },
 ];
 
 const nextConfig: NextConfig = {

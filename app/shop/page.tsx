@@ -6,6 +6,12 @@ export const metadata: Metadata = {
   title: "Shop Car Care Products",
   description:
     "Browse our full range of professional detailing products — polishes, coatings, waxes, and more. Delivered across Pakistan.",
+  alternates: { canonical: "/shop" },
+  twitter: {
+    card: "summary_large_image",
+    title: "Shop Car Care Products | A.K. Auto Care",
+    description: "Browse our full range of professional detailing products — polishes, coatings, waxes, and more. Delivered across Pakistan.",
+  },
 };
 
 export const revalidate = 60;

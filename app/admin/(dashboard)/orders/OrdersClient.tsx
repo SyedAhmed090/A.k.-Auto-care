@@ -106,7 +106,7 @@ export default function OrdersClient({ orders, total, page, totalPages, filters 
         <h1 className="text-[1.8rem] uppercase" style={{ fontFamily: "var(--font-anton)" }}>
           Orders <span style={{ color: "var(--muted)", fontFamily: "var(--font-hanken)", fontSize: "1rem" }}>({total})</span>
         </h1>
-        <button onClick={handleExport} className="flex items-center gap-2 px-4 py-2 rounded-[10px] text-sm font-semibold cursor-pointer transition-opacity hover:opacity-75"
+        <button type="button" onClick={handleExport} className="flex items-center gap-2 px-4 py-2 rounded-[10px] text-sm font-semibold cursor-pointer transition-opacity hover:opacity-75"
           style={{ background: "var(--surface)", border: "1px solid var(--line-2)", color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>
           <Download className="w-4 h-4" /> Export CSV
         </button>
@@ -130,7 +130,7 @@ export default function OrdersClient({ orders, total, page, totalPages, filters 
           className="px-3 py-2 rounded-[10px] text-sm outline-none cursor-pointer"
           style={inputSty} />
         {hasFilter && (
-          <button onClick={() => { setSearchVal(""); pushParams({ search: "", dateFrom: "", dateTo: "" }); }}
+          <button type="button" onClick={() => { setSearchVal(""); pushParams({ search: "", dateFrom: "", dateTo: "" }); }}
             className="px-3 py-2 rounded-[10px] text-sm cursor-pointer"
             style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)", border: "1px solid var(--line-2)" }}>
             Clear
@@ -141,7 +141,7 @@ export default function OrdersClient({ orders, total, page, totalPages, filters 
       {/* Status tabs */}
       <div className="flex gap-2 flex-wrap mb-5">
         {STATUSES.map(s => (
-          <button key={s} onClick={() => pushParams({ status: s })}
+          <button type="button" key={s} onClick={() => pushParams({ status: s })}
             className="px-3 py-1.5 rounded-[8px] text-[.72rem] font-semibold uppercase tracking-[.1em] transition-all cursor-pointer"
             style={{
               fontFamily: "var(--font-space-mono)",
@@ -167,11 +167,11 @@ export default function OrdersClient({ orders, total, page, totalPages, filters 
             <option value="">Change status to…</option>
             {STATUSES.filter(s => s !== "all").map(s => <option key={s} value={s}>{s}</option>)}
           </select>
-          <button onClick={handleBulk} disabled={!bulkStatus || bulkLoading}
+          <button type="button" onClick={handleBulk} disabled={!bulkStatus || bulkLoading}
             className="px-4 py-1.5 rounded-[8px] text-sm font-semibold btn-accent cursor-pointer disabled:opacity-50">
             {bulkLoading ? "Updating…" : "Apply"}
           </button>
-          <button onClick={() => setSelected(new Set())} className="text-sm cursor-pointer" style={{ color: "var(--muted)" }}>
+          <button type="button" onClick={() => setSelected(new Set())} className="text-sm cursor-pointer" style={{ color: "var(--muted)" }}>
             Deselect all
           </button>
         </div>
@@ -246,7 +246,7 @@ export default function OrdersClient({ orders, total, page, totalPages, filters 
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-3 mt-6">
           {page > 1 && (
-            <button onClick={() => pushParams({ page: String(page - 1) })}
+            <button type="button" onClick={() => pushParams({ page: String(page - 1) })}
               className="px-3 py-1.5 rounded-[8px] text-sm cursor-pointer"
               style={{ background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--line-2)", fontFamily: "var(--font-space-mono)" }}>
               ← Prev
@@ -256,7 +256,7 @@ export default function OrdersClient({ orders, total, page, totalPages, filters 
             Page {page} of {totalPages} · {total} orders
           </span>
           {page < totalPages && (
-            <button onClick={() => pushParams({ page: String(page + 1) })}
+            <button type="button" onClick={() => pushParams({ page: String(page + 1) })}
               className="px-3 py-1.5 rounded-[8px] text-sm cursor-pointer"
               style={{ background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--line-2)", fontFamily: "var(--font-space-mono)" }}>
               Next →

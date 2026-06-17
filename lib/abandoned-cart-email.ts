@@ -1,3 +1,13 @@
+/** Escape a value for safe interpolation into HTML attributes / text. */
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 interface CartItem {
   productName: string;
   variantLabel: string;
@@ -19,7 +29,7 @@ export function buildAbandonedCartHtml({
   cartItems,
   recoveryUrl,
 }: AbandonedCartEmailProps): string {
-  const greeting = firstName ? `Hi ${firstName},` : "Hi there,";
+  const greeting = firstName ? `Hi ${escapeHtml(firstName)},` : "Hi there,";
 
   const itemRows = cartItems
     .map(
@@ -31,14 +41,14 @@ export function buildAbandonedCartHtml({
                 ${
                   item.image
                     ? `<td width="56" valign="top" style="padding-right:12px;">
-                        <img src="${item.image}" alt="${item.productName}" width="56" height="56"
+                        <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.productName)}" width="56" height="56"
                           style="width:56px;height:56px;object-fit:cover;border-radius:6px;display:block;border:1px solid #2a2a2a;" />
                       </td>`
                     : ""
                 }
                 <td valign="middle">
-                  <div style="color:#ffffff;font-size:14px;font-weight:600;line-height:1.3;">${item.productName}</div>
-                  <div style="color:#888888;font-size:12px;margin-top:2px;">${item.variantLabel}</div>
+                  <div style="color:#ffffff;font-size:14px;font-weight:600;line-height:1.3;">${escapeHtml(item.productName)}</div>
+                  <div style="color:#888888;font-size:12px;margin-top:2px;">${escapeHtml(item.variantLabel)}</div>
                   <div style="color:#4fa8e6;font-size:13px;margin-top:4px;">Rs ${(item.price * item.quantity).toLocaleString("en-PK")} &nbsp;<span style="color:#666;font-weight:400;">× ${item.quantity}</span></div>
                 </td>
               </tr>

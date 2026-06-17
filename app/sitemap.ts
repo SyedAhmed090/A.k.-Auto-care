@@ -8,7 +8,9 @@ export const revalidate = 3600;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = "https://www.akautocare.pk";
   const now = new Date();
-  const staticRoutes = ["/", "/shop", "/about", "/contact", "/faq", "/blog", "/order-tracking", "/policies/shipping", "/policies/returns", "/policies/shipping-returns", "/policies/privacy", "/policies/terms"].map(
+  // "/policies/shipping" and "/policies/returns" are subsets of "/policies/shipping-returns";
+  // keep only the canonical combined URL to avoid duplicate-content dilution.
+  const staticRoutes = ["/", "/shop", "/about", "/contact", "/faq", "/blog", "/order-tracking", "/policies/shipping-returns", "/policies/privacy", "/policies/terms"].map(
     (route) => ({ url: `${base}${route}`, lastModified: now, changeFrequency: "monthly" as const, priority: route === "/" ? 1 : 0.8 })
   );
 

@@ -156,6 +156,7 @@ function CartPageInner({ allProducts }: { allProducts: Product[] }) {
             <div className="flex items-center justify-between pt-2">
               <div />
               <button
+                type="button"
                 onClick={() => setConfirmClear(true)}
                 className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg cursor-pointer transition-all"
                 style={{ border: "1px solid rgba(239,68,68,.2)", color: "#ef4444", background: "rgba(239,68,68,.06)" }}
@@ -188,6 +189,7 @@ function CartPageInner({ allProducts }: { allProducts: Product[] }) {
                   <p className="text-sm mb-6" style={{ color: "var(--muted)" }}>This action cannot be undone.</p>
                   <div className="flex gap-3">
                     <button
+                      type="button"
                       onClick={() => setConfirmClear(false)}
                       className="flex-1 py-3 rounded-[11px] text-sm font-semibold cursor-pointer transition-all"
                       style={{ border: "1px solid var(--line-2)", color: "var(--text)" }}
@@ -195,6 +197,7 @@ function CartPageInner({ allProducts }: { allProducts: Product[] }) {
                       Cancel
                     </button>
                     <button
+                      type="button"
                       onClick={() => { clearCart(); setConfirmClear(false); }}
                       className="flex-1 py-3 rounded-[11px] text-sm font-semibold cursor-pointer transition-all"
                       style={{ background: "#ef4444", color: "#fff" }}
@@ -278,6 +281,7 @@ function CartPageInner({ allProducts }: { allProducts: Product[] }) {
                       {promoCode} applied
                     </span>
                     <button
+                      type="button"
                       onClick={() => { removePromo(); setPromoMsg(null); setPromoInput(""); }}
                       className="text-[.75rem] transition-colors cursor-pointer hover:text-[var(--text)]"
                       style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}
@@ -292,7 +296,7 @@ function CartPageInner({ allProducts }: { allProducts: Product[] }) {
                         type="text"
                         value={promoInput}
                         onChange={(e) => setPromoInput(e.target.value)}
-
+                        aria-label="Promo code"
                         className="flex-1 min-w-0 px-3 py-2.5 rounded-[11px] text-sm outline-none"
                         style={{ background: "var(--surface)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }}
                         onKeyDown={(e) => e.key === "Enter" && handlePromo()}

@@ -118,7 +118,7 @@ export default function SampleRequestButton({
     );
 
   const modal = (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="sample-modal-title">
       <div className="absolute inset-0" style={{ background: "rgba(0,0,0,.6)" }} onClick={close} />
       <div
         className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-[20px]"
@@ -130,7 +130,7 @@ export default function SampleRequestButton({
             <div className="flex items-center gap-2 text-[.72rem] tracking-[.14em] uppercase mb-1" style={{ fontFamily: "var(--font-space-mono)", color: "var(--accent)" }}>
               <FlaskConical className="w-3.5 h-3.5" /> Sample Request
             </div>
-            <h3 className="text-[1.3rem] uppercase leading-tight" style={{ fontFamily: "var(--font-anton)", color: "var(--text)" }}>
+            <h3 id="sample-modal-title" className="text-[1.3rem] uppercase leading-tight" style={{ fontFamily: "var(--font-anton)", color: "var(--text)" }}>
               {product.name}
             </h3>
           </div>
@@ -178,43 +178,44 @@ export default function SampleRequestButton({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className={labelCls} style={labelStyle}>Name *</label>
-                <input {...register("name")} className={inputCls} style={{ ...inputStyle, borderColor: errors.name ? "#ef4444" : "var(--line-2)" }} />
+                <label htmlFor="sample-name" className={labelCls} style={labelStyle}>Name *</label>
+                <input id="sample-name" {...register("name")} className={inputCls} style={{ ...inputStyle, borderColor: errors.name ? "#ef4444" : "var(--line-2)" }} />
                 {errors.name && <p className="text-xs mt-1" style={{ color: "#ef4444" }}>{errors.name.message}</p>}
               </div>
               <div>
-                <label className={labelCls} style={labelStyle}>Phone / WhatsApp *</label>
-                <input {...register("phone")} className={inputCls} style={{ ...inputStyle, borderColor: errors.phone ? "#ef4444" : "var(--line-2)" }} />
+                <label htmlFor="sample-phone" className={labelCls} style={labelStyle}>Phone / WhatsApp *</label>
+                <input id="sample-phone" {...register("phone")} className={inputCls} style={{ ...inputStyle, borderColor: errors.phone ? "#ef4444" : "var(--line-2)" }} />
                 {errors.phone && <p className="text-xs mt-1" style={{ color: "#ef4444" }}>{errors.phone.message}</p>}
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className={labelCls} style={labelStyle}>Business / Shop (optional)</label>
-                <input {...register("business_name")} className={inputCls} style={inputStyle} />
+                <label htmlFor="sample-business" className={labelCls} style={labelStyle}>Business / Shop (optional)</label>
+                <input id="sample-business" {...register("business_name")} className={inputCls} style={inputStyle} />
               </div>
               <div>
-                <label className={labelCls} style={labelStyle}>Email (optional)</label>
-                <input {...register("email")} type="email" className={inputCls} style={{ ...inputStyle, borderColor: errors.email ? "#ef4444" : "var(--line-2)" }} />
+                <label htmlFor="sample-email" className={labelCls} style={labelStyle}>Email (optional)</label>
+                <input id="sample-email" {...register("email")} type="email" className={inputCls} style={{ ...inputStyle, borderColor: errors.email ? "#ef4444" : "var(--line-2)" }} />
                 {errors.email && <p className="text-xs mt-1" style={{ color: "#ef4444" }}>{errors.email.message}</p>}
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className={labelCls} style={labelStyle}>City (optional)</label>
-                <input {...register("city")} className={inputCls} style={inputStyle} />
+                <label htmlFor="sample-city" className={labelCls} style={labelStyle}>City (optional)</label>
+                <input id="sample-city" {...register("city")} className={inputCls} style={inputStyle} />
               </div>
               <div>
-                <label className={labelCls} style={labelStyle}>Address (optional)</label>
-                <input {...register("address")} className={inputCls} style={inputStyle} />
+                <label htmlFor="sample-address" className={labelCls} style={labelStyle}>Address (optional)</label>
+                <input id="sample-address" {...register("address")} className={inputCls} style={inputStyle} />
               </div>
             </div>
 
             <div>
-              <label className={labelCls} style={labelStyle}>How much do you use per month? *</label>
+              <label htmlFor="sample-usage" className={labelCls} style={labelStyle}>How much do you use per month? *</label>
               <select
+                id="sample-usage"
                 {...register("monthly_usage")}
                 defaultValue=""
                 className={inputCls}

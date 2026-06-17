@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   description:
     "Expert car detailing tips, paint correction guides, and ceramic coating advice from A.K. Auto Care — Pakistan's car care specialists.",
   alternates: { canonical: "/blog" },
+  twitter: {
+    card: "summary_large_image",
+    title: "Car Care Tips & Guides — Blog | A.K. Auto Care",
+    description: "Expert car detailing tips, paint correction guides, and ceramic coating advice from A.K. Auto Care — Pakistan's car care specialists.",
+  },
 };
 
 export default function BlogPage() {

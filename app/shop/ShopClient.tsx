@@ -143,6 +143,7 @@ export default function ShopClient({ allProducts }: { allProducts: Product[] }) 
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
               <button
+                type="button"
                 onClick={() => setFiltersOpen(true)}
                 className="lg:hidden flex items-center gap-2 px-4 py-2.5 rounded-[11px] text-sm font-semibold transition-all cursor-pointer"
                 style={{ border: "1px solid var(--line-2)", color: "var(--text)", background: "var(--surface)" }}
@@ -182,6 +183,7 @@ export default function ShopClient({ allProducts }: { allProducts: Product[] }) 
                 <p className="text-sm mb-6" style={{ color: "var(--muted)" }}>Try widening your price range or turning off &ldquo;In Stock Only.&rdquo;</p>
                 {activeFilterCount > 0 && (
                   <button
+                    type="button"
                     onClick={clearFilters}
                     className="inline-flex items-center gap-1.5 px-6 py-3 rounded-[13px] font-semibold transition-all cursor-pointer hover:-translate-y-0.5"
                     style={{ background: "var(--accent)", color: "var(--on-accent)" }}
@@ -195,6 +197,7 @@ export default function ShopClient({ allProducts }: { allProducts: Product[] }) 
             {paginated.length < filtered.length && (
               <div className="text-center mt-10">
                 <button
+                  type="button"
                   onClick={() => setPage((p) => p + 1)}
                   className="px-8 py-3.5 rounded-[13px] font-semibold transition-all cursor-pointer hover:-translate-y-0.5"
                   style={{ border: "1px solid var(--line-2)", color: "var(--text)", background: "var(--surface)" }}
@@ -211,12 +214,15 @@ export default function ShopClient({ allProducts }: { allProducts: Product[] }) 
         <>
           <div className="fixed inset-0 z-50" style={{ background: "var(--scrim)" }} onClick={() => setFiltersOpen(false)} />
           <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Product filters"
             className="fixed bottom-0 left-0 right-0 z-[70] rounded-t-[20px] p-6 max-h-[80vh] overflow-y-auto"
             style={{ background: "var(--surface)", border: "1px solid var(--line-2)" }}
           >
             <div className="flex items-center justify-between mb-5">
               <h3 style={{ fontFamily: "var(--font-anton)", fontSize: "1.4rem" }}>FILTERS</h3>
-              <button onClick={() => setFiltersOpen(false)} aria-label="Close filters" style={{ color: "var(--muted)" }}><X className="w-5 h-5" /></button>
+              <button type="button" onClick={() => setFiltersOpen(false)} aria-label="Close filters" style={{ color: "var(--muted)" }}><X className="w-5 h-5" /></button>
             </div>
             <FilterPanel
               priceMax={priceMax}
@@ -225,6 +231,7 @@ export default function ShopClient({ allProducts }: { allProducts: Product[] }) 
               setInStockOnly={setInStockOnly}
             />
             <button
+              type="button"
               onClick={() => setFiltersOpen(false)}
               className="w-full mt-6 py-3.5 rounded-[13px] font-semibold cursor-pointer"
               style={{ background: "var(--accent)", color: "var(--on-accent)" }}

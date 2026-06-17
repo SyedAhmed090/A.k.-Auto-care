@@ -200,7 +200,9 @@ export default function Header() {
                 onClick={() => setMobileOpen(!mobileOpen)}
                 className="md:hidden w-[42px] h-[42px] rounded-[11px] grid place-items-center transition-all cursor-pointer"
                 style={{ border: "1px solid var(--line)", background: "var(--hover)", color: "var(--text)" }}
-                aria-label="Menu"
+                aria-label={mobileOpen ? "Close menu" : "Open menu"}
+                aria-expanded={mobileOpen}
+                aria-controls="mobile-menu"
               >
                 {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
@@ -211,10 +213,11 @@ export default function Header() {
 
       {/* Mobile menu */}
       <div
+        id="mobile-menu"
         ref={mobileMenuRef}
         role="dialog"
         aria-modal="true"
-        aria-label="Menu"
+        aria-label="Navigation menu"
         aria-hidden={!mobileOpen}
         inert={!mobileOpen || undefined}
         className={cn(

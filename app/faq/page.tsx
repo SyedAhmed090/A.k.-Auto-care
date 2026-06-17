@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   description:
     "Answers to common questions about A.K. Auto Care: Cash on Delivery, JazzCash & EasyPaisa payments, nationwide shipping via TCS & Leopards, returns, and how to use our car care products.",
   alternates: { canonical: "/faq" },
+  twitter: {
+    card: "summary",
+    title: "FAQ — Orders, Delivery, Payments & Products | A.K. Auto Care",
+    description: "Answers to common questions about A.K. Auto Care: payments, nationwide shipping, returns, and how to use our car care products.",
+  },
 };
 
 const faqSchema = {
