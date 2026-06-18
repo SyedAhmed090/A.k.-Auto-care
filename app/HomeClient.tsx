@@ -60,6 +60,8 @@ export default function HomeClient({ featured, newArrivals }: { featured: Produc
                 src={logoShield}
                 alt="A.K. Auto Care emblem"
                 priority
+                width={420}
+                height={407}
                 sizes="(min-width: 1024px) 440px, 0px"
                 className="w-[clamp(280px,30vw,440px)] h-auto select-none"
                 style={{ filter: "drop-shadow(0 28px 55px rgba(20,23,28,.20))" }}
