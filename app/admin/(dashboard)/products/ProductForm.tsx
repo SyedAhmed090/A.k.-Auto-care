@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Plus, Trash2, Loader2, UploadCloud, ChevronUp, ChevronDown, ImageOff } from "lucide-react";
+import Image from "next/image";
 
 const CATEGORIES = [
   { slug: "surface-correction", label: "Surface Correction" },
@@ -350,12 +351,18 @@ export default function ProductForm({
         {imageFields.map((f, i) => (
           <div key={f.id} className="flex gap-3 items-center">
             <div
-              className="flex-shrink-0 w-14 h-14 rounded-[10px] overflow-hidden flex items-center justify-center"
+              className="relative flex-shrink-0 w-14 h-14 rounded-[10px] overflow-hidden flex items-center justify-center"
               style={{ border: "1px solid var(--line-2)", background: "var(--bg-2)" }}
             >
               {watch(`images.${i}.url`) ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={watch(`images.${i}.url`)} alt={`Product image ${i + 1} preview`} className="w-full h-full object-cover" />
+                <Image
+                  src={watch(`images.${i}.url`)}
+                  alt={`Product image ${i + 1} preview`}
+                  fill
+                  sizes="56px"
+                  className="object-cover"
+                  unoptimized
+                />
               ) : (
                 <ImageOff className="w-5 h-5" style={{ color: "var(--muted)" }} />
               )}
