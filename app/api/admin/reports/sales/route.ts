@@ -4,6 +4,12 @@ import { requireAdmin } from "@/lib/adminAuth";
 import { getSettings } from "@/lib/settings";
 import { gstAmount } from "@/lib/commerce";
 
+// A-03: Date param validator — must be YYYY-MM-DD.
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+function isValidDate(v: string | null): boolean {
+  return v !== null && DATE_RE.test(v) && !isNaN(new Date(v).getTime());
+}
+
 // ── Sales / GST report ─────────────────────────────────────────────────────────
 // Aggregates non-cancelled / non-refunded orders into per-period rows + an overall
 // total. Periods are grouped by calendar day or month (UTC, from `created_at`).
@@ -56,15 +62,25 @@ export async function GET(req: NextRequest) {
     const groupBy: Period = searchParams.get("groupBy") === "month" ? "month" : "day";
     const format = searchParams.get("format");
 
+    // A-03: Reject malformed date params before passing to PostgREST.
+    if (from && !isValidDate(from)) {
+      return NextResponse.json({ error: "Invalid 'from' date parameter." }, { status: 400 });
+    }
+    if (to && !isValidDate(to)) {
+      return NextResponse.json({ error: "Invalid 'to' date parameter." }, { status: 400 });
+    }
+
     const settings = await getSettings();
     const gstRate = settings.tax.gstRate;
 
     const supabase = createAdminClient();
+    // A-02: Cap unbounded sales reads at 50 000 orders to bound memory/egress.
     let query = supabase
       .from("orders")
       .select("total, discount, shipping, status, created_at")
       .not("status", "in", `(${EXCLUDED_STATUSES.join(",")})`)
-      .order("created_at", { ascending: true });
+      .order("created_at", { ascending: true })
+      .limit(50_000);
 
     if (from) query = query.gte("created_at", `${from}T00:00:00`);
     if (to) query = query.lte("created_at", `${to}T23:59:59`);

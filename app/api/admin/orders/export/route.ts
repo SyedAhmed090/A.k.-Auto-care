@@ -3,6 +3,12 @@ import { createAdminClient } from "@/utils/supabase/admin";
 import { requireRole } from "@/lib/adminAuth";
 import { sanitizeSearchTerm } from "@/lib/utils";
 
+// A-03: Date param validator — must be YYYY-MM-DD.
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+function isValidDate(v: string | null): boolean {
+  return v !== null && DATE_RE.test(v) && !isNaN(new Date(v).getTime());
+}
+
 interface ExportOrderItem { productName: string; quantity: number; }
 
 export async function GET(req: NextRequest) {
@@ -17,8 +23,22 @@ export async function GET(req: NextRequest) {
     const dateFrom = searchParams.get("dateFrom");
     const dateTo   = searchParams.get("dateTo");
 
+    // A-03: Reject malformed date params before passing to PostgREST.
+    if (dateFrom && !isValidDate(dateFrom)) {
+      return NextResponse.json({ error: "Invalid dateFrom parameter." }, { status: 400 });
+    }
+    if (dateTo && !isValidDate(dateTo)) {
+      return NextResponse.json({ error: "Invalid dateTo parameter." }, { status: 400 });
+    }
+
     const supabase = createAdminClient();
-    let query = supabase.from("orders").select("*").order("created_at", { ascending: false });
+    // A-02: Narrow columns to only what the CSV uses, and cap at 50 000 rows to
+    // bound memory/egress on large exports.
+    let query = supabase
+      .from("orders")
+      .select("id, created_at, first_name, last_name, email, phone, city, items, subtotal, discount, promo_code, shipping, total, payment_method, shipping_method, status, tracking_number")
+      .order("created_at", { ascending: false })
+      .limit(50_000);
 
     if (status && status !== "all") query = query.eq("status", status);
     if (search) {

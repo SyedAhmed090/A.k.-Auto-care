@@ -36,7 +36,10 @@ export async function GET() {
 
     const days = Object.entries(byDate).map(([date, v]) => ({ date, ...v }));
     return NextResponse.json({ days });
-  } catch {
-    return NextResponse.json({ days: [] });
+  } catch (err) {
+    // A-07: Return 500 on failure so monitoring can detect backend errors.
+    // Previously returned 200 {days:[]} which silently masked DB outages.
+    console.error("Orders chart error:", err);
+    return NextResponse.json({ error: "Failed to fetch chart data." }, { status: 500 });
   }
 }

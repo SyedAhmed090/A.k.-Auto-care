@@ -12,10 +12,12 @@ export async function GET(req: NextRequest) {
     const search = searchParams.get("search")?.trim();
 
     const sb = createAdminClient();
+    // A-02: Cap unbounded subscriber export at 50 000 rows to bound PII egress.
     let query = sb
       .from("newsletter_subscribers")
       .select("email, source, created_at")
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .limit(50_000);
 
     if (search) {
       const q = search.replace(/[%_]/g, "\\$&");

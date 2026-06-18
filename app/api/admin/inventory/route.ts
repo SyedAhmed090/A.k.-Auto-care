@@ -35,11 +35,14 @@ export async function GET() {
 }
 
 export async function PATCH(req: NextRequest) {
-  const csrfError = checkCsrf(req);
-  if (csrfError) return csrfError;
-
+  // A-08: Auth must run before CSRF so an unauthenticated caller receives 401
+  // rather than 403 (CSRF), preventing endpoint-existence enumeration via error
+  // code differences. All other admin mutating routes follow auth-first order.
   const authError = await requireAdmin();
   if (authError) return authError;
+
+  const csrfError = checkCsrf(req);
+  if (csrfError) return csrfError;
 
   try {
     const parsed = patchSchema.safeParse(await req.json());
