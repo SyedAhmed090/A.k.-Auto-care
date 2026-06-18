@@ -69,14 +69,19 @@ export default async function ProductPage({
   const { slug } = await params;
   const product = await getProductBySlug(slug);
   if (!product) notFound();
-  const related = await getRelatedProducts(product);
 
-  // Resolve the "Complete the System" kit this product belongs to (if any).
+  // Determine companion slugs synchronously so we can fetch everything in parallel.
   const sys = getSystemForProduct(product.slug);
+  const companionSlugs = sys?.steps.filter((s) => !s.isCurrent).map((s) => s.slug) ?? [];
+
+  // getRelatedProducts and getProductsBySlugs are independent — run in parallel.
+  const [related, companions] = await Promise.all([
+    getRelatedProducts(product),
+    getProductsBySlugs(companionSlugs), // returns [] immediately when slugs is empty
+  ]);
+
   let systemView: { name: string; description: string; steps: SystemStepView[] } | null = null;
   if (sys) {
-    const companionSlugs = sys.steps.filter((s) => !s.isCurrent).map((s) => s.slug);
-    const companions = await getProductsBySlugs(companionSlugs);
     const steps = sys.steps
       .map((s) => ({
         step: s.step,

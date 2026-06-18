@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -21,11 +21,16 @@ export default function MiniCart() {
   const [promoMsg, setPromoMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [promoLoading, setPromoLoading] = useState(false);
   const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
-  const sub = subtotal();
-  const discount = sub * promoDiscount;
-  const afterDiscount = sub - discount;
-  const shipping = getShippingOptions("PK", afterDiscount, settings.shipping)[0]?.price ?? 0;
-  const total = afterDiscount + shipping;
+
+  // Memoize totals so typing in the promo input (local state change) doesn't
+  // re-run getShippingOptions on every keystroke.
+  const { sub, discount, afterDiscount, shipping, total } = useMemo(() => {
+    const s = subtotal();
+    const d = s * promoDiscount;
+    const ad = s - d;
+    const sh = getShippingOptions("PK", ad, settings.shipping)[0]?.price ?? 0;
+    return { sub: s, discount: d, afterDiscount: ad, shipping: sh, total: ad + sh };
+  }, [subtotal, promoDiscount, settings.shipping]);
 
   const handlePromo = async () => {
     if (!promoInput.trim() || promoLoading) return;

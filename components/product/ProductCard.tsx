@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { memo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Plus, Check } from "lucide-react";
@@ -12,7 +12,7 @@ import SampleRequestButton from "@/components/product/SampleRequestButton";
 
 const LOW_STOCK_THRESHOLD = 5;
 
-export default function ProductCard({ product }: { product: Product }) {
+function ProductCard({ product }: { product: Product }) {
   const [added, setAdded] = useState(false);
   const [imgError, setImgError] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
@@ -112,3 +112,5 @@ export default function ProductCard({ product }: { product: Product }) {
     </Link>
   );
 }
+
+export default memo(ProductCard);

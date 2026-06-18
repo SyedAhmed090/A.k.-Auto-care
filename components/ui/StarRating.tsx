@@ -1,6 +1,7 @@
+import { memo } from "react";
 import { Star, StarHalf } from "lucide-react";
 
-export default function StarRating({ rating, reviews, size = "sm" }: {
+function StarRating({ rating, reviews, size = "sm" }: {
   rating: number; reviews?: number; size?: "sm" | "md";
 }) {
   const sizeClass = size === "sm" ? "w-3.5 h-3.5" : "w-4 h-4";
@@ -51,3 +52,5 @@ export default function StarRating({ rating, reviews, size = "sm" }: {
     </div>
   );
 }
+
+export default memo(StarRating);

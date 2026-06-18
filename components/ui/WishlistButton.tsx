@@ -1,4 +1,5 @@
 "use client";
+import { memo } from "react";
 import { Heart } from "lucide-react";
 import type { Product } from "@/data/products";
 import { useWishlistStore } from "@/store/wishlist";
@@ -9,7 +10,7 @@ import { useMounted } from "@/lib/useMounted";
  * `variant="overlay"` is the small circular button used on product cards;
  * "inline" is a larger bordered button for the product detail page.
  */
-export default function WishlistButton({
+function WishlistButton({
   product,
   variant = "overlay",
 }: {
@@ -59,3 +60,5 @@ export default function WishlistButton({
     </button>
   );
 }
+
+export default memo(WishlistButton);
