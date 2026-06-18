@@ -119,8 +119,8 @@ export default function CategoryPageClient({ category, products }: { category: C
             <p className="text-lg font-medium mb-2" style={{ color: "var(--text)" }}>No products match your filters.</p>
             <p className="text-sm mb-6" style={{ color: "var(--muted)" }}>
               {activeFilterCount > 0
-                ? “Try turning off “In Stock.””
-                : “Check back soon — new products are added regularly.”}
+                ? "Try turning off “In Stock.”"
+                : "Check back soon — new products are added regularly."}
             </p>
             {activeFilterCount > 0 ? (
               <button
