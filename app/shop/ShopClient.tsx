@@ -14,32 +14,12 @@ const SORT_OPTIONS = [
 ];
 
 interface FilterPanelProps {
-  priceMax: number;
-  setPriceMax: (v: number) => void;
   inStockOnly: boolean;
   setInStockOnly: (v: boolean) => void;
 }
 
-const FilterPanel = ({ priceMax, setPriceMax, inStockOnly, setInStockOnly }: FilterPanelProps) => (
+const FilterPanel = ({ inStockOnly, setInStockOnly }: FilterPanelProps) => (
   <div className="space-y-8">
-    <div>
-      <h3
-        className="text-[.72rem] tracking-[.14em] uppercase mb-3"
-        style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
-      >
-        Max Price: <span style={{ color: "var(--accent)" }}>Rs {priceMax.toLocaleString("en-PK")}</span>
-      </h3>
-      <input
-        type="range" min={0} max={100000} step={1000} value={priceMax}
-        onChange={(e) => setPriceMax(Number(e.target.value))}
-        className="w-full"
-        style={{ accentColor: "var(--accent)" }}
-      />
-      <div className="flex justify-between text-xs mt-1" style={{ color: "var(--muted-2)", fontFamily: "var(--font-space-mono)" }}>
-        <span>Rs 0</span><span>Rs 1,00,000</span>
-      </div>
-    </div>
-
     <label className="flex items-center gap-3 cursor-pointer select-none">
       <div className="relative w-4 h-4 flex-shrink-0">
         <input
@@ -65,9 +45,9 @@ const FilterPanel = ({ priceMax, setPriceMax, inStockOnly, setInStockOnly }: Fil
       <span className="text-sm font-medium" style={{ color: "var(--text)" }}>In Stock Only</span>
     </label>
 
-    {(inStockOnly || priceMax < 100000) && (
+    {inStockOnly && (
       <button
-        onClick={() => { setInStockOnly(false); setPriceMax(100000); }}
+        onClick={() => setInStockOnly(false)}
         className="flex items-center gap-1.5 text-sm transition-colors cursor-pointer"
         style={{ color: "var(--accent)" }}
       >
@@ -79,7 +59,6 @@ const FilterPanel = ({ priceMax, setPriceMax, inStockOnly, setInStockOnly }: Fil
 
 function ShopContent({ allProducts }: { allProducts: Product[] }) {
   const searchParams = useSearchParams();
-  const [priceMax, setPriceMax] = useState(100000);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [sort, setSort] = useState(searchParams.get("sort") ?? "featured");
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -87,12 +66,12 @@ function ShopContent({ allProducts }: { allProducts: Product[] }) {
   const PER_PAGE = 12;
 
   const filtered = useMemo(
-    () => filterAndSort([...allProducts], { priceMax, inStockOnly, sort }),
-    [allProducts, priceMax, inStockOnly, sort]
+    () => filterAndSort([...allProducts], { inStockOnly, sort }),
+    [allProducts, inStockOnly, sort]
   );
 
-  const activeFilterCount = (inStockOnly ? 1 : 0) + (priceMax < 100000 ? 1 : 0);
-  const clearFilters = () => { setInStockOnly(false); setPriceMax(100000); };
+  const activeFilterCount = inStockOnly ? 1 : 0;
+  const clearFilters = () => setInStockOnly(false);
 
   const paginated = filtered.slice(0, page * PER_PAGE);
 
@@ -132,8 +111,6 @@ function ShopContent({ allProducts }: { allProducts: Product[] }) {
           <aside className="hidden lg:block w-52 flex-shrink-0">
             <div className="sticky top-28">
               <FilterPanel
-                priceMax={priceMax}
-                setPriceMax={setPriceMax}
                 inStockOnly={inStockOnly}
                 setInStockOnly={setInStockOnly}
               />
@@ -180,7 +157,7 @@ function ShopContent({ allProducts }: { allProducts: Product[] }) {
                   <PackageX className="w-7 h-7" style={{ color: "var(--muted)" }} />
                 </div>
                 <p className="text-lg font-medium mb-2" style={{ color: "var(--text)" }}>No products match your filters.</p>
-                <p className="text-sm mb-6" style={{ color: "var(--muted)" }}>Try widening your price range or turning off &ldquo;In Stock Only.&rdquo;</p>
+                <p className="text-sm mb-6" style={{ color: "var(--muted)" }}>Try turning off &ldquo;In Stock Only.&rdquo;</p>
                 {activeFilterCount > 0 && (
                   <button
                     type="button"
@@ -225,8 +202,6 @@ function ShopContent({ allProducts }: { allProducts: Product[] }) {
               <button type="button" onClick={() => setFiltersOpen(false)} aria-label="Close filters" style={{ color: "var(--muted)" }}><X className="w-5 h-5" /></button>
             </div>
             <FilterPanel
-              priceMax={priceMax}
-              setPriceMax={setPriceMax}
               inStockOnly={inStockOnly}
               setInStockOnly={setInStockOnly}
             />

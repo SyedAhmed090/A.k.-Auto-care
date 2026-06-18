@@ -16,17 +16,16 @@ const SORT_OPTIONS = [
 ];
 
 export default function CategoryPageClient({ category, products }: { category: Category; products: Product[] }) {
-  const [priceMax, setPriceMax] = useState(100000);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [sort, setSort] = useState("featured");
 
   const filtered = useMemo(
-    () => filterAndSort([...products], { priceMax, inStockOnly, sort }),
-    [products, priceMax, inStockOnly, sort]
+    () => filterAndSort([...products], { inStockOnly, sort }),
+    [products, inStockOnly, sort]
   );
 
-  const activeFilterCount = (inStockOnly ? 1 : 0) + (priceMax < 100000 ? 1 : 0);
-  const clearFilters = () => { setInStockOnly(false); setPriceMax(100000); };
+  const activeFilterCount = inStockOnly ? 1 : 0;
+  const clearFilters = () => setInStockOnly(false);
 
   return (
     <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
@@ -101,15 +100,6 @@ export default function CategoryPageClient({ category, products }: { category: C
               </div>
               <span>In Stock</span>
             </label>
-            <div className="flex items-center gap-2">
-              <span className="text-xs whitespace-nowrap" style={{ color: "var(--muted)", fontFamily: "var(--font-space-mono)" }}>Max: Rs {priceMax.toLocaleString("en-PK")}</span>
-              <input
-                type="range" min={0} max={100000} step={1000} value={priceMax}
-                onChange={(e) => setPriceMax(Number(e.target.value))}
-                className="w-28"
-                style={{ accentColor: "var(--accent)" }}
-              />
-            </div>
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value)}
@@ -129,8 +119,8 @@ export default function CategoryPageClient({ category, products }: { category: C
             <p className="text-lg font-medium mb-2" style={{ color: "var(--text)" }}>No products match your filters.</p>
             <p className="text-sm mb-6" style={{ color: "var(--muted)" }}>
               {activeFilterCount > 0
-                ? "Try widening your price range or turning off “In Stock.”"
-                : "Check back soon — new products are added regularly."}
+                ? “Try turning off “In Stock.””
+                : “Check back soon — new products are added regularly.”}
             </p>
             {activeFilterCount > 0 ? (
               <button

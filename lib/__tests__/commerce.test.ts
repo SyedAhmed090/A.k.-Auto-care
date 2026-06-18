@@ -61,30 +61,26 @@ describe("filterAndSort", () => {
     { price: 200, createdAt: "2024-02-01", featured: false, inStock: true },
   ];
 
-  it("filters out products above the price cap", () => {
-    expect(filterAndSort(products, { priceMax: 250, inStockOnly: false, sort: "" })).toHaveLength(2);
-  });
-
   it("filters out out-of-stock products when inStockOnly is set", () => {
-    const result = filterAndSort(products, { priceMax: 1000, inStockOnly: true, sort: "" });
+    const result = filterAndSort(products, { inStockOnly: true, sort: "" });
     expect(result.every((p) => p.inStock)).toBe(true);
     expect(result).toHaveLength(2);
   });
 
   it("sorts ascending and descending by price", () => {
-    const asc = filterAndSort(products, { priceMax: 1000, inStockOnly: false, sort: "price-asc" });
+    const asc = filterAndSort(products, { inStockOnly: false, sort: "price-asc" });
     expect(asc.map((p) => p.price)).toEqual([100, 200, 300]);
-    const desc = filterAndSort(products, { priceMax: 1000, inStockOnly: false, sort: "price-desc" });
+    const desc = filterAndSort(products, { inStockOnly: false, sort: "price-desc" });
     expect(desc.map((p) => p.price)).toEqual([300, 200, 100]);
   });
 
   it("sorts newest by createdAt descending", () => {
-    const result = filterAndSort(products, { priceMax: 1000, inStockOnly: false, sort: "newest" });
+    const result = filterAndSort(products, { inStockOnly: false, sort: "newest" });
     expect(result[0].createdAt).toBe("2024-03-01");
   });
 
   it("defaults to featured-first ordering", () => {
-    const result = filterAndSort(products, { priceMax: 1000, inStockOnly: false, sort: "featured" });
+    const result = filterAndSort(products, { inStockOnly: false, sort: "featured" });
     expect(result[0].featured).toBe(true);
   });
 });
