@@ -10,7 +10,9 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = req.nextUrl;
     const action = searchParams.get("action")?.trim();
-    const limit = Math.min(parseInt(searchParams.get("limit") ?? "200", 10) || 200, 500);
+    // A-10: Clamp both lower and upper bounds — a negative ?limit would previously
+    // pass Math.min(-5, 500) = -5 straight to .limit(), causing a PostgREST error.
+    const limit = Math.max(1, Math.min(parseInt(searchParams.get("limit") ?? "200", 10) || 200, 500));
 
     const sb = createAdminClient();
     const base = sb

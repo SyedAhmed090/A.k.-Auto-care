@@ -61,8 +61,9 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const parsed = productSchema.safeParse(body);
+    // A-04: Do not leak Zod schema internals (field map, constraint messages) to clients.
     if (!parsed.success) {
-      return NextResponse.json({ error: "Invalid data.", details: parsed.error.flatten() }, { status: 400 });
+      return NextResponse.json({ error: "Invalid data." }, { status: 400 });
     }
     const { variants, id, ...productData } = parsed.data;
 

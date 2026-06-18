@@ -13,7 +13,9 @@ export async function GET() {
 
     const [ordersRes, revenueRes, pendingRes, todayRes, lowStockRes] = await Promise.all([
       supabase.from("orders").select("id", { count: "exact", head: true }),
-      supabase.from("orders").select("total").not("status", "in", '("cancelled","refunded")'),
+      // A-02: Cap unbounded revenue read — 100 000 orders is a safe upper bound for
+      // an in-memory JS sum; a future optimization would use a DB aggregate RPC instead.
+      supabase.from("orders").select("total").not("status", "in", '("cancelled","refunded")').limit(100_000),
       supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", "pending"),
       supabase.from("orders").select("id", { count: "exact", head: true }).gte("created_at", new Date(new Date().setHours(0, 0, 0, 0)).toISOString()),
       supabase.from("products").select("id", { count: "exact", head: true }).not("stock", "is", null).lte("stock", inventory.lowStockThreshold),
