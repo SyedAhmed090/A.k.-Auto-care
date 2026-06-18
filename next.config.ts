@@ -1,31 +1,25 @@
 import type { NextConfig } from "next";
 
-// Content-Security-Policy. 'unsafe-inline' is kept for style-src (next/font + inline
-// style={{}} attributes used throughout the UI — cannot be nonce-covered) and for
-// script-src only as a legacy-browser fallback.
+// Content-Security-Policy. 'unsafe-inline' is required for:
+//   - script-src: Next.js bootstrap/hydration inline scripts, JSON-LD <script> tags in
+//     layout.tsx and blog pages, the GA4 inline init script in layout.tsx.
+//   - style-src: next/font + inline style={{}} attributes throughout the UI.
 //
-// S-12: 'strict-dynamic' is added to script-src. CSP Level 3 browsers treat
-// 'strict-dynamic' as overriding 'unsafe-inline' — the 'unsafe-inline' fallback is
-// silently ignored in those browsers, removing the practical XSS-via-inline-script risk.
-// Older browsers that don't support 'strict-dynamic' fall back to 'unsafe-inline'.
-// This is the maximum tightening achievable without nonces (which would force every page
-// into dynamic rendering, breaking the SSG/ISR this storefront depends on).
-//
-// We deliberately do NOT migrate to a nonce-based CSP: per the Next.js 16 docs, nonces
-// force every page into dynamic rendering, disabling the SSG/ISR this storefront relies
-// on (product/category/shop/home all use generateStaticParams + revalidate). It also
-// would not remove style-src 'unsafe-inline' — nonces only cover <style> elements, not
-// the inline style={{}} attributes used across the UI. Keeping the static CSP here is the
-// right trade-off; revisit only if inline styles are eliminated and dynamic rendering is
-// acceptable (or via the experimental hash-based SRI approach).
+// 'strict-dynamic' was previously added (S-12) but is intentionally removed:
+// in CSP Level 3 browsers it silently overrides 'unsafe-inline' AND disables the
+// host allowlist, which breaks GTM (googletagmanager.com), Meta Pixel
+// (connect.facebook.net), all JSON-LD structured-data scripts, and Next.js's own
+// inline hydration scripts. A nonce-based CSP would be the proper alternative but
+// forces every page out of SSG/ISR, which is unacceptable for this storefront.
+// The remaining policy (host allowlist + 'self') still blocks scripts from
+// unapproved origins.
 const csp = [
   "default-src 'self'",
   "base-uri 'self'",
   "object-src 'none'",
   "frame-ancestors 'none'",
   "form-action 'self'",
-  // S-12: 'strict-dynamic' makes 'unsafe-inline' a no-op in CSP3+ browsers.
-  "script-src 'self' 'unsafe-inline' 'strict-dynamic' https://www.googletagmanager.com https://connect.facebook.net",
+  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://upload.wikimedia.org https://www.google-analytics.com https://www.googletagmanager.com https://www.facebook.com",
   "font-src 'self' data:",
