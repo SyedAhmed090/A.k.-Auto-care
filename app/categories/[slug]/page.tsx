@@ -82,6 +82,8 @@ export default async function CategoryPage({
 
   return (
     <>
+      {/* S-15: Safe — breadcrumbSchema is a developer-controlled object (category
+          metadata) serialized via JSON.stringify, which escapes HTML-special chars. */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}

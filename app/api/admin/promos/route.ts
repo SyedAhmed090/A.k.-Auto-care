@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { checkCsrf } from "@/lib/csrf";
-import { requireAdmin, requireRole } from "@/lib/adminAuth";
+import { requireAdmin, requireRole, getAdminSession } from "@/lib/adminAuth";
+import { logAudit } from "@/lib/audit";
 
 const createSchema = z.object({
   code:      z.string().min(2).max(30).transform(s => s.toUpperCase()),
@@ -53,6 +54,13 @@ export async function POST(req: NextRequest) {
       if (error.code === "23505") return NextResponse.json({ error: "A code with that name already exists." }, { status: 409 });
       throw error;
     }
+    // S-17: Audit promo code creation.
+    await logAudit(await getAdminSession(), {
+      action: "promo.create",
+      entity: "promo_code",
+      entityId: data.id,
+      meta: { code: data.code },
+    });
     return NextResponse.json({ promo: data });
   } catch {
     return NextResponse.json({ error: "Failed to create promo." }, { status: 500 });

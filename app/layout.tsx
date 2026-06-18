@@ -107,6 +107,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" className={`${anton.variable} ${hanken.variable} ${spaceMono.variable}`}>
       <head>
+        {/* S-15: Safe — orgSchema is a developer-controlled object built from settings
+            store fields (strings from DB) serialized by JSON.stringify, which escapes
+            all HTML-special characters. No user-supplied HTML is injected. */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}

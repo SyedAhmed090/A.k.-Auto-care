@@ -71,6 +71,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
   return (
     <>
+      {/* S-15: Safe — articleSchema is a developer-controlled object (hardcoded blog
+          data) serialized via JSON.stringify, which escapes HTML-special characters. */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <article style={{ background: "var(--bg)", minHeight: "100vh" }}>
         <header className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">

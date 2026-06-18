@@ -136,6 +136,9 @@ export default async function ProductPage({
 
   return (
     <>
+      {/* S-15: Safe — productSchema and breadcrumbSchema are developer-controlled
+          objects built from DB product fields and serialized via JSON.stringify,
+          which escapes all HTML-special characters. No raw user HTML is injected. */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}

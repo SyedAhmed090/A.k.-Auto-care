@@ -12,6 +12,14 @@ const cartItemSchema = z.object({
 
 const cartDataSchema = z.array(cartItemSchema).max(50);
 
+// S-18: Validate sessionId format — must be a UUID (36-char hex/dash string) to prevent
+// attackers from supplying arbitrary strings to overwrite other sessions. Client-side
+// code must generate sessionIds via crypto.randomUUID().
+const SESSION_ID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// S-18: Validate email with Zod to prevent seeding arbitrary emails for cron abuse.
+const emailSchema = z.string().email().max(254);
+
 export async function POST(req: NextRequest) {
   const csrfError = checkCsrf(req);
   if (csrfError) return csrfError;
@@ -25,8 +33,21 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { sessionId, email, cartData } = body;
 
-    if (!sessionId || typeof sessionId !== "string") {
-      return NextResponse.json({ ok: false, error: "sessionId is required." }, { status: 400 });
+    // S-18: Reject sessionIds that don't match the UUID format, bounding both length
+    // and charset so a client cannot supply arbitrary strings as session keys.
+    if (!sessionId || typeof sessionId !== "string" || !SESSION_ID_RE.test(sessionId)) {
+      return NextResponse.json({ ok: false, error: "Invalid sessionId." }, { status: 400 });
+    }
+
+    // S-18: Validate email with Zod to prevent seeding untrusted emails into the
+    // abandoned-cart table (the cron job later sends recovery emails to that address).
+    let validatedEmail = "";
+    if (email !== undefined && email !== null && email !== "") {
+      const emailResult = emailSchema.safeParse(email);
+      if (!emailResult.success) {
+        return NextResponse.json({ ok: false, error: "Invalid email address." }, { status: 400 });
+      }
+      validatedEmail = emailResult.data;
     }
 
     const cartDataResult = cartDataSchema.safeParse(cartData);
@@ -40,7 +61,7 @@ export async function POST(req: NextRequest) {
       .upsert(
         {
           session_id: sessionId,
-          email: typeof email === "string" ? email : "",
+          email: validatedEmail,
           cart_data: cartDataResult.data,
           updated_at: new Date().toISOString(),
           email_sent_at: null,
