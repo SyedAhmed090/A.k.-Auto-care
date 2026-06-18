@@ -23,7 +23,7 @@ export function filterAndSort<T extends Filterable>(
   list: T[],
   opts: { inStockOnly: boolean; sort: string }
 ): T[] {
-  let result = opts.inStockOnly ? list.filter((p) => p.inStock) : list;
+  const result = opts.inStockOnly ? list.filter((p) => p.inStock) : list;
   if (opts.sort === "price-asc") result.sort((a, b) => a.price - b.price);
   else if (opts.sort === "price-desc") result.sort((a, b) => b.price - a.price);
   else if (opts.sort === "newest") result.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
