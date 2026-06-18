@@ -28,6 +28,8 @@ const faqSchema = {
 export default function FaqPage() {
   return (
     <>
+      {/* S-15: Safe — faqSchema is a hardcoded developer-controlled object serialized
+          via JSON.stringify, which escapes all HTML-special characters. */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
         <div className="pt-10 pb-14" style={{ borderBottom: "1px solid var(--line)" }}>

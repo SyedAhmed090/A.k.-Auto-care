@@ -216,6 +216,16 @@ export default function EmailTemplatesPage() {
                   Subject: <span style={{ color: "var(--text)" }}>{interpolate(draft.subject, status)}</span>
                 </div>
                 <div className="rounded-[10px] p-5 bg-white text-black" style={{ maxWidth: 580 }}>
+                  {/*
+                    S-15: This dangerouslySetInnerHTML renders admin-authored email body
+                    HTML as a live preview. The body is written by admin users (owner/manager
+                    via the email-templates API route which enforces requireAdmin) and is the
+                    same content sent as transactional email — the preview must reflect the
+                    real HTML output. The risk is self-XSS only: an admin pasting a malicious
+                    <script> tag harms only their own browser session, not customers. Customer-
+                    facing review content is rendered as React-escaped text (not innerHTML) and
+                    is never shown here. Unauthenticated users cannot reach this component.
+                  */}
                   <div dangerouslySetInnerHTML={{ __html:
                     `<p style="font-size:16px;">Hi ${SAMPLE.name},</p>` +
                     `<p>${interpolate(draft.body, status)}</p>` +

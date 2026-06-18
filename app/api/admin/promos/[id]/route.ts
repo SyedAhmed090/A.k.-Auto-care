@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { checkCsrf } from "@/lib/csrf";
-import { requireAdmin, requireRole } from "@/lib/adminAuth";
+import { requireAdmin, requireRole, getAdminSession } from "@/lib/adminAuth";
+import { logAudit } from "@/lib/audit";
 
 const updateSchema = z.object({
   active:     z.boolean().optional(),
@@ -33,6 +34,13 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       .single();
 
     if (error) throw error;
+    // S-17: Audit promo code updates (e.g. activation/deactivation changes).
+    await logAudit(await getAdminSession(), {
+      action: "promo.update",
+      entity: "promo_code",
+      entityId: id,
+      meta: parsed.data,
+    });
     return NextResponse.json({ promo: data });
   } catch {
     return NextResponse.json({ error: "Failed to update promo." }, { status: 500 });
@@ -51,6 +59,12 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     const supabase = createAdminClient();
     const { error } = await supabase.from("promo_codes").delete().eq("id", id);
     if (error) throw error;
+    // S-17: Audit promo code deletion.
+    await logAudit(await getAdminSession(), {
+      action: "promo.delete",
+      entity: "promo_code",
+      entityId: id,
+    });
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ error: "Failed to delete promo." }, { status: 500 });

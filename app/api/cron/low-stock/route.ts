@@ -1,12 +1,24 @@
+import { timingSafeEqual } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { getSettings } from "@/lib/settings";
 import { buildLowStockHtml } from "@/lib/low-stock-email";
 
+// S-14: Use constant-time comparison to prevent timing oracle on CRON_SECRET.
+function verifyCronSecret(authHeader: string | null, secret: string): boolean {
+  if (!authHeader || !authHeader.startsWith("Bearer ")) return false;
+  const provided = authHeader.slice("Bearer ".length);
+  // timingSafeEqual requires equal-length buffers; pad/truncate via utf8 encoding
+  // and compare byte arrays of the same length as the expected secret.
+  const expectedBuf = Buffer.from(secret, "utf8");
+  const providedBuf = Buffer.from(provided, "utf8");
+  if (providedBuf.length !== expectedBuf.length) return false;
+  return timingSafeEqual(expectedBuf, providedBuf);
+}
+
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
   const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+  if (!cronSecret || !verifyCronSecret(req.headers.get("authorization"), cronSecret)) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
 

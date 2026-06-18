@@ -46,6 +46,16 @@ export async function POST(req: NextRequest) {
       const ok =
         user && user.active && (await verifyPassword(password ?? "", user.password_hash));
       if (!ok) {
+        // S-17: Audit failed login attempts to enable brute-force detection.
+        // Hash the attempted email to avoid storing PII directly in the audit log.
+        const attemptedEmailHash = email
+          ? crypto.createHash("sha256").update(email.trim().toLowerCase()).digest("hex").slice(0, 16)
+          : null;
+        await logAudit(null, {
+          action: "login.failed",
+          entity: "session",
+          meta: { via: "user", attempted_email_hash: attemptedEmailHash, ip },
+        });
         return NextResponse.json({ error: "Invalid email or password." }, { status: 401 });
       }
 
@@ -60,6 +70,12 @@ export async function POST(req: NextRequest) {
     const a = Buffer.from(password ?? "");
     const b = Buffer.from(secret);
     if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
+      // S-17: Audit failed legacy login attempts.
+      await logAudit(null, {
+        action: "login.failed",
+        entity: "session",
+        meta: { via: "secret", ip },
+      });
       return NextResponse.json({ error: "Invalid password." }, { status: 401 });
     }
 
