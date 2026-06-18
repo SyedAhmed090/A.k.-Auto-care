@@ -31,7 +31,11 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   try {
     const { id } = await params;
     const supabase = createAdminClient();
-    const { data, error } = await supabase.from("orders").select("*").eq("id", id).single();
+    const { data, error } = await supabase
+      .from("orders")
+      .select("id, status, email, phone, first_name, last_name, address, city, postcode, country, items, subtotal, discount, promo_code, shipping, shipping_method, total, payment_method, tracking_number, tracking_carrier, notes, created_at")
+      .eq("id", id)
+      .single();
     if (error || !data) return NextResponse.json({ error: "Order not found." }, { status: 404 });
     return NextResponse.json({ order: data });
   } catch {
@@ -81,7 +85,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       .from("orders")
       .update(updates)
       .eq("id", id)
-      .select()
+      .select("id, status, email, phone, first_name, last_name, address, city, postcode, country, items, subtotal, discount, promo_code, shipping, shipping_method, total, payment_method, tracking_number, tracking_carrier, notes, created_at")
       .single();
 
     if (error) throw error;

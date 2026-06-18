@@ -74,15 +74,19 @@ export async function GET(req: NextRequest) {
     const gstRate = settings.tax.gstRate;
 
     const supabase = createAdminClient();
-    // A-02: Cap unbounded sales reads at 50 000 orders to bound memory/egress.
+    // Default to last 12 months when no start date is supplied to avoid loading
+    // the entire orders table into memory on unbounded requests.
+    const defaultFrom = from ?? new Date(Date.now() - 365 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .slice(0, 10);
+
     let query = supabase
       .from("orders")
       .select("total, discount, shipping, status, created_at")
       .not("status", "in", `(${EXCLUDED_STATUSES.join(",")})`)
-      .order("created_at", { ascending: true })
-      .limit(50_000);
+      .gte("created_at", `${defaultFrom}T00:00:00`)
+      .order("created_at", { ascending: true });
 
-    if (from) query = query.gte("created_at", `${from}T00:00:00`);
     if (to) query = query.lte("created_at", `${to}T23:59:59`);
 
     const { data, error } = await query;

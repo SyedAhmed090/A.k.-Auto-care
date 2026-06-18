@@ -51,10 +51,13 @@ export async function PATCH(req: NextRequest) {
     }
     const { updates } = parsed.data;
     const sb = createAdminClient();
-    for (const { id, stock, in_stock } of updates) {
-      const { error } = await sb.from("products").update({ stock, in_stock }).eq("id", id);
-      if (error) throw error;
-    }
+    const results = await Promise.all(
+      updates.map(({ id, stock, in_stock }) =>
+        sb.from("products").update({ stock, in_stock }).eq("id", id)
+      )
+    );
+    const failed = results.find((r) => r.error);
+    if (failed?.error) throw failed.error;
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Admin inventory PATCH error:", err);

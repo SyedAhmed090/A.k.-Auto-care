@@ -31,17 +31,20 @@ export async function GET() {
   try {
     const supabase = createAdminClient();
 
-    // Default to last 90 days (avoids unbounded scans); cap at 10 000 rows.
-    const since = new Date();
-    since.setUTCDate(since.getUTCDate() - 90);
-    const sinceIso = since.toISOString();
+    // Two parallel queries: lightweight aggregate data (all-time, no JSONB) +
+    // product breakdown (12-month window, JSONB only). Avoids loading large items
+    // payloads for all-time revenue/AOV/repeat-rate calculations.
+    const twelveMonthsAgo = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString();
 
-    const [ordersRes, productsRes] = await Promise.all([
+    const [ordersRes, itemsRes, productsRes] = await Promise.all([
       supabase
         .from("orders")
-        .select("email, total, status, created_at, items")
-        .gte("created_at", sinceIso)
-        .order("created_at", { ascending: true })
+        .select("email, total, status, created_at")
+        .order("created_at", { ascending: true }),
+      supabase
+        .from("orders")
+        .select("status, items")
+        .gte("created_at", twelveMonthsAgo)
         .limit(10_000),
       supabase.from("products").select("id, name, category_slug").limit(5_000),
     ]);
@@ -49,6 +52,10 @@ export async function GET() {
     if (ordersRes.error) throw ordersRes.error;
 
     const orders = (ordersRes.data ?? []) as OrderRow[];
+    // Use the JSONB-bearing rows only for product/category aggregation (12-month window).
+    const itemOrders = ((itemsRes.data ?? []) as Pick<OrderRow, "status" | "items">[]).filter(
+      (o) => !EXCLUDED.includes(o.status ?? "")
+    );
     const products = productsRes.data ?? [];
 
     // product id -> category slug, and product name -> category slug (fallback
@@ -79,7 +86,7 @@ export async function GET() {
     >();
     const categoryAgg = new Map<string, number>();
 
-    for (const o of validOrders) {
+    for (const o of itemOrders) {
       const items = Array.isArray(o.items) ? (o.items as LineItem[]) : [];
       for (const it of items) {
         const qty = Number(it.quantity ?? 0);

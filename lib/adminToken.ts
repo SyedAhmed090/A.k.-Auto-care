@@ -64,9 +64,26 @@ async function hmacHex(payload: string, secret: string): Promise<string> {
   return hex(new Uint8Array(sig));
 }
 
+// Module-level caches — tokens are day-scoped so stale entries are never matched;
+// we just cap size to prevent multi-day accumulation from growing unbounded.
+const legacyCache = new Map<string, string>(); // "<day>:<secret>" -> hash
+const hmacCache   = new Map<string, string>(); // "<payload>:<secret>" -> hex signature
+
+function evictIfNeeded<K>(map: Map<K, string>, max: number) {
+  if (map.size <= max) return;
+  const toDelete = [...map.keys()].slice(0, Math.floor(max / 2));
+  for (const k of toDelete) map.delete(k);
+}
+
 /** Legacy shared-secret owner token for the current day. */
-export function legacyToken(secret: string, day: string = utcDay()): Promise<string> {
-  return sha256Hex(`ak-admin:${secret}:${day}`);
+export async function legacyToken(secret: string, day: string = utcDay()): Promise<string> {
+  const key = `${day}:${secret}`;
+  const hit = legacyCache.get(key);
+  if (hit) return hit;
+  const token = await sha256Hex(`ak-admin:${secret}:${day}`);
+  evictIfNeeded(legacyCache, 32);
+  legacyCache.set(key, token);
+  return token;
 }
 
 /** Build a signed per-user (v2) token for the current day. */
@@ -94,7 +111,13 @@ export async function verifyToken(token: string | undefined, secret: string): Pr
     const parts = token.split(".");
     if (parts.length !== 3) return null;
     const [, payload, sig] = parts;
-    const expected = await hmacHex(payload, secret);
+    const hmacKey = `${payload}:${secret}`;
+    let expected = hmacCache.get(hmacKey);
+    if (!expected) {
+      expected = await hmacHex(payload, secret);
+      evictIfNeeded(hmacCache, 500);
+      hmacCache.set(hmacKey, expected);
+    }
     if (!safeEqual(sig, expected)) return null;
     try {
       const data = JSON.parse(b64urlDecode(payload)) as { uid?: string; role?: string; day?: string };

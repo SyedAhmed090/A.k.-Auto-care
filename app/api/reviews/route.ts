@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
         .from("orders")
         .select("id")
         .eq("email", emailStr)
-        .contains("items", [{ product_id: product_id.trim() }])
+        .contains("items", [{ productId: product_id.trim() }])
         .limit(1)
         .maybeSingle();
       verified = orderMatch !== null;

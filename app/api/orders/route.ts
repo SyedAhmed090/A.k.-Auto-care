@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { z } from "zod";
 import { getProductsByIds } from "@/lib/products";
 import { getShippingOptions } from "@/lib/commerce";
@@ -74,13 +74,16 @@ export async function POST(req: NextRequest) {
       if (!variant) {
         return NextResponse.json({ error: `Variant ${item.variantSku} not found.` }, { status: 400 });
       }
-      const reserved = reservedMap.get(product.id) ?? 0;
-      const available = (product.stock ?? 99) - reserved;
-      if (available <= 0) {
-        return NextResponse.json({ error: `${product.name} is out of stock.` }, { status: 400 });
-      }
-      if (item.quantity > available) {
-        return NextResponse.json({ error: `Only ${available} unit(s) of ${product.name} are available. Please update your cart.` }, { status: 400 });
+      // Untracked products (stock == null) are treated as unlimited — skip availability checks.
+      if (product.stock != null) {
+        const reserved = reservedMap.get(product.id) ?? 0;
+        const available = product.stock - reserved;
+        if (available <= 0) {
+          return NextResponse.json({ error: `${product.name} is out of stock.` }, { status: 400 });
+        }
+        if (item.quantity > available) {
+          return NextResponse.json({ error: `Only ${available} unit(s) of ${product.name} are available. Please update your cart.` }, { status: 400 });
+        }
       }
       const qty = item.quantity;
       lineItems.push({
@@ -176,39 +179,40 @@ export async function POST(req: NextRequest) {
       // Migration not yet run — stock tracking unavailable
     }
 
-    // Send order confirmation email via Resend (requires RESEND_API_KEY in .env.local)
+    // Send order confirmation email after response is returned (non-blocking)
     if (process.env.RESEND_API_KEY) {
-      try {
-        await fetch("https://api.resend.com/emails", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-          },
-          body: JSON.stringify({
-            from: process.env.CONTACT_EMAIL_FROM ?? "noreply@akautocare.pk",
-            to: data.email,
-            subject: `Order Confirmed — #${row.id.slice(0, 8).toUpperCase()}`,
-            html: buildOrderConfirmationHtml({
-              orderId: row.id,
-              firstName: data.firstName,
-              lastName: data.lastName,
-              email: data.email,
-              items: lineItems,
-              subtotal,
-              discount,
-              shipping: shippingCost,
-              total,
-              shippingMethod: selectedShipping?.label ?? "Standard",
-              paymentMethod: data.paymentMethod,
-              city: data.city,
-              address: data.address,
-            }),
-          }),
-        });
-      } catch {
-        // Non-fatal — order is saved, email is best-effort
-      }
+      const resendKey = process.env.RESEND_API_KEY;
+      const emailPayload = JSON.stringify({
+        from: process.env.CONTACT_EMAIL_FROM ?? "noreply@akautocare.pk",
+        to: data.email,
+        subject: `Order Confirmed — #${row.id.slice(0, 8).toUpperCase()}`,
+        html: buildOrderConfirmationHtml({
+          orderId: row.id,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          items: lineItems,
+          subtotal,
+          discount,
+          shipping: shippingCost,
+          total,
+          shippingMethod: selectedShipping?.label ?? "Standard",
+          paymentMethod: data.paymentMethod,
+          city: data.city,
+          address: data.address,
+        }),
+      });
+      after(async () => {
+        try {
+          await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${resendKey}` },
+            body: emailPayload,
+          });
+        } catch {
+          // Non-fatal — order is saved, email is best-effort
+        }
+      });
     }
 
     return NextResponse.json({ orderId: row.id });

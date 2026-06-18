@@ -172,7 +172,7 @@ export default function Header() {
                     opacity: mounted && wishlistCount > 0 ? 1 : 0,
                   }}
                 >
-                  {wishlistCount > 9 ? "9+" : wishlistCount}
+                  {mounted ? (wishlistCount > 9 ? "9+" : wishlistCount) : null}
                 </span>
               </Link>
 
@@ -193,7 +193,7 @@ export default function Header() {
                     opacity: mounted && count > 0 ? 1 : 0,
                   }}
                 >
-                  {count > 9 ? "9+" : count}
+                  {mounted ? (count > 9 ? "9+" : count) : null}
                 </span>
               </button>
 
