@@ -32,7 +32,7 @@ export default function CategoryPageClient({ category, products }: { category: C
     <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
       {/* Hero */}
       <div className="relative h-64 sm:h-80 overflow-hidden">
-        <Image src={category.image} alt={category.name} fill className="object-cover opacity-30" />
+        <Image src={category.image} alt={category.name} fill priority sizes="100vw" className="object-cover opacity-30" />
         <div className="absolute inset-0" style={{ background: "linear-gradient(to right, var(--bg) 40%, transparent 80%)" }} />
         <div
           className="absolute inset-0 pointer-events-none"

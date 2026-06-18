@@ -187,7 +187,7 @@ export default function ProductPageClient({ product, related, systemView }: { pr
                       background: "var(--surface)",
                     }}
                   >
-                    <Image src={thumbErrors[i] ? "/placeholder.svg" : img} alt={`View ${i + 1}`} fill className="object-cover opacity-75" onError={() => setThumbErrors((prev) => ({ ...prev, [i]: true }))} />
+                    <Image src={thumbErrors[i] ? "/placeholder.svg" : img} alt={`View ${i + 1}`} fill sizes="80px" className="object-cover opacity-75" onError={() => setThumbErrors((prev) => ({ ...prev, [i]: true }))} />
                   </button>
                 ))}
               </div>

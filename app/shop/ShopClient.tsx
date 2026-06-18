@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { SlidersHorizontal, X, PackageX } from "lucide-react";
 import type { Product } from "@/data/products";
@@ -77,7 +77,7 @@ const FilterPanel = ({ priceMax, setPriceMax, inStockOnly, setInStockOnly }: Fil
   </div>
 );
 
-export default function ShopClient({ allProducts }: { allProducts: Product[] }) {
+function ShopContent({ allProducts }: { allProducts: Product[] }) {
   const searchParams = useSearchParams();
   const [priceMax, setPriceMax] = useState(100000);
   const [inStockOnly, setInStockOnly] = useState(false);
@@ -242,5 +242,51 @@ export default function ShopClient({ allProducts }: { allProducts: Product[] }) 
         </>
       )}
     </div>
+  );
+}
+
+// Skeleton shown while the Suspense boundary resolves useSearchParams() on the client.
+function ShopFallback() {
+  return (
+    <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
+      <div className="pt-14 pb-16" style={{ borderBottom: "1px solid var(--line)" }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div
+            className="flex items-center gap-2.5 mb-3 text-[.72rem] tracking-[.14em] uppercase"
+            style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
+          >
+            <span className="w-7 h-[1px]" style={{ background: "var(--accent)" }} />
+            All Products
+          </div>
+          <h1
+            className="uppercase leading-[.96] tracking-[.01em]"
+            style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(2.5rem,6vw,5rem)" }}
+          >
+            The Shop
+          </h1>
+        </div>
+      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" role="status" aria-label="Loading products">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              className="rounded-[14px]"
+              style={{ height: 320, background: "var(--surface)", border: "1px solid var(--line)" }}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// useSearchParams() (read in ShopContent for the initial sort) must sit under a Suspense
+// boundary, otherwise the whole /shop route opts out of static rendering. Mirrors SearchClient.
+export default function ShopClient({ allProducts }: { allProducts: Product[] }) {
+  return (
+    <Suspense fallback={<ShopFallback />}>
+      <ShopContent allProducts={allProducts} />
+    </Suspense>
   );
 }

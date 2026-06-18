@@ -126,7 +126,7 @@ export default function HomeClient({ featured, newArrivals }: { featured: Produc
       <div className="overflow-hidden opacity-40" style={{ borderBottom: "1px solid var(--line)" }}>
         <div className="flex items-center gap-[34px] py-[12px] whitespace-nowrap marquee-track" style={{ animationDuration: "80s" }}>
           {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
-            <span key={i} className="flex items-center gap-[34px]">
+            <span key={`${item}-${i}`} className="flex items-center gap-[34px]">
               <span className="text-[.68rem] tracking-[.18em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>{item}</span>
               <span className="text-[.7rem] opacity-40" style={{ color: "var(--muted)" }}>·</span>
             </span>
@@ -176,9 +176,9 @@ export default function HomeClient({ featured, newArrivals }: { featured: Produc
                 <span className="w-7 h-[1px]" style={{ background: "var(--accent)" }} />
                 Hero Product
               </div>
-              <h3 className="uppercase leading-[.98] tracking-[.01em]" style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(2rem,4vw,3.2rem)" }}>
+              <h2 className="uppercase leading-[.98] tracking-[.01em]" style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(2rem,4vw,3.2rem)" }}>
                 Benzoyl Peroxide<br />(BPO) Hardener Paste
-              </h3>
+              </h2>
               <div className="mt-3 text-[.78rem] tracking-[.14em] uppercase" style={{ fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}>
                 Industrial Curing Agent &amp; Catalyst
               </div>

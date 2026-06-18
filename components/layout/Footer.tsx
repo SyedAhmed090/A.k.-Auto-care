@@ -7,13 +7,12 @@ import logoFull from "@/public/logo.png";
 import SocialLinks from "@/components/ui/SocialLinks";
 import { useSettings } from "@/components/providers/SettingsProvider";
 import { whatsappDisplay } from "@/lib/settings";
+import { useNewsletter } from "@/lib/useNewsletter";
 
 export default function Footer() {
   const { store } = useSettings();
   const [logoError, setLogoError] = useState(false);
-  const [nlEmail, setNlEmail] = useState("");
-  const [nlState, setNlState] = useState<"idle" | "submitting" | "ok" | "error">("idle");
-  const [nlError, setNlError] = useState("");
+  const { email: nlEmail, setEmail: setNlEmail, state: nlState, setState: setNlState, error: nlError, submit: handleNewsletter } = useNewsletter();
 
   // Auto-clear the success message so the signup form returns after a few seconds
   useEffect(() => {
@@ -23,29 +22,7 @@ export default function Footer() {
       setNlEmail("");
     }, 5000);
     return () => clearTimeout(t);
-  }, [nlState]);
-
-  const handleNewsletter = async () => {
-    if (!nlEmail.trim() || nlState === "submitting") return;
-    setNlState("submitting");
-    try {
-      const res = await fetch("/api/newsletter", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: nlEmail }),
-      });
-      const data = await res.json();
-      if (data.ok) {
-        setNlState("ok");
-      } else {
-        setNlError(data.error ?? "Something went wrong.");
-        setNlState("error");
-      }
-    } catch {
-      setNlError("Network error. Please try again.");
-      setNlState("error");
-    }
-  };
+  }, [nlState, setNlState, setNlEmail]);
 
   return (
     <footer style={{ borderTop: "1px solid var(--line)" }} className="pt-20 pb-9">
@@ -190,6 +167,7 @@ export default function Footer() {
                     onKeyDown={(e) => e.key === "Enter" && handleNewsletter()}
                   />
                   <button
+                    type="button"
                     onClick={handleNewsletter}
                     disabled={nlState === "submitting"}
                     className="flex-shrink-0 px-3.5 py-2.5 rounded-[9px] text-xs font-bold cursor-pointer transition-all disabled:opacity-50"
@@ -211,7 +189,7 @@ export default function Footer() {
           className="flex flex-col sm:flex-row items-center justify-between pt-7 gap-3 text-[.72rem] tracking-[.14em] uppercase text-center sm:text-left"
           style={{ borderTop: "1px solid var(--line)", fontFamily: "var(--font-space-mono)", color: "var(--muted)" }}
         >
-          <span>© {new Date().getFullYear()} A.K. Auto Care — All rights reserved</span>
+          <span suppressHydrationWarning>© {new Date().getFullYear()} A.K. Auto Care — All rights reserved</span>
           <span className="sm:text-right flex items-center gap-2">
             <Link href="/policies/privacy" className="hover:text-[var(--accent)] transition-colors">Privacy</Link>
             <span aria-hidden>·</span>

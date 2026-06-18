@@ -155,6 +155,8 @@ export default function FirstPurchasePopup() {
               <input
                 ref={inputRef}
                 type="email"
+                aria-label="Email address"
+                placeholder="you@email.com"
                 value={email}
                 onChange={(e) => { setEmail(e.target.value); if (state === "error") { setState("idle"); setError(""); } }}
                 onKeyDown={(e) => e.key === "Enter" && submit()}

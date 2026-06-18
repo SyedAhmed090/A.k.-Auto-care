@@ -1,36 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useNewsletter } from "@/lib/useNewsletter";
 
 /**
  * Newsletter subscribe form for the homepage CTA band — the interactive island that
  * holds the only state on the homepage. The surrounding heading/copy stay server-rendered.
+ * Shared submit/state logic lives in useNewsletter (also used by the footer form).
  */
 export default function NewsletterSignup() {
-  const [email, setEmail] = useState("");
-  const [state, setState] = useState<"idle" | "submitting" | "ok" | "error">("idle");
-  const [error, setError] = useState("");
-
-  const submit = async () => {
-    if (!email.trim() || state === "submitting") return;
-    setState("submitting");
-    try {
-      const res = await fetch("/api/newsletter", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      const data = await res.json();
-      if (data.ok) {
-        setState("ok");
-      } else {
-        setError(data.error ?? "Something went wrong.");
-        setState("error");
-      }
-    } catch {
-      setError("Network error. Please try again.");
-      setState("error");
-    }
-  };
+  const { email, setEmail, state, setState, error, submit } = useNewsletter();
 
   if (state === "ok") {
     return (
@@ -54,6 +31,7 @@ export default function NewsletterSignup() {
           style={{ background: "var(--surface)", border: `1px solid ${state === "error" ? "#ef4444" : "var(--line-2)"}`, color: "var(--text)", fontFamily: "var(--font-hanken)" }}
         />
         <button
+          type="button"
           onClick={submit}
           disabled={state === "submitting"}
           className="btn-accent px-7 py-4 rounded-[13px] font-semibold transition-all hover:-translate-y-0.5 cursor-pointer disabled:opacity-60"

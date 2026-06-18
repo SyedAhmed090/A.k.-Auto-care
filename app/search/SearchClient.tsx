@@ -36,6 +36,7 @@ function SearchResults({ allProducts }: { allProducts: Product[] }) {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
+                aria-label="Search products"
                 placeholder="Search products…"
                 className="w-full pl-14 pr-14 py-4 text-lg rounded-[14px] outline-none transition-all"
                 style={{ background: "var(--surface)", border: "1px solid var(--line-2)", color: "var(--text)", fontFamily: "var(--font-hanken)" }}
