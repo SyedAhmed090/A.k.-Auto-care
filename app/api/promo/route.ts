@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { PROMOS } from "@/lib/promos";
 import { rateLimit, getIP } from "@/lib/rateLimit";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { checkCsrf } from "@/lib/csrf";
@@ -45,13 +44,12 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ valid: true, discount: promo.discount });
       }
     } catch {
-      // DB not available — fall through to hardcoded
+      // D-07: DB is the single source of truth for promos. If the DB is
+      // unreachable, promos are unavailable rather than falling back to a stale
+      // hardcoded list that bypasses expiry and max_uses constraints.
     }
 
-    // Fallback: hardcoded promos
-    const promo = PROMOS[upperCode];
-    if (!promo || subtotal < promo.minSpend) return invalid;
-    return NextResponse.json({ valid: true, discount: promo.discount });
+    return invalid;
   } catch {
     return NextResponse.json({ valid: false, reason: "Something went wrong." }, { status: 400 });
   }

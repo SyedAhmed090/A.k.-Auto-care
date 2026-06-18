@@ -13,13 +13,16 @@ export async function GET() {
 
     const [ordersRes, revenueRes, pendingRes, todayRes, lowStockRes] = await Promise.all([
       supabase.from("orders").select("id", { count: "exact", head: true }),
-      supabase.from("orders").select("total").not("status", "in", '("cancelled","refunded")'),
+      // D-05: Use server-side SUM instead of fetching all total values into JS.
+      // The old select("total") fetched every row and reduced in Node — it would
+      // silently truncate at PostgREST's 1000-row default cap.
+      supabase.from("orders").select("total.sum()").not("status", "in", '("cancelled","refunded")').single(),
       supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", "pending"),
       supabase.from("orders").select("id", { count: "exact", head: true }).gte("created_at", new Date(new Date().setHours(0, 0, 0, 0)).toISOString()),
       supabase.from("products").select("id", { count: "exact", head: true }).not("stock", "is", null).lte("stock", inventory.lowStockThreshold),
     ]);
 
-    const totalRevenue = (revenueRes.data ?? []).reduce((acc: number, o: { total: number }) => acc + (o.total ?? 0), 0);
+    const totalRevenue = Number((revenueRes.data as unknown as { sum: number | null } | null)?.sum ?? 0);
 
     return NextResponse.json({
       totalOrders: ordersRes.count ?? 0,

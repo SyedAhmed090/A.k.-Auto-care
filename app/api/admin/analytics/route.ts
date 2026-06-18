@@ -31,11 +31,22 @@ export async function GET() {
   try {
     const supabase = createAdminClient();
 
+    // D-05: Default to the last 90 days to avoid unbounded table scans.
+    // PostgREST silently caps at 1000 rows without a .limit() — analytics would
+    // be silently wrong once orders exceeds 1000 rows. Cap at 10 000 rows
+    // which is well above any realistic single-year order volume for this store.
+    const DEFAULT_DAYS = 90;
+    const since = new Date();
+    since.setUTCDate(since.getUTCDate() - DEFAULT_DAYS);
+    const sinceIso = since.toISOString();
+
     const [ordersRes, productsRes] = await Promise.all([
       supabase
         .from("orders")
         .select("email, total, status, created_at, items")
-        .order("created_at", { ascending: true }),
+        .gte("created_at", sinceIso)
+        .order("created_at", { ascending: true })
+        .limit(10000),
       supabase.from("products").select("id, name, category_slug"),
     ]);
 

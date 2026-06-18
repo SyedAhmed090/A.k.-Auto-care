@@ -220,22 +220,9 @@ const products: Product[] = [
 
 export default products;
 
-export const getFeaturedProducts = () => products.filter((p) => p.featured);
-export const getProductsByCategory = (slug: string) =>
-  products.filter((p) => p.categorySlug === slug);
-export const getProductBySlug = (slug: string) =>
-  products.find((p) => p.slug === slug);
-export const getRelatedProducts = (product: Product, limit = 4) =>
-  products
-    .filter((p) => p.categorySlug === product.categorySlug && p.id !== product.id)
-    .slice(0, limit);
-export const searchProducts = (query: string) => {
-  const q = query.toLowerCase();
-  return products.filter(
-    (p) =>
-      p.name.toLowerCase().includes(q) ||
-      p.tagline.toLowerCase().includes(q) ||
-      p.description.toLowerCase().includes(q) ||
-      p.categorySlug.toLowerCase().includes(q)
-  );
-};
+// D-15: The static helper functions below shadow the DB-backed versions in
+// lib/products.ts. All pages correctly import from lib/products.ts (async DB
+// queries). These static versions are removed to prevent accidental imports
+// that would serve stale in-memory data instead of live DB rows.
+//
+// If you need query helpers, import from lib/products.ts instead.

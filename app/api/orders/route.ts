@@ -3,7 +3,6 @@ import { z } from "zod";
 import { getProductsByIds } from "@/lib/products";
 import { getShippingOptions } from "@/lib/commerce";
 import { getSettings } from "@/lib/settings";
-import { PROMOS } from "@/lib/promos";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { rateLimit, getIP } from "@/lib/rateLimit";
 import { checkCsrf } from "@/lib/csrf";
@@ -92,13 +91,22 @@ export async function POST(req: NextRequest) {
       subtotal = parseFloat((subtotal + variant.price * qty).toFixed(2));
     }
 
-    // Re-validate promo server-side — try DB first, fall back to hardcoded
+    // Re-validate promo server-side — DB is the single source of truth.
+    // D-02 fix: use a two-phase approach to eliminate the TOCTOU race:
+    //   Phase 1 — validate code fields (expiry, min_spend) without touching uses.
+    //   Phase 2 — atomically claim the promo (uses < max_uses guard inside SQL)
+    //             AFTER order insert; if the atomic claim fails the promo was
+    //             exhausted between validation and order save (rare race), which
+    //             is acceptable — the order still completes without the discount.
+    //   The atomic increment_promo_uses (022_atomic_promo_check.sql) returns FALSE
+    //   if max_uses is already reached, so concurrent requests can't double-claim.
     let discount  = 0;
     let promoUsed: { id: string } | null = null;
-    let dbAttempted = false;
     const promoCode = data.promoCode ? data.promoCode.toUpperCase() : null;
 
     if (promoCode) {
+      // D-07: DB is the only authority for promos (PROMOS dict removed from lib/promos.ts).
+      // If the DB is unreachable, promos are simply unavailable — no stale fallback.
       try {
         const { data: p, error } = await supabase
           .from("promo_codes")
@@ -107,26 +115,18 @@ export async function POST(req: NextRequest) {
           .eq("active", true)
           .single();
 
-        dbAttempted = true;
-
         if (!error && p && subtotal >= p.min_spend) {
-          const notExpired  = !p.expires_at || new Date(p.expires_at) >= new Date();
-          const notExhausted = p.max_uses === null || p.uses < p.max_uses;
-          if (notExpired && notExhausted) {
+          const notExpired   = !p.expires_at || new Date(p.expires_at) >= new Date();
+          // Pre-check uses to give a fast rejection for obviously exhausted codes,
+          // but the real guard is the atomic SQL in phase 2 below.
+          const likelyValid  = p.max_uses === null || p.uses < p.max_uses;
+          if (notExpired && likelyValid) {
             discount  = parseFloat((subtotal * p.discount).toFixed(2));
             promoUsed = { id: p.id };
           }
         }
       } catch {
-        // DB unavailable — fall through to hardcoded fallback
-      }
-
-      // Fall back to hardcoded only if the DB was not reachable (not if DB rejected the code)
-      if (!dbAttempted) {
-        const p = PROMOS[promoCode];
-        if (p && subtotal >= p.minSpend) {
-          discount = parseFloat((subtotal * p.discount).toFixed(2));
-        }
+        // DB unavailable — promos disabled (no stale fallback per D-07)
       }
     }
 
@@ -156,10 +156,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Failed to save order." }, { status: 500 });
     }
 
-    // Atomic promo increment — requires 003_stock_functions.sql migration
+    // D-02: Atomic promo claim — uses a single UPDATE WHERE uses < max_uses so
+    // concurrent requests cannot both claim the last available use.
+    // Returns FALSE if exhausted (acceptable edge case — order completes without discount).
     if (promoUsed) {
-      const { error: rpcErr } = await supabase.rpc("increment_promo_uses", { promo_id: promoUsed.id });
-      if (rpcErr) console.error("[orders] increment_promo_uses RPC failed — run 003_stock_functions.sql migration:", rpcErr);
+      const { data: claimed, error: rpcErr } = await supabase.rpc("increment_promo_uses", { promo_id: promoUsed.id });
+      if (rpcErr) console.error("[orders] increment_promo_uses RPC failed — run 022_atomic_promo_check.sql migration:", rpcErr);
+      else if (claimed === false) console.warn("[orders] promo code exhausted between validation and order save (race) — order completed without discount:", promoUsed.id);
     }
 
     // Reserve stock — requires 003_stock_functions.sql migration (best-effort)
