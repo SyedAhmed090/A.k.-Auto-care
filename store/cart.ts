@@ -109,6 +109,19 @@ export const useCartStore = create<CartStore>()(
           0
         ),
     }),
-    { name: "ak-cart" }
+    {
+      name: "ak-cart",
+      // D-12: Version the persisted shape so stale localStorage data is safely
+      // migrated when CartItem or Product types change, preventing hydration
+      // errors for returning users after a deploy.
+      version: 1,
+      migrate: (persistedState, version) => {
+        // v0 → v1: initial versioning — existing carts are structurally valid,
+        // just pass them through. Bump version and add a case here whenever
+        // CartItem, Product, or Variant shapes gain required fields.
+        void version;
+        return persistedState as CartStore;
+      },
+    }
   )
 );

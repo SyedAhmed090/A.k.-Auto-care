@@ -50,6 +50,16 @@ export const useWishlistStore = create<WishlistStore>()(
       clear: () => set({ items: [] }),
       count: () => get().items.length,
     }),
-    { name: "ak-wishlist" }
+    {
+      name: "ak-wishlist",
+      // D-12: Version the persisted shape so stale localStorage data is safely
+      // migrated when WishlistItem or Product types change.
+      version: 1,
+      migrate: (persistedState, version) => {
+        // v0 → v1: initial versioning — existing wishlists are structurally valid.
+        void version;
+        return persistedState as WishlistStore;
+      },
+    }
   )
 );

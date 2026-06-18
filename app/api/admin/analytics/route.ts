@@ -31,14 +31,18 @@ export async function GET() {
   try {
     const supabase = createAdminClient();
 
-    // A-02: Cap unbounded reads — analytics aggregates in JS, so pull at most
-    // 50 000 orders and 5 000 products to bound memory/egress.
+    // Default to last 90 days (avoids unbounded scans); cap at 10 000 rows.
+    const since = new Date();
+    since.setUTCDate(since.getUTCDate() - 90);
+    const sinceIso = since.toISOString();
+
     const [ordersRes, productsRes] = await Promise.all([
       supabase
         .from("orders")
         .select("email, total, status, created_at, items")
+        .gte("created_at", sinceIso)
         .order("created_at", { ascending: true })
-        .limit(50_000),
+        .limit(10_000),
       supabase.from("products").select("id, name, category_slug").limit(5_000),
     ]);
 

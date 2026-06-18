@@ -12,10 +12,14 @@ export interface Order {
   first_name: string;
   last_name: string;
   email: string;
-  phone: string;
+  /** Nullable in DB — phone TEXT (no NOT NULL constraint) */
+  phone: string | null;
   address: string;
   city: string;
-  province: string;
+  /** province is an order-input field stored in checkout form state but has
+   *  no dedicated column in the orders table. It flows through the API schema
+   *  (app/api/orders/route.ts) as optional and is accepted for future use. */
+  province?: string;
   postcode: string;
   country: string;
   shipping_method: string;
@@ -31,4 +35,6 @@ export interface Order {
   tracking_carrier?: string;
   notes?: string;
   created_at: string;
+  /** updated_at exists in the DB (001_orders.sql) and is used by admin update flows */
+  updated_at?: string;
 }

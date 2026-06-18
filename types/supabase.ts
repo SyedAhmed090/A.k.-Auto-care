@@ -148,19 +148,20 @@ export type Database = {
       }
       newsletter_subscribers: {
         Row: {
-          created_at: string | null
+          /** created_at has DEFAULT NOW() — never null on new rows */
+          created_at: string
           email: string
           id: string
           source: string | null
         }
         Insert: {
-          created_at?: string | null
+          created_at?: string
           email: string
           id?: string
           source?: string | null
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           email?: string
           id?: string
           source?: string | null
@@ -172,8 +173,10 @@ export type Database = {
           address: string
           city: string
           country: string
-          created_at: string | null
-          discount: number | null
+          /** created_at has DEFAULT NOW() — never null on rows produced by the app */
+          created_at: string
+          /** discount is NOT NULL DEFAULT 0 in 001_orders.sql */
+          discount: number
           email: string
           first_name: string
           id: string
@@ -186,7 +189,8 @@ export type Database = {
           promo_code: string | null
           shipping: number
           shipping_method: string | null
-          status: string | null
+          /** status is NOT NULL DEFAULT 'pending' in 001_orders.sql */
+          status: string
           subtotal: number
           total: number
           tracking_carrier: string | null
@@ -197,8 +201,9 @@ export type Database = {
           address: string
           city: string
           country: string
-          created_at?: string | null
-          discount?: number | null
+          created_at?: string
+          /** Optional on insert — DB defaults to 0 */
+          discount?: number
           email: string
           first_name: string
           id?: string
@@ -211,7 +216,8 @@ export type Database = {
           promo_code?: string | null
           shipping: number
           shipping_method?: string | null
-          status?: string | null
+          /** Optional on insert — DB defaults to 'pending' */
+          status?: string
           subtotal: number
           total: number
           tracking_carrier?: string | null
@@ -222,8 +228,8 @@ export type Database = {
           address?: string
           city?: string
           country?: string
-          created_at?: string | null
-          discount?: number | null
+          created_at?: string
+          discount?: number
           email?: string
           first_name?: string
           id?: string
@@ -236,7 +242,7 @@ export type Database = {
           promo_code?: string | null
           shipping?: number
           shipping_method?: string | null
-          status?: string | null
+          status?: string
           subtotal?: number
           total?: number
           tracking_carrier?: string | null

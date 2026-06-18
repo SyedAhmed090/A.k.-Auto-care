@@ -13,15 +13,15 @@ export async function GET() {
 
     const [ordersRes, revenueRes, pendingRes, todayRes, lowStockRes] = await Promise.all([
       supabase.from("orders").select("id", { count: "exact", head: true }),
-      // A-02: Cap unbounded revenue read — 100 000 orders is a safe upper bound for
-      // an in-memory JS sum; a future optimization would use a DB aggregate RPC instead.
-      supabase.from("orders").select("total").not("status", "in", '("cancelled","refunded")').limit(100_000),
+      // Push SUM to Postgres — avoids fetching every row into JS and bypasses
+      // PostgREST's 1000-row default cap that would silently truncate a JS reduce.
+      supabase.from("orders").select("total.sum()").not("status", "in", '("cancelled","refunded")').single(),
       supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", "pending"),
       supabase.from("orders").select("id", { count: "exact", head: true }).gte("created_at", new Date(new Date().setHours(0, 0, 0, 0)).toISOString()),
       supabase.from("products").select("id", { count: "exact", head: true }).not("stock", "is", null).lte("stock", inventory.lowStockThreshold),
     ]);
 
-    const totalRevenue = (revenueRes.data ?? []).reduce((acc: number, o: { total: number }) => acc + (o.total ?? 0), 0);
+    const totalRevenue = Number((revenueRes.data as unknown as { sum: number | null } | null)?.sum ?? 0);
 
     return NextResponse.json({
       totalOrders: ordersRes.count ?? 0,

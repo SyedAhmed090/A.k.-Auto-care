@@ -46,46 +46,57 @@ export async function GET(req: NextRequest) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://akautocare.pk";
   const from = process.env.CONTACT_EMAIL_FROM ?? "noreply@akautocare.pk";
   const apiKey = process.env.RESEND_API_KEY;
-  let sent = 0;
 
-  for (const cart of carts ?? []) {
-    const exp = Date.now() + 48 * 3600 * 1000;
-    const token = mintCartToken(cart.id, exp);
-    const recoveryUrl = `${siteUrl}/cart?recover=${token}`;
+  // D-14: Process email sends in parallel, then batch the DB update.
+  // Old code made N sequential await calls (one DB write per cart); new code
+  // collects successfully-sent IDs and updates them in a single .in() query.
+  const sentIds: string[] = [];
 
-    const cartItems = (Array.isArray(cart.cart_data) ? cart.cart_data : []) as unknown as Parameters<typeof buildAbandonedCartHtml>[0]['cartItems'];
+  await Promise.all(
+    (carts ?? []).map(async (cart) => {
+      const exp = Date.now() + 48 * 3600 * 1000;
+      const token = mintCartToken(cart.id, exp);
+      const recoveryUrl = `${siteUrl}/cart?recover=${token}`;
 
-    if (apiKey) {
-      try {
-        await fetch("https://api.resend.com/emails", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
-          },
-          body: JSON.stringify({
-            from,
-            to: cart.email,
-            subject: "You left something behind...",
-            html: buildAbandonedCartHtml({
-              email: cart.email,
-              cartItems,
-              recoveryUrl,
+      const cartItems = (Array.isArray(cart.cart_data) ? cart.cart_data : []) as unknown as Parameters<typeof buildAbandonedCartHtml>[0]['cartItems'];
+
+      if (apiKey) {
+        try {
+          await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${apiKey}`,
+            },
+            body: JSON.stringify({
+              from,
+              to: cart.email,
+              subject: "You left something behind...",
+              html: buildAbandonedCartHtml({
+                email: cart.email,
+                cartItems,
+                recoveryUrl,
+              }),
             }),
-          }),
-        });
-      } catch {
-        continue;
+          });
+          sentIds.push(cart.id);
+        } catch {
+          // Non-fatal — skip this cart
+        }
+      } else {
+        // No email API key — still mark as "sent" to avoid reprocessing
+        sentIds.push(cart.id);
       }
-    }
+    })
+  );
 
+  // Batch update: single DB round-trip instead of N sequential writes
+  if (sentIds.length > 0) {
     await supabase
       .from("abandoned_carts")
       .update({ email_sent_at: new Date().toISOString() })
-      .eq("id", cart.id);
-
-    sent++;
+      .in("id", sentIds);
   }
 
-  return NextResponse.json({ sent });
+  return NextResponse.json({ sent: sentIds.length });
 }

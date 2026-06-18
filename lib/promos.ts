@@ -1,7 +1,11 @@
-// Server-side promo definitions — never imported on the client.
-// Codes are validated via POST /api/promo and re-validated in POST /api/orders.
-export const PROMOS: Record<string, { discount: number; minSpend: number }> = {
-  AKCARE10: { discount: 0.10, minSpend: 0 },
-  DETAIL20: { discount: 0.20, minSpend: 5000 }, // Rs 5,000 minimum spend
-  LAUNCH15: { discount: 0.15, minSpend: 0 },
-};
+// D-07: The canonical source of truth for promo codes is the promo_codes DB
+// table (seeded by 002_promo_codes.sql). The old hardcoded PROMOS dict was a
+// stale mirror — it bypassed expiry, max_uses, and active checks enforced by
+// the DB, and created a divergence risk as codes were added/changed via admin.
+//
+// The dict is now a no-op fallback: it is intentionally empty so that a DB
+// outage disables promos rather than silently accepting stale codes.
+// All promo validation goes through the DB only.
+//
+// DO NOT add codes here — use the admin portal or a DB migration instead.
+export const PROMOS: Record<string, { discount: number; minSpend: number }> = {};
