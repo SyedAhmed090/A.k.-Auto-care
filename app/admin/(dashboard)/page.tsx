@@ -12,7 +12,9 @@ async function getStats() {
     const { inventory } = await getSettings();
     const [ordersRes, revenueRes, pendingRes, todayRes, lowStockRes, newSamplesRes, totalSamplesRes] = await Promise.all([
       supabase.from("orders").select("id", { count: "exact", head: true }),
-      supabase.from("orders").select("total").not("status", "in", '("cancelled","refunded")'),
+      // Push SUM to Postgres — avoids fetching every order row into JS (and bypasses
+      // PostgREST's 1000-row default cap that would silently under-count revenue).
+      supabase.from("orders").select("total.sum()").not("status", "in", '("cancelled","refunded")').single(),
       supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", "pending"),
       supabase.from("orders").select("id", { count: "exact", head: true })
         .gte("created_at", new Date(new Date().setHours(0, 0, 0, 0)).toISOString()),
@@ -21,7 +23,7 @@ async function getStats() {
       supabase.from("sample_requests").select("id", { count: "exact", head: true }).eq("status", "new"),
       supabase.from("sample_requests").select("id", { count: "exact", head: true }),
     ]);
-    const totalRevenue = (revenueRes.data ?? []).reduce((a, o) => a + Number(o.total ?? 0), 0);
+    const totalRevenue = Number((revenueRes.data as unknown as { sum: number | null } | null)?.sum ?? 0);
     return {
       totalOrders: ordersRes.count ?? 0, totalRevenue, pendingOrders: pendingRes.count ?? 0,
       todayOrders: todayRes.count ?? 0, lowStock: lowStockRes.count ?? 0,

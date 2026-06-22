@@ -29,7 +29,10 @@ export default function AdminNav() {
   const [unread, setUnread] = useState(0);
   const [newSamples, setNewSamples] = useState(0);
 
-  // Poll the new-count for the Messages and Sample Requests badges.
+  // Poll the new-count for the Messages and Sample Requests badges. AdminNav lives
+  // in the persistent layout, so this effect mounts once and the interval survives
+  // navigation — no need to depend on pathname (which would re-fire 2 API calls on
+  // every page switch and slow navigation down).
   useEffect(() => {
     let active = true;
     const fetchCounts = async () => {
@@ -45,7 +48,7 @@ export default function AdminNav() {
     fetchCounts();
     const interval = setInterval(fetchCounts, 60_000);
     return () => { active = false; clearInterval(interval); };
-  }, [pathname]);
+  }, []);
 
   // Close the drawer whenever the route changes (mobile navigation).
   useEffect(() => { setOpen(false); }, [pathname]);
